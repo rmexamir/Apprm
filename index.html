@@ -86,7 +86,8 @@ label.l{display:block;font-size:13px;color:var(--m);margin:8px 0 2px}
 /* ---- Sidebar widgets ---- */
 .clk{border-radius:20px;padding:14px 16px;text-align:center;background:radial-gradient(100% 130% at 50% 0,var(--h1),var(--h3));color:#f6efdc;border:1px solid rgba(255,255,255,.15);margin-bottom:14px}
 .tm{direction:ltr;font-size:38px;font-weight:800;letter-spacing:2px;color:var(--acc2);text-shadow:0 0 14px rgba(255,255,255,.25);line-height:1.35}
-.tm i{font-style:normal;animation:bl 1s steps(2,start) infinite}
+.tm i{font-style:normal}
+.cnt{margin-inline-start:6px;opacity:.7;font-size:12px}
 @keyframes bl{to{opacity:.25}}
 .dt{font-size:14px;opacity:.92}
 .cd{margin-bottom:14px;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:linear-gradient(135deg,var(--h2),var(--h1));color:#f6efdc}
@@ -289,7 +290,7 @@ h1,h2,h3,h4{font-weight:400}
 <svg class="mt" viewBox="0 0 520 120" preserveAspectRatio="xMinYMax slice" aria-hidden="true"><path d="M0 120V80l60-40 40 28 70-62 70 54 50-30 80 70 60-34 90 54z" fill="#ffffff" fill-opacity=".1"/><path d="M0 120V96l80-30 60 30 90-50 80 46 70-26 140 54z" fill="#ffffff" fill-opacity=".12"/></svg>
 <div class="st1"></div>
 <div class="w"><div class="top"><div class="brand"><img class="logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCACgAKADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7+ooooAKKKKACiikJCjJIAoAWiuS1v4i+HNHZ4hcG9uF/5ZWuGwfdug/OuNk+JHi7WpjF4b0TC9mWNp2H1PCivGxWf4LDy9nz80u0Vd/gdtLL69Rc1rLu9Eevbh60ZFePHRfi5q3zXOpSWitzhrlYsfhGKafhf41uhvuvFSKfeeZ/8K5lneJnrSwk2vO0fzNfqNJfHWj8rs9jyKNwzjNeLv8ACzxzbgvZeLEz6C4nTP481CdG+NWifPaajNeovO1bhJ//AB2QZp/21iYa1cJNLytL8g+o0paQrR+d0e30V4bF8XvGOgTi28WeHdwzgsY2tnP0zlTXe+H/AIpeEvEDJAl99ium6W97iMk+zfdP5104XPsHiJezU+WXaWj/ABMq2X16S5nG67rVHa0UgYHoaWvYOIKKKKACiiigAooooAKKK5fxf4vt/Dll5cYWW+kH7uInhf8Aab2/nXPi8VSwlJ1qztFGlKlKrJQgrtl7xB4o0vw7Z+bey5kYfu4E5d/oOw9zxXmst54x+Il08NmptNNzhtrFYh/vN1c+w/Kr3hzwbe+Jr3/hIPE8srxSnckTHDSjtn+6noB19q9Rt7aC1t0gt4kijQbVRBgKPQCvnYUcXnPv126dB7RXxSXm+ifb/hz0XOlg/dguap36L0/zOM0L4Y6DpoSW/Q6jcDqZhiMH2T/HNdpDBDbwrFDGkcajARBtA/AVU1XWtM0WyN1qd5FbRDoXPLewHUn6V5R4l+Ll3cb7bw5CbaPp9qmAMh/3V6L9Tk/SuqtistySnypKL7Ld/r82ZU6OKx8r6vze39eh6drnifRPDtp5+qX0cRI+WIfNI/8AuqOT/KvIfE3xd1fUS9toSHTbc8eccNMw+vRfwyfeuBu7ue7unubueSedzlpJGLM31JqCC3nvtQhs7YK00zhEDOEBJ9SSAPxr4jMeK8XjX7PD+5F9vifz/wAj38Lk9Gguer7z89v69T0Hw38YtW0tlttejOp2w485cLMo/k344PvXsGg+KtC8S2f2jSdQinx9+LpJH/vKeR/KvmTVvDfiLSF3alot7An/AD1MRZP++lyP1rGt764s7xbuxuZbe4jOVlhcqyn6itMBxNjsA1SxcXKPnpJfN7/P7xYjKcPiVz0XZ+Wx9kXNpbXlu0F1BFPE3DRyqGU/geK858TfBfw5q6PNo+dJuTziIboWPuh6f8BIrjPC3xz1CyZLXxVbm9gGB9st1CyqPVl6N+GD9a9q0PxHoviTTxeaLqEN3F/FsPzIfRlPKn6ivs6OKy3O6fK0pPs9JL+u6PCqUcVgJX1Xmtv69Tw6HXPiH8Jr6Oz1iBr/AEgthN7l4iP+mcnVD/sn8q9k8KeNND8YaZ9q0q5/eIB51tJxLCf9oenuODW1e2NpqNjLZ3ttFcQSrteKVQysPQg14N40+Hms+AtU/wCEv8DXFwttAd8kS/M9uO/+/F6g8jvnqOeVLF5P79JupQW6esoryfVeX/DmynRx3uzShU79H69mfQNFcP8ADr4i2HjfSdjBLfVYFH2i1B7f309UP6dD2J7ivocNiaeJpqtSd4s8yrSnSm4TVmgooorczCiikJwpNAGR4l1638PaHJezAM/3Yo+7v2H07n2rgfB/h258T6tJ4m1/M0RfdGrDiVh3x/cXoB3/AAqvqLzePPiMmn28jf2fbkjcOyA/M/1Y8D8K9YtraGztI7eCNY441CKq9AB0FfKUof2zi3Wn/ApO0V0lJbt+S6f8OerN/U6PJH45b+S7EoAUYHFNlRpIWRHKMQQGAztPrXMeLfEsGhalosck4Rbi7AlGekWCCx9ssv5V1CsGUEEc19HTxFOrOdKL1ja/zV0ebKnKMVJrRnhXjTwV4rtLuTU7mebWoepuFyXQe6dh/u8fSvP3bjrX1sQDXjPxEg8Hr4zbTdStZNMuJIVmXUrRdy5YkYlj7jjqOa+A4g4Yp0b4mjUtd7SfV/3v8/vPostzWcv3U43t2/y/y+48nd8VWkcFTnmt7XPDGqaPajUP3V9pj/6vULJvMhP1I5U+xrmpH9+K+JrYepRlyVI2Z9BTqRqLmg7ov2PiLXdHbOl6xfWg/uxTMF/756H8qvSeOJrzjxBoGiaznrLLbeRN/wB/Itp/SuZkk4ya2NG8IavrVmdSkMGmaSn+s1O/by4R7Lnlz7LXbhK2Mk/ZUG35br5p6feZV6dCPv1El57P71qTtL8O9Rzvi13QJT3jZL6Efgdr/wA629E8A63a/EPRrXRfFDWo1C2kvIb+KGWCRYkIBDRPg5OeAeDXRfC6HwG3xBTSdIsJtXuooHnbV75Qq7lKjEMX8I5+8ea6nXdYMH7Tnhyx+xzyf8S+aHzFHH7wk7vovl8/Wvq8HllKdKGJrON+eK9y66q+qaX3L5nj18XOM5Uqd7crfvWfTz1+9/I9PgR47aNJJWldVALsACxx1IHHPtT2VXUqwBB4waTdhc9/SuW8HeLbXxLfa/BBcpKbDUHgGCP9XgbWHsSH59q/QJVYQlGnJ6vb5HzKhKScktEeSfEfwbf/AA88TQePPB+be1EuZYkHy27ntjvE/QjsTjuMex+CfF1j4z8JwavZjY5+SeAnJhkH3lP8we4Irav7G01PTZ7G9gSe3njMckbjIZSMEGvnbQLi6+D/AMcJdCvp3Oi37KnmP0MbE+VL9VOVb8favnakP7IxSqQ/g1HZrpGT2fkn1/4Y9WL+vUXGX8SC08129UfSVFIDkZpa+nPICuY8eax/ZPhCcxSbZ5z9njx1BYcn8Bmunryr4jzSap410zQIWJ+6CB/ekbH6KK8bP8VLDYKbp/FL3V6vQ7MBSVWvFS2Wr9Eb/wANdFFh4Z/tCVMT3hDjPURj7o/mfxrrry2N3bGIXE8Gf44W2sPxwafbQR21rHBEoWONQij0AGBUtdmAwUMJhoYaOyVv8/vZjXrOrUdR9TxPxz4I1KDxDYvBqFzqI1CYW6tdNueNzyAT3XGT07GvSPDfhaTQLOKJtc1K82LjZNIPLHsq4yB+Nbd1ZQ3ctvJKuWt5RMh9GAI/kxqx0GK4sHkdDC4mpiILWW2r07/ezetjqlWlGlLZC15h8Rfhzq3ifWxrOl3luJFhWL7PNlc4JOQ3Pr3Fen0V24/AUcdRdGuroxw+Inh5+0p7ny8bHx74EvHnWyvrNTxIQnnW8o9GAyrD61C83g7xT/rjH4X1VjzLGpexmPuB80R+mRX1KUzXP6n4E8IazL52peHrGaXvJ5exj9SuCa+YnwpOnH2dGpzQ/lmtPk1qvlbzPWjnCk+acbS7x/VPf5nzm114O8KnNskfinVgeJp1KWMTf7KH5pT7nAqN9I+I/wAQr1Lp9P1G9UcRtKnkW8Q9EBwqj6V9J6X4K8J6I/mab4fsIJM5EgiDOP8AgTZNc7dfEO7WwvdUs/D8r6ZbXS2qXTzKPObzAjjb1XrweenOK5quRQoQUcXV5Yavlgn03berdu7NYZlKb5qMLy7yffstEvRHO/C74Y6n4R8XHVdY1OxN01q6CxtyXYKzL8xY49McD8aTxFqLw/taeG7fzmCCzMWzdx84lJ49yF/IV1VnLHa/GXxBcyqVWPSreR9o3HALE9OtdJot5Ya/o9pr0NqoFxHvjaRBvC5OOe3/ANevZwmCo+xjhaD5eWbfdvklZ/fp6HDWxE/aOtUXNeNu1uZfoZ/ivwpN4m0yS2j8SavpYdNpFnIqqf8AeGMke2RXj/wv+F+rx+KNWurvW7/S1025axzpz+W1yy4JJJBGzBU4wevtX0N2xUFvaQWrzNDGFM0hlc+rEAE/oK9DFZTQxFeGImtY+bOejjalKlKlHZi2sBtrRIWnlmKjHmSkFm+pAFeWfHrwsmreAhrsEebrS23sR1aFsBx+Bw34GvWarahZQajpdxYXK7oLiNoZFPdWGD+hrox+Eji8POhLqv8AhjLDV3Qqxqrocf8ACTxM3if4YWNxcSb7y1/0O4J6lkAAY/VSp/E13NfPfwFup9D+IPiHwbdsQwy4B/vwvsb81IP4V9CVy5JipYnBwlP4lo/VaG2Y0VSxElHZ6r0eojHCk15Pak6n+0FM74ZbeRiPby49o/U16w33TXk3g7Enxo1hj1H2g/8AkQVxZ979bCU3s6if3I0wGkK0v7v5nrVFFFfRnnATgZrC0rVV1DV9QnEo+yxT/YoeeHdBmQj/AIESv/ADUfjbxEvhjwVe6oMGdU2QJ/ekbhR+fP4Vyug3C6G9rp1wLiWLQ9LF1fGFC7m4nOSSo5OFDk/71ebiMbGnXjSvsrv57fgpP5HRToOVNz/r+tl8zpbbx94Vurm2t4NVjZ7i5a0jG1uZF69uhyMHvkV0oIPQ152PiX8PF2tGJEZXaVGWwbKu33mHHU5OT3rJ8D+N5pYdUjIuNR1G4vGmT7RIkKrEdqR7mYgDnA2qCfQVxUs7pRqRpTqRm5X+HpZdrt3b2OieAqcrkoNW7/8ADI9C1+91yy+xHRdNgvA9wq3Jll8vyou7D/PHoab4d1LV7+C6GtWVtaXEU7KkcEwkzHn5WOOmefr1wK8p8W+KLHW9X0PTNfuLhLW2LnUltG3pIxUbWRkyGU847jJzzVHRfFOh+H9C8W2Ol3F1C14x/s5vLYtt2EAlux57158+IKccW3ze4r9Vvy32tffT4t7o6I5bN0Vp7z8n3tvf57bHsVtqmrHxZeWd9Z2tvpiqgtbkTgvK56rt9fbtjvnjH1D4deE7nUJruWS7thLJ9okhiu2jiL5yW2dOozXmHhxfDf8Awl/g9tIku5NRM4OoGfdt37f4c8dd3SqOqRafqGl+JrvU11GXxBDdOylg3lRxeYFG7PA6kAfTFclTOqdWg3WpRnZtq8k18KlZPl31ta3TVm0MDKFS0JuOi6edtr+V7/ge065pn2Uan4h0e0+26heWi2zRtcBFZBnG3Ixn5s+9L4fsH034e2OgG+gF9DbC2LxPkLLtJ4+nX6CvLdd8UeGvEfiLRINRur8aHa2ZWeONHQ+djA4HXoOa0PDUgsvhH4g1bR1kYabqZv7dTkM8cexip+se4fjXZhs1o1MY3SStaW0l5Sk7JdX1v02MamDqRornet10+S1v09Op6l4X1pfEHhe11LaElYGOeP8A55yoSsi/gwIrYryvwfrcGl/GLWPDqTZ07XI01zTW7MXUeYB9cFvwNeqV9HgsR7and7ptP1X+e/ozza9L2cvJ6r5/1YKD0oorrMT53O3Qf20xsyI72XJH/XaD/wCKFfQ4OQDXz14+Hlfta+GXQ4Zmsyf++3H8q+hE+4PpXgZIuWpiafRVH+Nj0swfNGjLvFfgD/6s15H4VY23x41a2fq7XAH/AH0GH6V68eRivG9Zb+wv2iLW7b5IrmSNsnph18sn86z4g/dyw1d7RqK/o9Ay5cyqw7xf4Hsg6UUDpWV4j1qDw/4YvNXuCNlvGXC5+83RV/EkD8a+gqVI04uc3ZLVnnRi5NRW7PM/HOqQ+Ifi1pXht5B/Z2lk3t8e3yrvbP0UAfVzS+CvGmgabomq+JfEepwQXWs38kyWwy8pjUbUAQZOOorzvRdd0mK28Q3/AIhlvLi+1NfIEVoQrsGffIS5BCqcKvc4zgVXh8U31s2zQjpHhuH1hXfMf96Uqzk/l9K/N4Z0lW+t3V5Nu27X2Y31S0Sf2l8R9PLANw9jbRW12v1fd726PY9cm+L/AIft1C2nhnXZ4lGAy2QRce2TUMPxr8DXcgt9R06+tMMGxNarIFIOQcKSRg89K8uHiLxEw3j4pyK/Xa010B+fl4pZvE/iWeLy9QvvD/im37xXXlyP+BISQH6V0f6w4h7S+XLFr58s7/mR/ZlNLVfi1+cbH0boWseHdd04XGh3lndQLx+5x8nsV6r+IrV8mH/nmn/fIr5Qs72zj1VNU8H3Nz4d1uM/8eE8u+Kb/Zjkb1/55ycHsc1754G+IVl4m8JT39/ssbzTwV1CF/lERAJL88hTg9emCO1fRZVndPFv2VRJS8tnbtfVNdU9TzMZl8qC54Xa/Ff5+qOxZIIwXYRoFGScAYHrXhXjjxZojajd6Zf/ABEe80l5FL2dlZrPJgc7TKNq8Hpyfeuf8aePLnxveSNd6rLovhNHKxxRrunvsdwmRuP1IRe5J4rnbbXksQB4S8L6VpqL01LWWjnnb33S4Rfoi14+bZxDFfuqa93v715f9uxa0/xNJnfgsvlS9+e/y0+bvr6JtHrNt8dfDhiSKw8I6/cQIAqvHbo3AGB0JrWtvi98P9Zjl0nUZ7nRmuUMTR6nbGAEMNpG7kd+5rxKTxX4vmfNz8VorfHGy2uJ9q+wEUQX8qpT+L/FKQtE/jm11mEnmC/DTow/3Z4/61hHiKtD4ndf4Y/kp3NpZTTlsrfN/rE1ptSvNP8ABuia3bSCTU/B2qtpsjK2fMgYlojnup2un0NfUmj6raa1oNnqti++3uoVmjPswz+Y6fhXyTpXiLwu+i67pmpaYdIn1Oz8kSWLbrQzIweNzGcmMhhjKkrhjwK9T/Z28WfbNAu/CV3L++sj9otgTyYnPzL/AMBY/wDj1dGQZhGGIVHmTU190o6de8berRjmeGlKk6lrcr/B/wCTv957jRRSHgV9wfPHzx4vb+0P2xdCtUBJga1B/wCAhpD+hr6HThB9K+dvBr/8JP8Ate6trCHzILNrhlbHGEUQL/M19FV4GQ+/7et0lUlb0VkenmS5fZU+0UFeUfGfS5Psuna/ANrQSGB2HbPzIfwYH869XrK8R6NFr/hi80mY4E8ZVW/ut1VvwIBrtzfBfXcJUoLdrT1Wq/E5cHX9hWjUey39OonhrV49d8LWWqRsCZ4lZwOzdGH5g1Q8ZeEY/GOkRabPqVzZwpKJWECqfMIBABz2Gc1wXwj12bTtZvfBmp/uplkZ4Ubs68SJ+m4fQ17FWGW14ZpgV7VXvpJea3RpiacsLiHyPbVPy6HkJ+Amjk/8jBqX/fuP/CkPwB0Y4/4qDUv+/cf+Fev0VP8Aq5lv/Plfj/mV/amK/nZ49/wz/o3/AEMOp/8AfuP/AApp/Z80Vjz4h1L8Y4/8K9jJwMmuJ8W/FHwv4Tla1nuHvL9etpagMyn/AGj0X8efascRkuU4eHtK0FFebf8AmaUsfjasuWnJtnB3v7PERhb+z/E8obstzbAj81I/lXA+IfAHxC8LSXUAtbq9tbyIQS3GnhpllQMCFcAbhyo6j8a6bVfj94imkYaRpNhZx9jOWmf/ANlH6VyOofFz4g3ykN4ikt1Pa1iSL9QM/rXyOOr5Jr9X5k+8b/8AtzPbw1PMf+Xtmuz/AOAVtF0fwdeahHY+L9f1zRr7iNxLZKscfoCxJKjp1UCvVB+zl4elAlTxLqbZGQwjiOfxxXnXg/4a+J/iFqI1TUZbiDTpm3TajdMWknHcR7uWPbceB79K+q7O1isdOgsoARFBGsSAnOFUYH6CvV4fyqliqcp4mguX7Ld7v11/E5Mzxs6MlGjU16rSyPGT+zfoJ/5mTVf+/cX+FIf2bdC/6GXVv+/cX+Fe3UV9B/q9l3/Ppfj/AJnmf2piv53+B4f/AMM16Dn/AJGXVv8Av3F/hW14S+CGneD/ABfaeILDxHqcksG5TE6RhZFZSCrYGcdD+Ar1aitKWRYGlNThSSa1W/8AmTPMsTOLjKd0w7Vz3jjxBH4X8AaprbkB7eBjEPWQ/Kg/76Iroa+e/jx4judd8UaZ8O9EJmm85JJ0TndM3EaH6Alj9R6Vpm+N+qYWVRfE9F5t7EYHD+3rRg9t36Lc0f2cNBki0HVfE1wuXvJhbxsepVOXP4u3/jte51j+FdAt/C/g7T9BtcGO0hWMsP426s34sSfxrYqsrwf1PC06L3S19Xq/xJxlf29aVTv+XQKKKK9A5jxv4seG7vS9Xg8c6IWjkidTcFP4HHCyfTop/D1Neg+DPFVr4t8NRahBtSZfkuIQeYpO4+h6g+lb1zbQXlpLbXMSSxSqUdHGQyngg14HqtlrXwg8dDVdLWS40W5bbtY/K69fKc9nHO1u/wCYr5fFKWUYp4uCvRn8aX2X/N8+p6tFrGUlQk/fj8Pmu3+R9A0Vk+HvEel+J9Di1TSpxJE/DKeGjburDsRWtX0tOpGpFTg7p9TzJRcW4yVmeWfGPx3deHNLg0bSJjFf3qlmmXhoYhwSPRieAe2CfSvnJ2LElmJJOSTySfU16h8ebeaL4jWtw4PlTWKCM9vldgw/UfnXlbnivyTibFVa2PnCb0jol/Xc+0yijCnhoyju9yNznNdz8IPC2neKviEYdVRZbWygN01u3SZtwUA+q5OSO+MVwjNWl4Z8S6h4T8U22uaYVMkWVaNz8sqH7yN7H17EA15uW1aVLE06ldXinqdmKhOdGUabs2tD7WjjSONUjUKqgAADAA9BTq5XwZ4+8P8AjXTBPpd0FuVUGazlIEsJ9x3H+0OK6oEHpX7XRrU60FUpO6fY+AnTlTk4zVmFFFFakBRRWD4t8W6P4N8OS6vrFwI41+WONeXmfsiDuT+nU8VFSpGnFzm7JdSoxcmoxV2zP+Injmy8C+D5tSm2S3cmYrS2J5lkxx/wEdSfT6ivLvgX4PvNV1i6+JPiEvNPO7/ZGkHLsxPmTfzVfx9q5zQdI1/46/EeTXddD2+g2rbCqE7UXqIIz3Y9Wb/6wr6ctLS3sbGG0tIUhghQRxxoMKigYAA9AK+dwqlmmJWLmrUofAu7/m/yPUrtYOi6EX78vi8l2/zJu1FFFfSnkhRRRQAVT1TS7HWdKm07UbZLi2mXa8bjg/4H0ParlFTKKknGSumNNp3R896z4c8V/CbXX17w5NJdaOx/ebhuAXP3JlH6OP0r07wV8S9B8XxJbpILLUsZaymYbj7of4x9OfUV2jxpLGUkQMrDBBGQR6V5J4x+CVhqEr6l4VnTS7zO/wCznIhZvVSOYz9OPYV828Bissk6mA96m94Pp/hf6HqLEUcUuXE6S/m/zRv/ABV8GN4v8IbrFA2pWRMtuP7/AB80f4jGPcCvliUOjtHIjI6kqysMFSOoI9a9ftviD8SPh5cJp3i/S5b6zU7VkuD8xH+zOMhv+BZNZPjDUPAPjwtrGmXh0DXWGZYL5NkNyfeRcqG/2jjPf1r5nPVhsxl7ak+Sst4y0b9L6X/NHr5c6uFXs5rmg9mtUjy5z61Cx4qaZGjleJwNynBwwYfgRwagPWvkGmtGe8tR1vdXNleR3dncS29xEdySxOUdD7EcivUfDX7QHijSAltrttDrUC8eYT5U+P8AeA2t+I/GvJzTG5rtweYYjBvmoTa/L7tjGvhKOIVqsbn1fonx28A6sFS6v5tJmPVL6Iquf99cr+ZFd/p+taRqsIl0zVLO8QjObeZZP5Gvgwk4NbPhnwn4m8TagI/DWlXVw+cNcRZjjT/ek4A/PNfWYLi7FTkqcqXO/K6f6ni4jIqEU5Rnyrz/AKR9T+Pvi34c8EwyWolXUdWx8tjAwyp9ZG6IP19BXkPh/wAIeMvjV4lXxN4suJrTRVOIyg2hlz/q7dT0Hq5/U9O08C/ADTNKmTVPGE0erXoO8Wi5+zo3XLZ5kP1wPY17RHHHFGqRoqKo2hVGAB6AV70cBicxkqmP92C2gv8A259fQ8t4mjhE44bWX8z/AERU0fR9N0HRoNK0m0jtbSBdkcUYwAP6k9STyavUUV9FGKilGK0PKbbd2FFFFUIKKKKACiiigAooooAintre6t3guYY5onGGSRQyt9QeDXCaz8GfAuru0qadJp0rcl7CTyx/3ycr+legUVzYjB0MSuWtBS9Ua0q1Sk705Neh4Pf/ALOY3E6X4oZR2S6tc/qrD+VYcv7OvioE+TrmjuP9oSqf/QTX0pRXjz4Wy2bv7O3o3/md8M5xcftX+SPmeP8AZy8Wsf32uaNGP9kSuf8A0EVs6f8As1ruDat4rkYd0tLUL/485P8AKvf6KdPhfLoO/s7+rf8AmE85xclbm/BHnOh/A/4faLIsr6U+pzKch9QkMoz/ALnC/pXoNvbW9rbpBbQRwxIMLHGoVVHsBwKlor2KGEo4dctGCivJHBVr1KrvUk36hRRRXQZBRRRQAUUUUAf/2Q==" alt="لوگو"><div><h1>کانال راه موفقیت دانش‌آموزان</h1><p>امتحان نهایی، کنکور و آزمون‌های آزمایشی</p></div></div>
-<div class="hbtns"><button class="ib" id="thm" aria-label="تغییر حالت روز و شب"><svg class="i"><use href="#i-moon"/></svg></button><button class="ad" id="adm">مدیریت</button></div></div>
+<div class="hbtns"><button class="ib" id="thm" aria-label="تغییر حالت روز و شب"><svg class="i"><use href="#i-moon"/></svg></button><button class="ad" id="acc">ورود / ثبت‌نام</button><button class="ad" id="adm">مدیریت</button></div></div>
 <div class="hb"><a class="join" href="https://rubika.ir/rmstudents" target="_blank" rel="noopener" data-track="rubika">عضویت در کانال روبیکا</a><span class="stat" id="st"></span><span class="stat" id="sk" hidden></span></div></div></header>
 
 <main class="w">
@@ -336,7 +337,7 @@ h1,h2,h3,h4{font-weight:400}
     <div class="msg" id="lm"></div></div>
   <div id="panel" hidden>
     <div class="warn" id="pwwarn" hidden>رمز شما هنوز رمز پیش‌فرض (۱۲۳۴) است. همین حالا از تب «تنظیمات» آن را عوض کنید.</div>
-    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button></div>
+    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button><button data-t="usr">کاربران</button></div>
 
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
@@ -352,9 +353,10 @@ h1,h2,h3,h4{font-weight:400}
       <div class="row"><button id="eva">افزودن</button></div><div class="msg" id="evmsg"></div><div id="evadm"></div></div>
     <div id="t-ct" class="card" hidden></div>
     <div id="t-rq" hidden></div>
+    <div id="t-usr" hidden></div>
     <div id="t-pw" hidden><div class="card"><h2>تغییر رمز عبور</h2><input id="np" type="password" placeholder="رمز جدید (حداقل ۶ کاراکتر)"><input id="np2" type="password" placeholder="تکرار رمز جدید" style="margin-top:8px"><div class="row"><button id="cp">تغییر رمز</button></div><div class="msg" id="pm"></div></div>
     <div class="card"><h2>اطلاعیه صفحه اصلی</h2><input id="nt" placeholder="مثلاً: آزمون جامع این جمعه برگزار می‌شود"><div class="row"><button id="sn">ذخیره اطلاعیه</button></div><div class="msg" id="nm"></div></div>
-    <div class="card"><h2>شمارش معکوس</h2><input id="cdt" placeholder="عنوان (مثلاً کنکور ۱۴۰۶)"><div class="g2" style="margin-top:8px;grid-template-columns:1fr 1.4fr 1fr"><input id="jy" type="number" placeholder="سال (۱۴۰۵)"><select id="jm"></select><input id="jd" type="number" min="1" max="31" placeholder="روز"></div><div class="row"><button id="sc">ذخیره</button><button class="g" id="cc">حذف شمارش‌گر</button></div><div class="msg" id="cm"></div></div></div>
+    <div class="card"><h2>شمارش معکوس‌ها</h2><div class="meta" style="margin-bottom:6px">هر شمارش را جدا اضافه کن؛ در صفحه‌ی اصلی همه‌ی آن‌ها نمایش داده می‌شوند.</div><input id="cdt" placeholder="عنوان (مثلاً کنکور ۱۴۰۶)"><div class="g2" style="margin-top:8px;grid-template-columns:1fr 1.4fr 1fr"><input id="jy" type="number" placeholder="سال (۱۴۰۵)"><select id="jm"></select><input id="jd" type="number" min="1" max="31" placeholder="روز"></div><div class="row"><button id="sc">افزودن شمارش</button></div><div class="msg" id="cm"></div><div id="cdadm" style="margin-top:8px"></div></div></div>
   </div>
 </section>
 </main>
@@ -423,6 +425,21 @@ const sIcon=s=>(SI.find(x=>String(s||'').includes(x[0]))||[0,'file'])[1];
 const COL=['#1f3a8a','#b9810f','#0f766e','#7c3aed','#be123c','#0369a1','#15803d','#c2410c'];
 const ALLS=[...new Set([...COMMON,...Object.values(SUBJ).flat()])];
 const QUOTES=['هر روز یک قدم، تا قله‌ی هدف.','موفقیت، مجموعه‌ی تلاش‌های کوچکِ هر روز است.','امروز بخوان تا فردا پشیمان نباشی.','کنکور ماراتن است، نه دوی سرعت.','شکست یعنی یک تجربه‌ی بیشتر، نه پایان راه.','آزمون بده، اشتباه‌هایت را پیدا کن، قوی‌تر شو.','نظم از استعداد مهم‌تر است؛ امروز هم سر وقت شروع کن.','سخت‌ترین قدم، باز کردن کتاب است. بقیه‌اش راحت‌تر می‌شود.','مقایسه‌ات را با دیروزِ خودت بکن، نه با دیگران.','یک ساعت مطالعه‌ی تمرکزدار، از سه ساعت حواس‌پرت بهتر است.','اشتباه در آزمون آزمایشی، هدیه‌ای است قبل از روز اصلی.','خسته شدی؟ استراحت کن، اما رها نکن.','آینده را همین ساعت‌های امروز می‌سازد.','اگر هدفت روشن باشد، مسیر هم پیدا می‌شود.','هر تست که می‌زنی، یک قدم به رتبه‌ی دلخواهت نزدیک‌تری.','خوابِ کافی، بخشی از برنامه‌ی درس خواندن است.','کوچک شروع کن، پیوسته ادامه بده.','امروز را برای فردایت سرمایه‌گذاری کن.','به خودت یادآوری کن چرا شروع کردی.','پشتکار، میان‌بُر موفقیت است.','سؤال‌های سخت را رها نکن؛ همان‌ها تو را رشد می‌دهند.','برنامه‌ی ساده‌ای که اجرا شود، بهتر از برنامه‌ی عالی روی کاغذ است.','هر روزی که درس می‌خوانی، یک روز به موفقیت نزدیک‌تر می‌شوی.','مرور، راز ماندگاری مطالب است.','نترس از شروع دوباره؛ هر لحظه می‌شود از نو آغاز کرد.','تلاشِ امروزِ تو، افتخارِ فردای توست.','تمرکز یعنی فقط همین یک کار، فقط همین لحظه.','پیشرفت یعنی هر روز کمی بهتر از دیروز.','امتحان نهایی پله‌ای است، نه دیوار.','با آرامش بخوان، با اطمینان بنویس.','تو می‌توانی؛ فقط ادامه بده.'];
+// ---------- داده‌های برنامه‌ی درسی (واحد) و دروس کنکور (ضریب) ----------
+// منبع: مجموع چند سایت معتبر آموزشی (۱۴۰۴–۱۴۰۵). قبل از انتشار رسمی، با جدول سازمان سنجش/آموزش‌وپرورش مقایسه شود.
+// پایه‌ی یازدهم و دوازدهم ریاضی فعلاً کامل نیست و می‌توان دروس را دستی اضافه کرد.
+const CUR={
+ 'دهم تجربی':[['فارسی ۱',2],['نگارش ۱',2],['عربی، زبان قرآن ۱',2],['دین و زندگی ۱',2],['زبان انگلیسی ۱',3],['ریاضی ۱',4],['زیست‌شناسی ۱',3],['فیزیک ۱',3],['شیمی ۱',3],['جغرافیای عمومی',2]],
+ 'دهم ریاضی':[['فارسی ۱',2],['عربی، زبان قرآن ۱',2],['دین و زندگی ۱',2],['زبان انگلیسی ۱',3],['ریاضی ۱',4],['هندسه ۱',2],['فیزیک ۱',4],['شیمی ۱',3],['جغرافیای عمومی',2]],
+ 'دهم انسانی':[['فارسی ۱',2],['نگارش ۱',2],['عربی، زبان قرآن ۱',2],['دین و زندگی ۱',3],['زبان انگلیسی ۱',3],['علوم و فنون ادبی ۱',2],['ریاضی و آمار ۱',3],['تاریخ ۱',3],['جغرافیای عمومی و استان‌شناسی',2],['جامعه‌شناسی ۱',2],['اقتصاد',2],['منطق',2],['تفکر و سواد رسانه‌ای',2],['آمادگی دفاعی',3]],
+ 'دوازدهم تجربی':[['فارسی ۳',2],['عربی، زبان قرآن ۳',2],['دین و زندگی ۳',2],['زبان انگلیسی ۳',4],['زیست‌شناسی ۳',4],['شیمی ۳',4],['فیزیک ۳',3],['ریاضی ۳',4],['سلامت و بهداشت',2],['علوم اجتماعی',2]],
+ 'دوازدهم انسانی':[['فارسی ۳',2],['دین و زندگی ۳',4],['زبان انگلیسی ۳',4],['عربی ۳ (تخصصی)',2],['علوم و فنون ادبی ۳',2],['تاریخ ۳',2],['فلسفه ۲',2],['ریاضی و آمار ۳',2],['جامعه‌شناسی ۳',3],['جغرافیا ۳',2],['سلامت و بهداشت',2]]
+};
+const KONKUR={
+ 'تجربی':[['ریاضی',7],['زیست‌شناسی',12],['فیزیک',7],['شیمی',9],['زمین‌شناسی',1]],
+ 'ریاضی':[['ریاضی',12],['فیزیک',9],['شیمی',7]],
+ 'انسانی':[['ادبیات فارسی (علوم و فنون ادبی)',8],['ریاضی و آمار',6],['عربی تخصصی',5],['تاریخ و جغرافیا',5],['علوم اجتماعی',5],['فلسفه و منطق',5],['اقتصاد',2],['روان‌شناسی',2]]
+};
 const trackOf=g=>Object.keys(SUBJ).find(x=>g&&g.endsWith(x));
 const subjFor=g=>{const t=trackOf(g);return t?D.cats.subject.filter(s=>!ALLS.includes(s)||COMMON.includes(s)||SUBJ[t].includes(s)):D.cats.subject};
 const setH=(s,h)=>{const e=$(s),v=e.value;e.innerHTML=h;e.value=v};
@@ -468,7 +485,7 @@ function fill(){
   const tiles=GR.map(g=>{const p=g.split(' '),tr=p.slice(1).join(' '),m=TRK[tr]||['t-ex','all'];return `<button class="tile ${m[0]}" data-v="${esc(g)}">${ico(m[1])}<b>${esc(p[0])}</b><small>${esc(tr)}</small></button>`}).join('');
   $('#gg').innerHTML=tiles;
   $('#ob').innerHTML=GRADES.map(g=>{const p=g.split(' '),m=TRK[p[1]];return `<button class="tile ${m[0]}" data-me="${esc(g)}">${ico(m[1])}<b>${esc(p[0])}</b><small>${esc(p[1])}</small></button>`}).join('');
-  $('#tq').innerHTML=['',...TY].map(t=>`<button class="chip2" data-v="${esc(t)}">${ico(t?(TI[t]||'file'):'all')}${t?esc(t):'همه'}</button>`).join('');
+  $('#tq').innerHTML=['',...TY].map(t=>`<button class="chip2" data-v="${esc(t)}">${ico(t?(TI[t]||'file'):'all')}${t?esc(t):'همه'}<small class="cnt">${fa(t?D.files.filter(f=>f.type===t).length:D.files.length)}</small></button>`).join('');
   const ex=[...new Set([...D.cats.exam.filter(x=>x!=='سایر'),...D.files.map(f=>f.exam).filter(Boolean)])];
   $('#eq').innerHTML=ex.map(x=>`<button class="chip3" data-v="${esc(x)}">${esc(x)}</button>`).join('');
   setH('#ue',opts(D.cats.exam,'برگزارکننده آزمون'));
@@ -476,24 +493,11 @@ function fill(){
   $('#st').innerHTML=ico('doc')+fa(D.files.length)+' فایل  |  '+fa(D.files.reduce((a,f)=>a+(+f.downloads||0),0))+' دانلود';
 }
 function showNotice(){const n=$('#notice');n.hidden=!D.notice;n.innerHTML=ico('bell')+'<span>'+esc(D.notice||'')+'</span>'}
-function showCountdown(){const c=D.countdown||{},el=$('#cd');const d=c.date?daysTo(c.date):-1;el.hidden=!(c.title&&d>=0);if(!el.hidden)el.innerHTML=`<b>${fa(d)}</b><span>روز تا ${esc(c.title)}<small>${FD.format(new Date(c.date+'T12:00:00'))}</small></span>`}
-
-// ---------- سایدبار ----------
-let qi=new Date().getDate()%QUOTES.length;
-function yearProg(){
-  const now=new Date(),[jy,jm]=g2j(now);let sy=jm>=7?jy:jy-1;const mk=a=>new Date(a[0],a[1]-1,a[2]);
-  const a=mk(j2g(sy,7,1)),b=mk(j2g(sy+1,3,31));let p=(now-a)/(b-a);const over=p>1;p=Math.max(0,Math.min(1,p));
-  const left=Math.max(0,Math.ceil((b-now)/864e5)),tot=Math.round((b-a)/864e5);
-  return `<h2>${ico('chart')}سال تحصیلی ${pd(sy)}–${pd(sy+1)}</h2><div class="prog"><i style="width:${(p*100).toFixed(1)}%"></i></div><div class="meta">${over?'سال تحصیلی تمام شده؛ تابستان را برای آمادگی به کار ببر.':`${fa(Math.round(p*100))}٪ گذشته | ${fa(left)} روز تا پایان خرداد`}</div>`}
-function trackSubj(){const t=trackOf(me&&me.g);return t?[...SUBJ[t],'ادبیات فارسی','زبان انگلیسی','دین و زندگی','عربی، زبان قرآن']:['ادبیات فارسی','ریاضی','زبان انگلیسی','دین و زندگی','عربی، زبان قرآن','شیمی','فیزیک']}
-function todayHTML(){
-  const pool=trackSubj(),sub=pool[Math.floor(Date.now()/864e5)%pool.length],n=D.files.filter(f=>f.subject===sub&&(!me||f.grade===me.g)).length;
-  return `<h2>${ico('target')}درس پیشنهادی امروز</h2><div class="today"><div class="ic" style="--k:${COL[hash(sub)%8]}">${ico(sIcon(sub))}</div><div style="flex:1"><b>${esc(sub)}</b><div class="meta">${n?fa(n)+' فایل برای پایه‌ی تو':'فایل‌های این درس'}</div></div><button data-gos="${esc(sub)}">ببین</button></div>`}
-function renderSide(){
-  $('#yr').innerHTML=yearProg();$('#td').innerHTML=todayHTML();$('#qt').textContent='«'+QUOTES[qi]+'»';
-  const ev=(D.events||[]).map(e=>({...e,n:daysTo(e.d)})).filter(e=>e.t&&e.n>=0).sort((a,b)=>a.n-b.n).slice(0,5);
-  $('#evc').hidden=!ev.length;$('#evl').innerHTML=ev.map(e=>`<div class="ev ${e.n<=7?'hot':''}"><b>${e.n?fa(e.n):'امروز'}</b><span>${esc(e.t)}<div class="meta">${FDs.format(new Date(e.d+'T12:00:00'))}</div></span></div>`).join('');
-  updStreak();
+function showCountdown(){
+  const list=(D.countdowns&&D.countdowns.length)?D.countdowns:((D.countdown&&D.countdown.date)?[{t:D.countdown.title,d:D.countdown.date}]:[]);
+  const items=list.map(c=>({c,n:daysTo(c.d)})).filter(x=>x.c.t&&x.c.d&&x.n>=0);
+  const el=$('#cd');el.hidden=!items.length;
+  el.innerHTML=items.map(({c,n})=>`<div style="display:flex;align-items:center;gap:8px;margin:4px 0"><b>${fa(n)}</b><span>روز تا ${esc(c.t)}<small>${FD.format(new Date(c.d+'T12:00:00'))}</small></span></div>`).join('');
 }
 $('#qn').onclick=()=>{qi=(qi+1)%QUOTES.length;$('#qt').textContent='«'+QUOTES[qi]+'»'};
 function updStreak(){const n=streak(),el=$('#sk');el.hidden=!n;if(n)el.innerHTML=ico('flame','flame fl')+fa(n)+' روز مطالعه پیاپی'}
@@ -706,38 +710,50 @@ function tStudy(){
 
 // معدل
 function tGpa(){
-  const G=S.get('rm_gpa',{rows:[],yrs:[{t:'دهم',v:'',w:1},{t:'یازدهم',v:'',w:1},{t:'دوازدهم',v:'',w:1}]});if(!G.rows.length)G.rows=[{n:'',w:2,s:''},{n:'',w:2,s:''},{n:'',w:2,s:''}];
-  const save=()=>S.set('rm_gpa',G);
-  $('#tbody').innerHTML=`<div class="card tp"><h2>${ico('calc')}محاسبه‌ی معدل ترم/سال</h2><div class="meta" style="margin-bottom:6px">ضریب هر درس را از کارنامه یا کتاب راهنما وارد کن.</div>
-  <table class="tb"><tr><td></td><td class="meta">ضریب</td><td class="meta">نمره</td><td></td></tr>${G.rows.map((r,i)=>`<tr><td><input data-gi="${i}" data-gk="n" list="gsl" value="${esc(r.n)}" placeholder="نام درس"></td><td style="width:70px"><input data-gi="${i}" data-gk="w" type="number" min="1" value="${esc(r.w)}"></td><td style="width:84px"><input data-gi="${i}" data-gk="s" type="number" min="0" max="20" step="0.01" value="${esc(r.s)}"></td><td style="width:34px"><button class="ib sm" data-gd="${i}" aria-label="حذف">×</button></td></tr>`).join('')}</table><datalist id="gsl">${subOpts()}</datalist>
-  <div class="row"><button id="gad">${ico('plus')}درس جدید</button><button class="g" id="gpr" style="color:var(--t)">درس‌های رشته‌ی من</button></div>
-  <div class="res"><small>معدل</small><b id="gres">—</b></div></div>
-  <div class="card"><h2>${ico('medal')}معدل کل دیپلم (سه پایه)</h2><div class="meta" style="margin-bottom:6px">معدل هر پایه و وزن آن را وارد کن (پیش‌فرض وزن برابر است؛ اگر وزن‌ها در سال تو فرق دارد، عوضشان کن).</div>
-  ${G.yrs.map((y,i)=>`<div class="g2" style="margin-bottom:6px"><input data-yi="${i}" data-yk="v" type="number" min="0" max="20" step="0.01" value="${esc(y.v)}" placeholder="معدل ${y.t}"><input data-yi="${i}" data-yk="w" type="number" min="0" step="0.5" value="${esc(y.w)}" placeholder="وزن ${y.t}"></div>`).join('')}
-  <div class="res"><small>معدل کل</small><b id="yres">—</b></div></div>`;
-  const calc=()=>{let a=0,b=0;G.rows.forEach(r=>{const w=num(r.w),s=num(r.s);if(w>0&&s>=0&&s<=20){a+=w*s;b+=w}});$('#gres').textContent=b?pd((a/b).toFixed(2)):'—';a=b=0;G.yrs.forEach(y=>{const w=num(y.w),s=num(y.v);if(w>0&&s>=0&&s<=20){a+=w*s;b+=w}});$('#yres').textContent=b?pd((a/b).toFixed(2)):'—'};calc();
-  const tb=$('#tbody');tb.oninput=e=>{const t=e.target;if(t.dataset.gi!=null){G.rows[+t.dataset.gi][t.dataset.gk]=t.value}else if(t.dataset.yi!=null){G.yrs[+t.dataset.yi][t.dataset.yk]=t.value}else return;save();calc()};
+  const G=S.get('rm_gpa2',{g:'',rows:[],yrs:[{t:'دهم',v:'',w:1},{t:'یازدهم',v:'',w:1},{t:'دوازدهم',v:'',w:1}]});
+  if(!G.g)G.g=(me&&me.g)||'دوازدهم تجربی';
+  if(!G.rows.length)G.rows=(CUR[G.g]||[]).map(([n,u])=>({n,u,s:''}));
+  const save=()=>S.set('rm_gpa2',G);
+  const have=!!CUR[G.g];
+  $('#tbody').innerHTML=`<div class="card tp"><h2>${ico('calc')}معدل بر اساس پایه و رشته</h2>
+   <select id="gsel">${GRADES.map(g=>`<option ${g===G.g?'selected':''}>${esc(g)}</option>`).join('')}</select>
+   <div class="meta" style="margin:6px 0">واحد هر درس از برنامه‌ی رشته آمده؛ اگر با کارنامه‌ات فرق داشت، عدد واحد را عوض کن.${have?'':' <b>جدول واحد این پایه/رشته هنوز کامل نشده؛ دروس را دستی اضافه کن.</b>'}</div>
+   <table class="tb"><tr><td></td><td class="meta">واحد</td><td class="meta">نمره</td><td></td></tr>${G.rows.map((r,i)=>`<tr><td><input data-gi="${i}" data-gk="n" value="${esc(r.n)}" placeholder="نام درس"></td><td style="width:70px"><input data-gi="${i}" data-gk="u" type="number" min="0" step="0.5" value="${esc(r.u)}"></td><td style="width:80px"><input data-gi="${i}" data-gk="s" type="number" min="0" max="20" step="0.25" value="${esc(r.s)}"></td><td><button class="ib sm d" data-gd="${i}" aria-label="حذف">×</button></td></tr>`).join('')}</table>
+   <div class="row"><button id="gad">${ico('plus')}درس جدید</button></div>
+   <div class="res"><small>معدل ترم/سال</small><b id="gres">—</b></div></div>
+   <div class="card"><h2>${ico('medal')}معدل کل دیپلم (سه پایه)</h2><div class="meta" style="margin-bottom:6px">معدل هر پایه و وزن آن را وارد کن (پیش‌فرض وزن برابر است؛ اگر وزن‌ها در سال تو فرق دارد، عوضشان کن).</div>
+   ${G.yrs.map((y,i)=>`<div class="g2" style="margin-bottom:6px"><input data-yi="${i}" data-yk="v" type="number" min="0" max="20" step="0.01" value="${esc(y.v)}" placeholder="معدل ${y.t}"><input data-yi="${i}" data-yk="w" type="number" min="0" step="0.5" value="${esc(y.w)}" placeholder="وزن ${y.t}"></div>`).join('')}
+   <div class="res"><small>معدل کل</small><b id="yres">—</b></div></div>`;
+  const calc=()=>{let a=0,b=0;G.rows.forEach(r=>{const u=num(r.u),s=num(r.s);if(u>0&&s>=0&&s<=20){a+=u*s;b+=u}});$('#gres').textContent=b?pd((a/b).toFixed(2)):'—';a=b=0;G.yrs.forEach(y=>{const w=num(y.w),s=num(y.v);if(w>0&&s>=0&&s<=20){a+=w*s;b+=w}});$('#yres').textContent=b?pd((a/b).toFixed(2)):'—'};
+  calc();
+  $('#gsel').onchange=e=>{G.g=e.target.value;G.rows=(CUR[G.g]||[]).map(([n,u])=>({n,u,s:''}));save();tGpa()};
+  const tb=$('#tbody');
+  tb.oninput=e=>{const t=e.target;if(t.dataset.gi!=null){G.rows[+t.dataset.gi][t.dataset.gk]=t.value}else if(t.dataset.yi!=null){G.yrs[+t.dataset.yi][t.dataset.yk]=t.value}else return;save();calc()};
   tb.onclick=e=>{const t=e.target.closest('[data-gd]');if(t){G.rows.splice(+t.dataset.gd,1);save();tGpa()}};
-  $('#gad').onclick=()=>{G.rows.push({n:'',w:2,s:''});save();tGpa()};
-  $('#gpr').onclick=()=>{G.rows=trackSubj().filter((s,i,a)=>a.indexOf(s)===i).map(n=>({n,w:2,s:''}));save();tGpa();toast('ضریب‌ها را با کارنامه‌ات تطبیق بده')}
+  $('#gad').onclick=()=>{G.rows.push({n:'',u:2,s:''});save();tGpa()};
 }
 
 // درصد آزمون
 function tPct(){
-  const X=S.get('rm_pct',[{n:'',t:'',c:'',w:''},{n:'',t:'',c:'',w:''}]),H=S.get('rm_pcth',[]),save=()=>S.set('rm_pct',X);
-  $('#tbody').innerHTML=`<div class="card tp"><h2>${ico('target')}درصد آزمون (با نمره‌ی منفی)</h2><div class="meta" style="margin-bottom:6px">فرمول: هر پاسخ غلط ⅓ پاسخ درست نمره‌ی منفی دارد. درصد = (۳×درست − غلط) ÷ (۳×کل) × ۱۰۰</div>
-  <table class="tb"><tr><td></td><td class="meta">کل</td><td class="meta">درست</td><td class="meta">غلط</td><td class="meta">درصد</td><td></td></tr>${X.map((r,i)=>`<tr><td><input data-pi="${i}" data-pk="n" list="gsl" value="${esc(r.n)}" placeholder="درس"></td>${['t','c','w'].map(k=>`<td style="width:62px"><input data-pi="${i}" data-pk="${k}" type="number" min="0" value="${esc(r[k])}"></td>`).join('')}<td style="width:64px" class="meta" id="pp${i}">—</td><td style="width:34px"><button class="ib sm" data-pd="${i}" aria-label="حذف">×</button></td></tr>`).join('')}</table><datalist id="gsl">${subOpts()}</datalist>
-  <div class="row"><button id="pad2">${ico('plus')}درس جدید</button></div>
-  <div class="res"><small>درصد کل آزمون</small><b id="pres">—</b></div>
-  <div class="row"><input id="pnm" placeholder="نام آزمون برای ذخیره (مثلاً آزمون ۱۵ آبان)" style="flex:1"><button id="psv">ذخیره در تاریخچه</button></div></div>
-  <div class="card"><h2>${ico('chart')}روند پیشرفت</h2>${H.length?`<svg class="chart" id="pch" viewBox="0 0 300 150" preserveAspectRatio="none"></svg>`+H.slice().reverse().map(h=>`<div class="hist"><span>${esc(h.n)}<small class="meta"> · ${FDs.format(new Date(h.d+'T12:00:00'))}</small></span><span><b>${pd(h.p.toFixed(1))}٪</b> <button class="ib sm" data-hd="${h.id}" aria-label="حذف">×</button></span></div>`).join(''):'<div class="meta">هنوز آزمونی ذخیره نشده. بعد از هر آزمون نتیجه را ذخیره کن تا روند پیشرفتت را ببینی.</div>'}</div>`;
-  const pc=(c,w,t)=>t>0?(3*c-w)/(3*t)*100:NaN;
-  const calc=()=>{let C=0,W=0,T=0;X.forEach((r,i)=>{const t=num(r.t),c=num(r.c)||0,w=num(r.w)||0,p=pc(c,w,t),el=$('#pp'+i);if(t>0&&c+w<=t){el.textContent=pd(p.toFixed(1))+'٪';C+=c;W+=w;T+=t}else el.textContent=t>0?'خطا':'—'});const p=pc(C,W,T);$('#pres').textContent=isNaN(p)?'—':pd(p.toFixed(1))+'٪';return p};calc();
-  const tb=$('#tbody');tb.oninput=e=>{const t=e.target;if(t.dataset.pi==null)return;X[+t.dataset.pi][t.dataset.pk]=t.value;save();calc()};
-  tb.onclick=e=>{const d=e.target.closest('[data-pd]'),h=e.target.closest('[data-hd]');if(d){X.splice(+d.dataset.pd,1);save();tPct()}if(h){S.set('rm_pcth',S.get('rm_pcth',[]).filter(x=>x.id!==h.dataset.hd));tPct()}};
-  $('#pad2').onclick=()=>{X.push({n:'',t:'',c:'',w:''});save();tPct()};
+  const P=S.get('rm_pct2',{tr:'',rows:{}}),H=S.get('rm_pcth',[]);
+  if(!P.tr)P.tr=trackOf(me&&me.g)||'تجربی';
+  if(!KONKUR[P.tr])P.tr='تجربی';
+  const save=()=>S.set('rm_pct2',P), rk=n=>P.tr+'|'+n;
+  const rows=KONKUR[P.tr], pc=(c,w,t)=>t>0?(3*c-w)/(3*t)*100:NaN;
+  $('#tbody').innerHTML=`<div class="card tp"><h2>${ico('target')}درصد آزمون بر اساس دروس کنکور</h2>
+   <select id="ptr">${Object.keys(KONKUR).map(k=>`<option ${k===P.tr?'selected':''}>${esc(k)}</option>`).join('')}</select>
+   <div class="meta" style="margin:6px 0">فقط دروس کنکور این رشته، وزن‌دار بر اساس ضریب هر درس. فرمول هر درس: (۳×درست − غلط) ÷ (۳×کل) × ۱۰۰</div>
+   <table class="tb"><tr><td></td><td class="meta">ضریب</td><td class="meta">کل</td><td class="meta">درست</td><td class="meta">غلط</td><td class="meta">درصد</td></tr>${rows.map(([n,k],i)=>{const r=P.rows[rk(n)]||{};return `<tr><td>${esc(n)}</td><td class="meta">${fa(k)}</td>${['t','c','w'].map(f=>`<td style="width:62px"><input data-pn="${esc(rk(n))}" data-pf="${f}" type="number" min="0" value="${esc(r[f]??'')}"></td>`).join('')}<td id="pp${i}" class="meta">—</td></tr>`}).join('')}</table>
+   <div class="res"><small>درصد کل آزمون (وزن‌دار)</small><b id="pres">—</b></div>
+   <div class="row"><input id="pnm" placeholder="نام آزمون برای ذخیره (مثلاً آزمون ۱۵ آبان)" style="flex:1"><button id="psv">ذخیره در تاریخچه</button></div></div>
+   <div class="card"><h2>${ico('chart')}تاریخچه‌ی آزمون‌ها</h2>${H.length?H.slice().reverse().map(x=>`<div class="hist"><span>${esc(x.n)}<small class="meta"> · ${FDs.format(new Date(x.d+'T12:00:00'))}</small></span><span><b>${pd(x.p.toFixed(1))}٪</b> <button class="ib sm d" data-hd="${esc(x.id)}" aria-label="حذف">×</button></span></div>`).join(''):'<div class="meta">هنوز آزمونی ذخیره نشده.</div>'}</div>`;
+  const calc=()=>{let W=0,SUM=0;rows.forEach(([n,k],i)=>{const r=P.rows[rk(n)]||{},t=num(r.t),c=num(r.c)||0,w=num(r.w)||0,el=$('#pp'+i);if(t>0&&c>=0&&w>=0&&c+w<=t){const p=pc(c,w,t);el.textContent=pd(p.toFixed(1))+'٪';SUM+=k*p;W+=k}else el.textContent=(r.t!==undefined&&r.t!=='')?'خطا':'—'});const out=W?SUM/W:NaN;$('#pres').textContent=isNaN(out)?'—':pd(out.toFixed(1))+'٪';return out};
+  calc();
+  const tb=$('#tbody');
+  tb.oninput=e=>{const t=e.target;if(t.dataset.pn==null)return;const k=t.dataset.pn;P.rows[k]=P.rows[k]||{};P.rows[k][t.dataset.pf]=t.value;save();calc()};
+  tb.onchange=e=>{if(e.target.id==='ptr'){P.tr=e.target.value;save();tPct()}};
+  tb.onclick=e=>{const hb=e.target.closest('[data-hd]');if(hb){S.set('rm_pcth',S.get('rm_pcth',[]).filter(x=>x.id!==hb.dataset.hd));tPct()}};
   $('#psv').onclick=()=>{const p=calc();if(isNaN(p))return toast('اول تعداد سؤال‌ها را وارد کن');S.set('rm_pcth',[...S.get('rm_pcth',[]),{id:Date.now()+'',n:$('#pnm').value.trim()||'آزمون',d:dk(new Date()),p}].slice(-30));tPct();toast('ذخیره شد')};
-  const ch=$('#pch');if(ch){const h=S.get('rm_pcth',[]).slice(-10),lo=Math.min(0,...h.map(x=>x.p)),pts=h.map((x,i)=>[h.length>1?10+i*280/(h.length-1):150,140-(x.p-lo)/(100-lo)*125]);ch.innerHTML=`<line x1="0" y1="${140-(0-lo)/(100-lo)*125}" x2="300" y2="${140-(0-lo)/(100-lo)*125}" stroke="var(--b)" stroke-dasharray="4"/><polyline fill="none" stroke="var(--acc)" stroke-width="3" vector-effect="non-scaling-stroke" points="${pts.map(p=>p.join(',')).join(' ')}"/>`+pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--acc2)"/>`).join('')}
 }
 
 // نمره‌ی لازم
@@ -783,7 +799,7 @@ $('#go').onclick=async()=>{
 $('#pw').addEventListener('keydown',e=>e.key==='Enter'&&$('#go').click());
 document.querySelectorAll('.tabs [data-t]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs [data-t]').forEach(x=>x.classList.toggle('on',x===b));
-  ['up','fl','st','ev','ct','pw','rq'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='st')loadStats()});
+  ['up','fl','st','ev','ct','pw','rq','usr'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
 
 async function loadReq(){const b=$('#t-rq');b.innerHTML='<div class="card">در حال بارگذاری…</div>';try{const r=await run('getRequests',pass);b.innerHTML=r.length?r.map(x=>`<div class="card"><div>${esc(x.text)}</div><div class="meta">${esc(x.contact||'بدون اطلاعات تماس')} | ${new Date(x.date).toLocaleDateString('fa-IR-u-ca-persian')}</div><div class="row"><button class="d" onclick="delReq('${esc(x.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">درخواستی ثبت نشده.</div>'}catch(e){b.innerHTML='<div class="card">'+esc(e.message||'خطا')+'</div>'}}
 async function delReq(id){await run('delRequest',pass,id);loadReq()}
@@ -823,7 +839,7 @@ async function loadRubika(){
 }
 function adminLists(){
   if(document.activeElement!==$('#nt'))$('#nt').value=D.notice||'';
-  if(!['cdt','jy','jm','jd'].includes(document.activeElement.id)){$('#cdt').value=(D.countdown||{}).title||'';setCdFields((D.countdown||{}).date||'')}
+  cdAdmin();
   evAdmin();
   $('#t-fl').innerHTML=D.files.length?D.files.map(f=>`<div class="item"><div><h3>${esc(f.title)}</h3><div class="meta">${[f.grade,f.subject,f.type,f.year].filter(Boolean).map(esc).join(' / ')} · ${fa(f.downloads)} دانلود</div></div>
    <div class="row"><button class="g" onclick="pin('${esc(f.id)}')">${f.pin?'برداشتن سنجاق':'سنجاق'}</button><button onclick="edit('${esc(f.id)}')">ویرایش</button><button class="d" onclick="del('${esc(f.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">هنوز فایلی بارگذاری نشده.</div>';
@@ -877,8 +893,81 @@ $('#sv').onclick=async()=>{
 };
 $('#cp').onclick=async()=>{const a=$('#np').value,m=$('#pm');if(a.length<6)return m.textContent='رمز باید حداقل ۶ کاراکتر باشد.';if(a!==$('#np2').value)return m.textContent='دو رمز یکسان نیستند.';try{await run('changePass',pass,nd(a));pass=nd(a);m.textContent='رمز تغییر کرد.';$('#pwwarn').hidden=true;$('#np').value=$('#np2').value=''}catch(e){m.textContent=e.message||'خطا'}};
 $('#sn').onclick=async()=>{try{const v=$('#nt').value.trim();await run('setNotice',pass,v);D.notice=v;showNotice();$('#nm').textContent='ذخیره شد.'}catch(e){$('#nm').textContent=e.message||'خطا'}};
-$('#sc').onclick=async()=>{try{const iso=getCdISO(),t=$('#cdt').value.trim();if(!t)throw new Error('عنوان را وارد کنید.');await run('setCountdown',pass,t,iso);D.countdown={title:t,date:iso};showCountdown();$('#cm').textContent='ذخیره شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
-$('#cc').onclick=async()=>{try{await run('setCountdown',pass,'','');D.countdown={};showCountdown();$('#cdt').value='';setCdFields('');$('#cm').textContent='حذف شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
 load();
 </script><script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
+<script>
+// ---------- حساب کاربری ----------
+let TOK=S.get('rm_tok','')||'', UINFO=S.get('rm_user',null);
+function setUser(tok,u){TOK=tok||'';UINFO=u||null;S.set('rm_tok',TOK);S.set('rm_user',UINFO);renderAcc()}
+function renderAcc(){const b=$('#acc');if(b)b.textContent=UINFO?('سلام '+(UINFO.name||UINFO.username)):'ورود / ثبت‌نام'}
+function authBox(html){
+  let o=$('#authov');
+  if(!o){o=document.createElement('div');o.id='authov';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px';o.onclick=e=>{if(e.target===o)o.remove()};document.body.appendChild(o)}
+  o.innerHTML=`<div class="card" style="max-width:420px;width:100%;margin:0">${html}</div>`;return o;
+}
+function openAuth(mode){
+  if(UINFO){
+    const o=authBox(`<h2>حساب من</h2><div class="meta">وارد شده به عنوان ${esc(UINFO.name||UINFO.username)} (${esc(UINFO.grade||'بدون پایه')})</div><div class="row"><button id="lo">خروج از حساب</button><button class="g" id="cl">بستن</button></div>`);
+    $('#lo').onclick=async()=>{try{await run('logoutUser',TOK)}catch(e){}setUser('',null);o.remove();toast('از حساب خارج شدی')};
+    $('#cl').onclick=()=>o.remove();return;
+  }
+  const reg=mode==='reg';
+  const o=authBox(`<h2>${reg?'ثبت‌نام':'ورود'}</h2>
+   <div class="row" style="margin-bottom:8px"><button class="${reg?'g':''}" id="tl">ورود</button><button class="${reg?'':'g'}" id="tr">ثبت‌نام</button></div>
+   ${reg?`<input id="au_n" placeholder="نام و نام خانوادگی"><select id="au_g" style="margin-top:8px"><option value="">انتخاب پایه (اختیاری)</option>${GRADES.map(g=>`<option>${esc(g)}</option>`).join('')}</select>`:''}
+   <input id="au_u" placeholder="نام کاربری" style="margin-top:8px" autocomplete="username">
+   <input id="au_p" type="password" placeholder="رمز (حداقل ۶ کاراکتر)" style="margin-top:8px" autocomplete="${reg?'new-password':'current-password'}">
+   <div class="row"><button id="au_ok">${reg?'ثبت‌نام':'ورود'}</button><button class="g" id="cl">بستن</button></div><div class="msg" id="au_m"></div>`);
+  $('#tl').onclick=()=>openAuth('login');$('#tr').onclick=()=>openAuth('reg');$('#cl').onclick=()=>o.remove();
+  $('#au_ok').onclick=async()=>{
+    const m=$('#au_m');m.textContent='';
+    try{
+      const u=$('#au_u').value.trim(),p=nd($('#au_p').value);
+      const r=reg?await run('registerUser',u,p,$('#au_n').value.trim(),$('#au_g').value):await run('loginUser',u,p);
+      setUser(r.token,r.user);
+      if(r.user.grade&&r.user.grade!==(me&&me.g)){setMe(r.user.grade)}
+      o.remove();toast(reg?'ثبت‌نام انجام شد':'خوش آمدی');
+    }catch(e){m.textContent=e.message||'خطا'}
+  };
+}
+$('#acc').onclick=()=>openAuth('login');
+renderAcc();
+if(TOK)run('getMe',TOK).then(u=>{if(u)setUser(TOK,u);else setUser('',null)}).catch(()=>{});
+
+// ---------- شمارش معکوس‌ها (مدیر) ----------
+function cdList(){return (D.countdowns&&D.countdowns.length)?D.countdowns:((D.countdown&&D.countdown.date)?[{t:D.countdown.title,d:D.countdown.date}]:[])}
+function cdAdmin(){
+  const l=cdList();
+  $('#cdadm').innerHTML=l.map((c,i)=>`<div class="hist"><span>${esc(c.t)}<small class="meta"> · ${FD.format(new Date(c.d+'T12:00:00'))}</small></span><button class="ib sm d" data-cdd="${i}" aria-label="حذف">×</button></div>`).join('')||'<div class="meta">شمارشی ثبت نشده.</div>';
+}
+async function cdSave(l){await run('setCountdowns',pass,JSON.stringify(l));D.countdowns=l;showCountdown();cdAdmin()}
+$('#cdadm').onclick=async e=>{const b=e.target.closest('[data-cdd]');if(!b)return;try{await cdSave(cdList().filter((_,j)=>j!==+b.dataset.cdd))}catch(err){$('#cm').textContent=err.message||'خطا'}};
+$('#sc').onclick=async()=>{
+  const m=$('#cm');m.textContent='';
+  try{
+    const t=$('#cdt').value.trim(),iso=getCdISO();
+    if(!t)throw new Error('عنوان را وارد کنید.');
+    if(!iso||isNaN(new Date(iso+'T12:00:00')))throw new Error('تاریخ را کامل وارد کن.');
+    await cdSave([...cdList(),{t,d:iso}]);
+    $('#cdt').value='';setCdFields('');m.textContent='افزوده شد.';
+  }catch(e){m.textContent=e.message||'خطا'}
+};
+
+// ---------- کاربران (مدیر) ----------
+async function loadUsers(){
+  const b=$('#t-usr');
+  b.innerHTML=`<div class="card"><h2>ساخت حساب کاربر</h2><div class="meta" style="margin-bottom:6px">برای کاربری که خودش ثبت‌نام نکرده، حساب می‌سازی و نام کاربری و رمز اولیه را به او می‌دهی.</div>
+    <input id="nu_n" placeholder="نام و نام خانوادگی"><select id="nu_g" style="margin-top:8px"><option value="">بدون پایه</option>${GRADES.map(g=>`<option>${esc(g)}</option>`).join('')}</select>
+    <input id="nu_u" placeholder="نام کاربری" style="margin-top:8px"><input id="nu_p" type="text" placeholder="رمز اولیه (حداقل ۶ کاراکتر)" style="margin-top:8px">
+    <div class="row"><button id="nu_ok">ساخت حساب</button></div><div class="msg" id="nu_m"></div></div>
+    <div class="card"><h2>کاربران</h2><div id="ul_list"><div class="meta">در حال بارگذاری…</div></div></div>`;
+  $('#nu_ok').onclick=async()=>{const m=$('#nu_m');m.textContent='';try{await run('adminCreateUser',pass,$('#nu_u').value.trim(),nd($('#nu_p').value),$('#nu_n').value.trim(),$('#nu_g').value);m.textContent='حساب ساخته شد.';loadUsers()}catch(e){m.textContent=e.message||'خطا'}};
+  try{
+    const list=await run('listUsers',pass);
+    $('#ul_list').innerHTML=list.length?list.map(u=>`<div class="hist"><span>${esc(u.name||'—')} <small class="meta">@${esc(u.username)} · ${esc(u.grade||'بدون پایه')}</small></span><span><button class="g" onclick="resetUser('${esc(u.id)}')">رمز جدید</button> <button class="d" onclick="delUser('${esc(u.id)}')">حذف</button></span></div>`).join(''):'<div class="meta">کاربری ثبت نشده است.</div>';
+  }catch(e){$('#ul_list').innerHTML=`<div class="meta">${esc(e.message||'خطا')}</div>`}
+}
+async function delUser(id){if(!confirm('این حساب حذف شود؟'))return;try{await run('deleteUser',pass,id);loadUsers()}catch(e){toast(e.message||'خطا')}}
+async function resetUser(id){const np=prompt('رمز جدید (حداقل ۶ کاراکتر):');if(!np)return;try{await run('resetUserPass',pass,id,nd(np));toast('رمز تغییر کرد')}catch(e){toast(e.message||'خطا')}}
+</script>
 </body></html>
