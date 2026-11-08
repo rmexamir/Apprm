@@ -2,6 +2,9 @@
 <html lang="fa" dir="rtl"><head><base target="_top"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#12203f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>کانال راه موفقیت دانش‌آموزان</title>
 <script>try{var p=JSON.parse(localStorage.getItem('rm_mode')||'""');document.documentElement.dataset.mode=(p?p==='dark':matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';var m=JSON.parse(localStorage.getItem('rm_me')||'null');if(m&&m.g){var t={'تجربی':'ex','ریاضی':'ma','انسانی':'hu'};for(var k in t)if(m.g.slice(-k.length)===k)document.documentElement.dataset.track=t[k]}}catch(e){}</script>
 <style>
@@ -446,8 +449,12 @@ function applyTrack(){const t=trackOf(me&&me.g);document.documentElement.dataset
 
 // ---------- بارگذاری ----------
 async function load(){
-  try{D=await run('getData');D.events=D.events||[]}
-  catch(e){$('#list').innerHTML='<div class="empty">اتصال به سرور برقرار نشد.<br><button id="retry" style="margin-top:10px">تلاش دوباره</button></div>';$('#retry').onclick=()=>{$('#list').innerHTML='<div class="sk"></div><div class="sk"></div>';load()};return}
+  try{D=await run('getData');D.events=D.events||[];S.set('rm_cache',D)}
+  catch(e){
+    const c=S.get('rm_cache',null);
+    if(!c){$('#list').innerHTML='<div class="empty">اتصال به سرور برقرار نشد.<br><button id="retry" style="margin-top:10px">تلاش دوباره</button></div>';$('#retry').onclick=()=>{$('#list').innerHTML='<div class="sk"></div><div class="sk"></div>';load()};return}
+    D=c;D.events=D.events||[];toast('اتصال برقرار نشد؛ نسخه‌ی ذخیره‌شده نمایش داده می‌شود');
+  }
   fill();showNotice();showCountdown();renderSide();show();
   if(!me&&!S.get('rm_skip',false)&&!$('#ovm').dataset.shown){$('#ovm').dataset.shown=1;$('#ovm').hidden=false}
 }
@@ -522,7 +529,7 @@ function show(){
   const rec=S.get('rm_rec',[]).map(id=>D.files.find(f=>f.id===id)).filter(Boolean).slice(0,4);
   $('#rec').hidden=!none||!rec.length;
   $('#rrow').innerHTML=rec.map(f=>`<a class="mini" href="${dl(f)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${esc(f.type)}${f.subject?' · '+esc(f.subject):''}</small></a>`).join('');
-  $('#list').innerHTML=r.length?r.map((f,i)=>card(f,i,ans)).join(''):'<div class="empty">فایلی با این فیلتر پیدا نشد.<br><span class="meta">فیلترها را کم کن یا از بخش «درخواست» فایل مورد نظرت را بفرست.</span></div>';
+  $('#list').innerHTML=r.length?r.map((f,i)=>card(f,i,ans)).join(''):(D.files.length?'<div class="empty">فایلی با این فیلتر پیدا نشد.<br><span class="meta">فیلترها را کم کن یا از بخش «درخواست» فایل مورد نظرت را بفرست.</span></div>':'<div class="empty">هنوز فایلی منتشر نشده است.</div>');
   mebar();
   if(!$('#v-fav').hidden)favView();
   if(pass)adminLists();
@@ -848,4 +855,5 @@ $('#sn').onclick=async()=>{try{const v=$('#nt').value.trim();await run('setNotic
 $('#sc').onclick=async()=>{try{const iso=getCdISO(),t=$('#cdt').value.trim();if(!t)throw new Error('عنوان را وارد کنید.');await run('setCountdown',pass,t,iso);D.countdown={title:t,date:iso};showCountdown();$('#cm').textContent='ذخیره شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
 $('#cc').onclick=async()=>{try{await run('setCountdown',pass,'','');D.countdown={};showCountdown();$('#cdt').value='';setCdFields('');$('#cm').textContent='حذف شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
 load();
-</script></body></html>
+</script><script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
+</body></html>
