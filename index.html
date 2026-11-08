@@ -387,8 +387,9 @@ h1,h2,h3,h4{font-weight:400}
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // آدرس وب‌اپ Apps Script (بعد از Deploy، لینکی که با /exec تمام می‌شود را اینجا بگذار)
-const API_URL='PASTE_YOUR_EXEC_URL_HERE';
+const API_URL='https://script.google.com/macros/s/AKfycbxk9HIa6p6MATdXXvX82_BM3e5MFot7AvdKWPz5Jq4QPJFuRB-LSKEMZ8oCMOvp1vY7/exec';
 const run=async(fn,...a)=>{
+  if(!API_URL||API_URL.includes('PASTE_YOUR_EXEC_URL'))throw new Error('آدرس API در index.html تنظیم نشده است');
   let r;
   try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn,a})})}
   catch(e){console.error('fetch failed',e);throw new Error('اتصال به سرور برقرار نشد (شبکه یا آدرس API را بررسی کنید)')}
