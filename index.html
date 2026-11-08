@@ -241,6 +241,22 @@ footer p{margin:6px 0 14px}
 h1,h2,h3,h4,.tm,.cd b,.res b,.stats b,.ring .tx b,.tile b,.ev b,.sheet h3,.qc p,.bars+*,.bd{font-family:BTitr,BNazanin,Tahoma,sans-serif}
 h1,h2,h3,h4{font-weight:400}
 .tm{letter-spacing:0}
+
+/* ---- نسخه ۱۵: رنگ‌بندی رشته، اسکلت، کارت قهرمان، حرکت نوار پایین ---- */
+.sk{height:150px;border-radius:20px;background:linear-gradient(90deg,var(--c2) 25%,var(--b) 50%,var(--c2) 75%);background-size:200% 100%;animation:shim 1.2s infinite linear;border:1px solid var(--b)}
+@keyframes shim{to{background-position:-200% 0}}
+.nav button{transition:background .3s,color .3s,transform .15s}
+.nav button:active{transform:scale(.94)}
+.hero{border-radius:22px;padding:16px 18px;margin:0 0 12px;color:#f6efdc;background:linear-gradient(135deg,var(--h1),var(--h2));box-shadow:var(--sh)}
+.hero h3{margin:0 0 4px;font-size:18px}
+.hero p{margin:0;opacity:.85;font-size:13px}
+.hero .hx{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hero .hx button{border:0;border-radius:999px;padding:7px 12px;background:rgba(255,255,255,.14);color:#f6efdc;font:inherit;font-size:13px}
+.hero .hn{margin-top:10px;font-size:13px;color:var(--acc2)}
+.tr-ma{--tc:#2563eb}.tr-ex{--tc:#16a34a}.tr-hu{--tc:#f97316}.tr-is{--tc:#9333ea}
+.fc::before{background:var(--tc,var(--k))!important}
+.tile.t-is{background:linear-gradient(135deg,#9333ea,#6b21a8)!important;color:#fff}
+.spark{display:block;width:100%;height:46px;margin-top:6px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -315,6 +331,7 @@ h1,h2,h3,h4{font-weight:400}
   <div class="qc"><p id="qt"></p><div class="row"><button id="qn"><svg class="i"><use href="#i-reset"/></svg>جمله‌ی بعدی</button><button id="qs"><svg class="i"><use href="#i-share"/></svg>کارت تصویری</button></div></div>
 </aside>
 <div class="mainc">
+  <div class="hero" id="hero" hidden></div>
   <div class="notice" id="notice" hidden></div>
   <div class="mebar" id="mebar"></div>
   <div class="sr"><div class="in"><svg class="i"><use href="#i-search"/></svg><input id="q" placeholder="جستجوی عنوان، درس، سال…" autocomplete="off"><div class="sug" id="sug" hidden></div></div>
@@ -345,7 +362,7 @@ h1,h2,h3,h4{font-weight:400}
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
       <select id="ug"></select><select id="us"></select><select id="ut"></select><input id="uy" placeholder="سال / نوبت (مثلاً خرداد ۱۴۰۴)"><select id="ue" hidden></select><input id="uo" placeholder="نام برگزارکننده آزمون" hidden><select id="ul" hidden style="grid-column:1/-1"></select></div>
-      <input id="uf" type="file" multiple style="margin-top:8px"><progress id="pg" max="100" value="0" hidden style="width:100%;margin-top:8px"></progress>
+      <input id="uf" type="file" multiple style="margin-top:8px"><progress id="pg" max="100" value="0" hidden style="width:100%;margin-top:8px"></progress><div id="pgt" class="meta" style="text-align:center;margin-top:4px"></div>
       <div class="row"><button id="sv">ذخیره</button><button class="g" id="cl" hidden>انصراف از ویرایش</button></div>
       <div class="msg" id="um"></div></div>
 
@@ -419,7 +436,7 @@ const GRADES=['دهم','یازدهم','دوازدهم'].flatMap(l=>['تجربی'
 const TYPES=['امتحان نهایی','کنکور','آزمون آزمایشی','جزوه','نمونه سوال','پاسخنامه'];
 const COMMON=['ادبیات فارسی','نگارش','عربی، زبان قرآن','دین و زندگی','زبان انگلیسی','آمادگی دفاعی','سلامت و بهداشت','تفکر و سواد رسانه‌ای','مدیریت خانواده و سبک زندگی','فرهنگ و هنر'];
 const SUBJ={'تجربی':['ریاضی','زیست‌شناسی','فیزیک','شیمی','زمین‌شناسی'],'ریاضی':['ریاضی','حسابان','هندسه','آمار و احتمال','ریاضیات گسسته','فیزیک','شیمی'],'انسانی':['ریاضی و آمار','علوم و فنون ادبی','منطق','فلسفه','روان‌شناسی','جامعه‌شناسی','تاریخ','جغرافیا','اقتصاد']};
-const TRK={'تجربی':['t-ex','dna'],'انسانی':['t-hu','book'],'ریاضی':['t-ma','calc'],'علوم و معارف اسلامی':['t-hu','book']};
+const TRK={'تجربی':['t-ex','dna'],'انسانی':['t-hu','book'],'ریاضی':['t-ma','calc'],'علوم و معارف اسلامی':['t-is','book']};
 const MON=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 const EXAMS=['راه موفقیت','ماز','قلمچی','خیلی سبز','گزینه دو','سایر'];
 const TI={'امتحان نهایی':'doc','کنکور':'target','آزمون آزمایشی':'timer','جزوه':'note','نمونه سوال':'q','پاسخنامه':'check'};
@@ -480,7 +497,7 @@ async function load(){
   try{D=await run('getData');D.events=D.events||[];S.set('rm_cache',D)}
   catch(e){
     const c=S.get('rm_cache',null);
-    if(!c){$('#list').innerHTML='<div class="empty">اتصال به سرور برقرار نشد.<br><button id="retry" style="margin-top:10px">تلاش دوباره</button></div>';$('#retry').onclick=()=>{$('#list').innerHTML='<div class="sk"></div><div class="sk"></div>';load()};return}
+    if(!c){$('#list').innerHTML='<div class="empty"><svg class="i" style="width:44px;height:44px;opacity:.45;display:block;margin:0 auto 8px"><use href="#i-reset"/></svg>اتصال به سرور برقرار نشد.<br><button id="retry" style="margin-top:10px">تلاش دوباره</button></div>';$('#retry').onclick=()=>{$('#list').innerHTML='<div class="sk"></div><div class="sk"></div>';load()};return}
     D=c;D.events=D.events||[];toast('اتصال برقرار نشد؛ نسخه‌ی ذخیره‌شده نمایش داده می‌شود');
   }
   fill();showNotice();showCountdown();renderSide();show();
@@ -539,12 +556,14 @@ function filtered(){
   const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
   return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
 }
+const TRKC={ex:'#16a34a',ma:'#2563eb',hu:'#f97316',is:'#9333ea'};
+function trackKey(g){g=String(g||'');return g.includes('معارف')?'is':g.includes('تجربی')?'ex':g.includes('ریاضی')?'ma':g.includes('انسانی')?'hu':''}
 function card(f,i,ans){
-  const k=COL[hash(f.subject||f.type)%8],fresh=(Date.now()-new Date(f.created))<6048e5,fv=favs().includes(f.id),a=ans[f.id];
+  const tk=trackKey(f.grade),k=tk?TRKC[tk]:COL[hash(f.subject||f.type)%8],fresh=(Date.now()-new Date(f.created))<6048e5,fv=favs().includes(f.id),a=ans[f.id];
   return `<div class="fc" style="--k:${k};--i:${Math.min(i,12)}"><div class="fh"><div class="ic">${ico(sIcon(f.subject))}</div><div class="kd"><b>${esc(f.type)}</b>${esc(f.subject||'')}</div>${fresh?'<span class="nw">جدید</span>':''}<button class="fv" data-sh="${esc(f.id)}" aria-label="اشتراک‌گذاری">${ico('share')}</button><button class="fv ${fv?'on':''}" data-fav="${esc(f.id)}" aria-label="نشان‌کردن">${ico('star')}</button></div>
   <div class="fb"><h3>${esc(f.title)}</h3><div>${f.pin?'<span class="tag">سنجاق‌شده</span>':''}${[f.grade,f.exam,f.year].filter(Boolean).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>
   <div class="meta">${size(f.size)} | ${fa(f.downloads||0)} دانلود</div></div>
-  <div class="acts"><a class="btn" href="${dl(f)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')">${ico('down')}دانلود</a>${a?`<a class="btn" style="background:var(--t);color:var(--bg)" href="${dl(a)}" target="_blank" rel="noopener" onclick="hit('${esc(a.id)}')">پاسخنامه</a>`:''}</div></div>`}
+  <div class="acts"><a class="btn" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')">${ico('down')}دانلود</a>${a?`<a class="btn" style="background:var(--t);color:var(--bg)" href="${dl(a)}" target="_blank" rel="noopener" onclick="hit('${esc(a.id)}')">پاسخنامه</a>`:''}</div></div>`}
 function ansMap(){const m={};D.files.forEach(a=>{if(a.link)m[a.link]=a});return m}
 function show(){
   const ans=ansMap(),r=filtered();
@@ -558,13 +577,13 @@ function show(){
   const none=!F.q&&!n&&!F.t;
   const top=[...D.files].filter(f=>f.downloads>0).sort((a,b)=>b.downloads-a.downloads).slice(0,3);
   $('#top').hidden=!none||!top.length;
-  $('#trow').innerHTML=top.map(f=>`<a class="mini" href="${dl(f)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${fa(f.downloads)} دانلود</small></a>`).join('');
+  $('#trow').innerHTML=top.map(f=>`<a class="mini" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${fa(f.downloads)} دانلود</small></a>`).join('');
   const rec=S.get('rm_rec',[]).map(id=>D.files.find(f=>f.id===id)).filter(Boolean).slice(0,4);
   $('#rec').hidden=!none||!rec.length;
-  $('#rrow').innerHTML=rec.map(f=>`<a class="mini" href="${dl(f)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${esc(f.type)}${f.subject?' · '+esc(f.subject):''}</small></a>`).join('');
-  $('#list').innerHTML=r.length?r.map((f,i)=>card(f,i,ans)).join(''):(D.files.length?'<div class="empty">فایلی با این فیلتر پیدا نشد.<br><span class="meta">فیلترها را کم کن یا از بخش «درخواست» فایل مورد نظرت را بفرست.</span></div>':'<div class="empty">هنوز فایلی منتشر نشده است.</div>');
+  $('#rrow').innerHTML=rec.map(f=>`<a class="mini" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${esc(f.type)}${f.subject?' · '+esc(f.subject):''}</small></a>`).join('');
+  $('#list').innerHTML=r.length?r.map((f,i)=>card(f,i,ans)).join(''):(D.files.length?'<div class="empty"><svg class="i" style="width:44px;height:44px;opacity:.45;display:block;margin:0 auto 8px"><use href="#i-search"/></svg>فایلی با این فیلتر پیدا نشد.<br><span class="meta">فیلترها را کم کن یا از بخش «درخواست» فایل مورد نظرت را بفرست.</span></div>':'<div class="empty"><svg class="i" style="width:44px;height:44px;opacity:.45;display:block;margin:0 auto 8px"><use href="#i-send"/></svg>هنوز فایلی منتشر نشده است.</div>');
   if(!r.length&&D.files.length)$('#list').innerHTML='<div class="empty">فایلی با این فیلتر پیدا نشد.<br><button data-showall="1" style="margin-top:10px">نمایش همه‌ی فایل‌ها</button></div>';
-  mebar();
+  mebar();renderHero();
   if(!$('#v-fav').hidden)favView();
   if(pass)adminLists();
 }
@@ -843,7 +862,7 @@ async function loadStats(){
   <div class="card"><h2>دانلود بر اساس نوع فایل</h2>${bars(byT,mx(byT))||'<div class="meta">—</div>'}</div>
   <div class="card"><h2>پردانلودترین درس‌ها</h2>${bars(Object.fromEntries(Object.entries(byS).sort((a,c)=>c[1]-a[1]).slice(0,6)),mx(byS))||'<div class="meta">—</div>'}</div>
   <div class="card"><h2>۵ فایل برتر</h2>${top.map((x,i)=>`<div class="hist"><span>${fa(i+1)}. ${esc(x.title)}</span><b>${fa(x.downloads||0)}</b></div>`).join('')||'<div class="meta">—</div>'}</div>`;
-  b.insertAdjacentHTML('afterbegin','<div class="card" id="rbk"><h2>کلیک روی لینک روبیکا</h2><div class="meta">در حال بارگذاری…</div></div>');loadRubika();
+  b.insertAdjacentHTML('afterbegin','<div class="card" id="rbk"><h2>کلیک روی لینک روبیکا</h2><div class="meta">در حال بارگذاری…</div></div>');loadRubika();b.insertAdjacentHTML('afterbegin','<div class="card" id="tls"><h2>استفاده از ابزارها</h2><div class="meta">در حال بارگذاری…</div></div>');loadToolStats();
   try{const r=await run('getRequests',pass);$('#rqn').textContent=fa(r.length)}catch(e){$('#rqn').textContent='—'}
 }
 function evAdmin(){$('#evadm').innerHTML=(D.events||[]).map((e,i)=>`<div class="hist"><span>${esc(e.t)}<small class="meta"> · ${FD.format(new Date(e.d+'T12:00:00'))}</small></span><button class="ib sm d" onclick="evDel(${i})" aria-label="حذف">×</button></div>`).join('')||'<div class="meta">مهلتی ثبت نشده.</div>'}
@@ -861,7 +880,7 @@ async function loadRubika(){
     const tb=(entries)=>{const mx=Math.max(1,...entries.map(e=>e[1]));return entries.map(([k,v])=>`<div class="hbar"><span>${esc(k)}</span><i style="width:${Math.max(3,v/mx*100)}%"></i><span>${fa(v)}</span></div>`).join('')};
     el.innerHTML=`<h2>کلیک روی لینک روبیکا</h2>
       <div class="stats"><div><b>${fa(s.today)}</b><small>امروز</small></div><div><b>${fa(s.week)}</b><small>۷ روز</small></div><div><b>${fa(s.month)}</b><small>۳۰ روز</small></div><div><b>${fa(s.total)}</b><small>کل</small></div></div>
-      <h4 class="sh">۱۴ روز اخیر</h4>${tb(s.daily.map(x=>[fd(x.d),x.n]))}
+      <h4 class="sh">۱۴ روز اخیر</h4>${spark(s.daily.map(x=>x.n))}${tb(s.daily.map(x=>[fd(x.d),x.n]))}
       <h4 class="sh">هفتگی (۸ هفته‌ی اخیر)</h4>${tb(s.weekly.map(x=>['از '+fd(x.d),x.n]))}
       <h4 class="sh">ماهانه (۶ ماه اخیر)</h4>${tb(s.monthly.map(x=>[fm(x.m),x.n]))}
       <div class="meta" style="margin-top:8px">این عدد تعداد کلیک است، نه تعداد اعضای جدید. تعداد دقیق اعضا را در آمار خود کانال روبیکا ببین.</div>`;
@@ -897,7 +916,7 @@ async function uploadOne(file,m,um,tag){
     const pg=$('#pg');um.textContent=tag+'در حال آماده‌سازی…';
     const s=await run('startUpload',pass,file.name,file.type||'application/octet-stream',file.size,location.origin);
     const CH=8*1048576;let st=0,res='';pg.hidden=false;pg.value=0;
-    while(st<file.size){const en=Math.min(st+CH,file.size);res=await put(s.url,file.slice(st,en),st,en-1,file.size,l=>{pg.value=Math.round((st+l)/file.size*100);um.textContent=tag+'در حال بارگذاری… '+fa(pg.value)+'٪'});st=en}
+    while(st<file.size){const en=Math.min(st+CH,file.size);res=await put(s.url,file.slice(st,en),st,en-1,file.size,l=>{pg.value=Math.round((st+l)/file.size*100);$('#pgt').textContent=fa(pg.value)+'٪';um.textContent=tag+'در حال بارگذاری… '+fa(pg.value)+'٪'});st=en}
     let id='';try{id=JSON.parse(res).id}catch(x){}
     await run('finishUpload',pass,m,id,file.name);
   }
@@ -937,18 +956,18 @@ function authBox(html){
 }
 function openAuth(mode){
   if(UINFO){
-    const o=authBox(`<h2>حساب من</h2><div class="meta">وارد شده به عنوان ${esc(UINFO.name||UINFO.username)} (${esc(UINFO.grade||'بدون پایه')})</div><div class="row"><button id="lo">خروج از حساب</button><button class="g" id="cl">بستن</button></div>`);
-    $('#lo').onclick=async()=>{try{await run('logoutUser',TOK)}catch(e){}setUser('',null);o.remove();toast('از حساب خارج شدی')};
-    $('#cl').onclick=()=>o.remove();return;
+    const o=authBox(`<h2>حساب من</h2><div class="meta">وارد شده به عنوان ${esc(UINFO.name||UINFO.username)} (${esc(UINFO.grade||'بدون پایه')})</div><div class="row"><button id="au_lo">خروج از حساب</button><button class="g" id="au_cl">بستن</button></div>`);
+    $('#au_lo').onclick=async()=>{try{await run('logoutUser',TOK)}catch(e){}setUser('',null);o.remove();toast('از حساب خارج شدی')};
+    $('#au_cl').onclick=()=>o.remove();return;
   }
   const reg=mode==='reg';
   const o=authBox(`<h2>${reg?'ثبت‌نام':'ورود'}</h2>
-   <div class="row" style="margin-bottom:8px"><button class="${reg?'g':''}" id="tl">ورود</button><button class="${reg?'':'g'}" id="tr">ثبت‌نام</button></div>
+   <div class="row" style="margin-bottom:8px"><button class="${reg?'g':''}" id="au_tl">ورود</button><button class="${reg?'':'g'}" id="au_tr">ثبت‌نام</button></div>
    ${reg?`<input id="au_n" placeholder="نام و نام خانوادگی"><select id="au_g" style="margin-top:8px"><option value="">انتخاب پایه (اختیاری)</option>${GRADES.map(g=>`<option>${esc(g)}</option>`).join('')}</select>`:''}
    <input id="au_u" placeholder="نام کاربری" style="margin-top:8px" autocomplete="username">
    <input id="au_p" type="password" placeholder="رمز (حداقل ۶ کاراکتر)" style="margin-top:8px" autocomplete="${reg?'new-password':'current-password'}">
-   <div class="row"><button id="au_ok">${reg?'ثبت‌نام':'ورود'}</button><button class="g" id="cl">بستن</button></div><div class="msg" id="au_m"></div>`);
-  $('#tl').onclick=()=>openAuth('login');$('#tr').onclick=()=>openAuth('reg');$('#cl').onclick=()=>o.remove();
+   <div class="row"><button id="au_ok">${reg?'ثبت‌نام':'ورود'}</button><button class="g" id="au_cl">بستن</button></div><div class="msg" id="au_m"></div>`);
+  $('#au_tl').onclick=()=>openAuth('login');$('#au_tr').onclick=()=>openAuth('reg');$('#au_cl').onclick=()=>o.remove();
   $('#au_ok').onclick=async()=>{
     const m=$('#au_m');m.textContent='';
     try{
@@ -965,21 +984,27 @@ renderAcc();
 if(TOK)run('getMe',TOK).then(u=>{if(u)setUser(TOK,u);else setUser('',null)}).catch(()=>{});
 
 // ---------- شمارش معکوس‌ها (مدیر) ----------
+let CD_EDIT=null;
 function cdList(){return (D.countdowns&&D.countdowns.length)?D.countdowns:((D.countdown&&D.countdown.date)?[{t:D.countdown.title,d:D.countdown.date}]:[])}
 function cdAdmin(){
   const l=cdList();
-  $('#cdadm').innerHTML=l.map((c,i)=>`<div class="hist"><span>${esc(c.t)}<small class="meta"> · ${FD.format(new Date(c.d+'T12:00:00'))}</small></span><button class="ib sm d" data-cdd="${i}" aria-label="حذف">×</button></div>`).join('')||'<div class="meta">شمارشی ثبت نشده.</div>';
+  $('#cdadm').innerHTML=l.map((c,i)=>`<div class="hist"><span>${esc(c.t)}<small class="meta"> · ${FD.format(new Date(c.d+'T12:00:00'))}</small></span><span><button class="g" data-cde="${i}">ویرایش</button> <button class="ib sm d" data-cdd="${i}" aria-label="حذف">×</button></span></div>`).join('')||'<div class="meta">شمارشی ثبت نشده.</div>';
 }
 async function cdSave(l){await run('setCountdowns',pass,JSON.stringify(l));D.countdowns=l;showCountdown();cdAdmin()}
-$('#cdadm').onclick=async e=>{const b=e.target.closest('[data-cdd]');if(!b)return;try{await cdSave(cdList().filter((_,j)=>j!==+b.dataset.cdd))}catch(err){$('#cm').textContent=err.message||'خطا'}};
+$('#cdadm').onclick=async e=>{
+  const ed=e.target.closest('[data-cde]'),b=e.target.closest('[data-cdd]');
+  if(ed){const c=cdList()[+ed.dataset.cde];if(!c)return;CD_EDIT=+ed.dataset.cde;$('#cdt').value=c.t;setCdFields(c.d);$('#sc').textContent='ذخیره تغییر';$('#cm').textContent='در حال ویرایش شمارش؛ پس از تغییر «ذخیره تغییر» را بزن.';return}
+  if(!b)return;try{await cdSave(cdList().filter((_,j)=>j!==+b.dataset.cdd))}catch(err){$('#cm').textContent=err.message||'خطا'}};
 $('#sc').onclick=async()=>{
   const m=$('#cm');m.textContent='';
   try{
     const t=$('#cdt').value.trim(),iso=getCdISO();
     if(!t)throw new Error('عنوان را وارد کنید.');
     if(!iso||isNaN(new Date(iso+'T12:00:00')))throw new Error('تاریخ را کامل وارد کن.');
-    await cdSave([...cdList(),{t,d:iso}]);
-    $('#cdt').value='';setCdFields('');m.textContent='افزوده شد.';
+    const l=[...cdList()];
+    if(CD_EDIT!=null&&l[CD_EDIT]){l[CD_EDIT]={t,d:iso};await cdSave(l);CD_EDIT=null;$('#sc').textContent='افزودن شمارش';m.textContent='ویرایش ذخیره شد.'}
+    else{await cdSave([...l,{t,d:iso}]);m.textContent='افزوده شد.'}
+    $('#cdt').value='';setCdFields('');
   }catch(e){m.textContent=e.message||'خطا'}
 };
 
@@ -999,5 +1024,73 @@ async function loadUsers(){
 }
 async function delUser(id){if(!confirm('این حساب حذف شود؟'))return;try{await run('deleteUser',pass,id);loadUsers()}catch(e){toast(e.message||'خطا')}}
 async function resetUser(id){const np=prompt('رمز جدید (حداقل ۶ کاراکتر):');if(!np)return;try{await run('resetUserPass',pass,id,nd(np));toast('رمز تغییر کرد')}catch(e){toast(e.message||'خطا')}}
+</script>
+<script>
+// ---------- نوار پیشرفت دانلود ----------
+function dlBar(title){
+  let b=$('#dlbar');
+  if(!b){b=document.createElement('div');b.id='dlbar';b.style.cssText='position:fixed;left:12px;right:12px;bottom:90px;z-index:70;background:var(--c);border:1px solid var(--b);border-radius:14px;padding:10px 14px;box-shadow:var(--sh)';document.body.appendChild(b)}
+  b.hidden=false;b.innerHTML=`<div class="meta" style="margin-bottom:6px">${esc(title)}</div><progress id="dlp" max="100" value="0" style="width:100%"></progress><div class="meta" id="dlv" style="text-align:center;margin-top:4px">۰٪</div>`;
+  return b;
+}
+function dlUpd(pct,got){
+  const p=$('#dlp'),v=$('#dlv');if(!p)return;
+  if(pct==null){p.removeAttribute('value');v.textContent=fa((got/1048576).toFixed(1))+' مگابایت دریافت شد'}
+  else{p.value=pct;v.textContent=fa(pct)+'٪'}
+}
+// دانلود با نوار درصد. اگر مرورگر اجازه‌ی خواندن فایل از Drive را ندهد، همان لینک قبلی باز می‌شود.
+document.addEventListener('click',async e=>{
+  const a=e.target.closest&&e.target.closest('a[data-dlp]');if(!a)return;
+  e.preventDefault();
+  const title=a.dataset.title||'فایل';
+  dlBar('در حال دانلود: '+title);dlUpd(0,0);
+  try{
+    const r=await fetch('https://drive.usercontent.google.com/download?id='+encodeURIComponent(a.dataset.dlp)+'&export=download');
+    if(!r.ok||!r.body)throw new Error('no body');
+    const total=+r.headers.get('content-length')||0,rd=r.body.getReader(),parts=[];let got=0;
+    for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;dlUpd(total?Math.round(got/total*100):null,got)}
+    const url=URL.createObjectURL(new Blob(parts));const l=document.createElement('a');l.href=url;l.download=title;document.body.appendChild(l);l.click();l.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    dlUpd(100,got);setTimeout(()=>{const b=$('#dlbar');if(b)b.hidden=true},1200);
+  }catch(err){
+    const b=$('#dlbar');if(b)b.hidden=true;
+    window.open(a.href,'_blank');
+  }
+});
+
+// ---------- ثبت استفاده از ابزارها ----------
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-tl]');if(t)track('tool_'+t.dataset.tl)});
+
+// ---------- آمار استفاده از ابزارها (مدیر) ----------
+async function loadToolStats(){
+  const el=$('#tls');if(!el)return;
+  try{
+    const rows=await run('getToolStats',pass);
+    const name=k=>{const t=TL.find(x=>x[0]===k.replace('tool_',''));return t?t[1]:k.replace('tool_','')};
+    el.innerHTML=`<h2>استفاده از ابزارها</h2>${rows.length?rows.map(r=>`<div class="hist"><span>${esc(name(r.key))}</span><span><b>${fa(r.today)}</b> امروز · ${fa(r.week)} در ۷ روز · ${fa(r.total)} کل</span></div>`).join(''):'<div class="meta">هنوز استفاده‌ای ثبت نشده.</div>'}`;
+  }catch(e){el.innerHTML=`<h2>استفاده از ابزارها</h2><div class="meta">${esc(e.message||'خطا')}</div>`}
+}
+</script>
+<script>
+// ---------- نسخه ۱۵: کارت قهرمان، اسپارک‌لاین ----------
+function renderHero(){
+  const el=$('#hero');if(!el)return;
+  const name=UINFO?(UINFO.name||UINFO.username):'';
+  const list=(D.countdowns&&D.countdowns.length?D.countdowns:(D.countdown&&D.countdown.date?[{t:D.countdown.title,d:D.countdown.date}]:[]))
+    .map(c=>({...c,n:daysTo(c.d)})).filter(c=>c.t&&c.n>=0).sort((a,b)=>a.n-b.n);
+  const nx=list[0];
+  if(!name&&!nx){el.hidden=true;return}
+  el.hidden=false;
+  el.innerHTML=`<h3>${name?'سلام '+esc(name)+'!':'امروز چی بخونی؟'}</h3><p>${name?'امروز چی بخونی؟':'به کانال راه موفقیت خوش آمدی'}</p>`+
+    (nx?`<div class="hn">${fa(nx.n)} روز مانده تا ${esc(nx.t)}</div>`:'')+
+    `<div class="hx"><button data-hq="امتحان نهایی">امتحان نهایی</button><button data-hq="کنکور">کنکور</button><button data-hq="آزمون آزمایشی">آزمون آزمایشی</button></div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-hq]');if(!b)return;const t=b.dataset.hq;F.t=F.t===t?'':t;F.g=F.g;fill();show()});
+function spark(vals){
+  if(!vals||!vals.length)return '';
+  const mx=Math.max(1,...vals),n=vals.length,W2=300,H2=46;
+  const pts=vals.map((v,i)=>`${(i/(Math.max(1,n-1))*W2).toFixed(1)},${(H2-4-(v/mx)*(H2-8)).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--acc2)" stroke-width="2.5" points="${pts}"/></svg>`;
+}
 </script>
 </body></html>
