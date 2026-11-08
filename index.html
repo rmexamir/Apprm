@@ -545,6 +545,7 @@ function show(){
   $('#rec').hidden=!none||!rec.length;
   $('#rrow').innerHTML=rec.map(f=>`<a class="mini" href="${dl(f)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')"><b>${esc(f.title)}</b><small>${esc(f.type)}${f.subject?' · '+esc(f.subject):''}</small></a>`).join('');
   $('#list').innerHTML=r.length?r.map((f,i)=>card(f,i,ans)).join(''):(D.files.length?'<div class="empty">فایلی با این فیلتر پیدا نشد.<br><span class="meta">فیلترها را کم کن یا از بخش «درخواست» فایل مورد نظرت را بفرست.</span></div>':'<div class="empty">هنوز فایلی منتشر نشده است.</div>');
+  if(!r.length&&D.files.length)$('#list').innerHTML='<div class="empty">فایلی با این فیلتر پیدا نشد.<br><button data-showall="1" style="margin-top:10px">نمایش همه‌ی فایل‌ها</button></div>';
   mebar();
   if(!$('#v-fav').hidden)favView();
   if(pass)adminLists();
@@ -583,9 +584,10 @@ const closeF=()=>{$('#ovf').hidden=true};
 $('#fok').onclick=closeF;$('#ovf').addEventListener('click',e=>{if(e.target.id==='ovf')closeF()});
 $('#fclr').onclick=()=>{F={...F,g:'',s:'',y:'',e:'',sort:'new'};fill();show()};
 $('#fs').onchange=e=>{F.s=e.target.value;show()};$('#fy').onchange=e=>{F.y=e.target.value;show()};$('#fo').onchange=e=>{F.sort=e.target.value;show()};
-function setMe(g){me=g?{g}:null;S.set('rm_me',me);applyTrack();if(g){F.g=g;F.s=''}fill();renderSide();show();if($('#v-tools').hidden===false)toolsRender()}
+function setMe(g){me=g?{g}:null;S.set('rm_me',me);applyTrack();if(g){F.s=''}fill();renderSide();show();if($('#v-tools').hidden===false)toolsRender()}
 document.addEventListener('click',e=>{
-  const t=e.target.closest('[data-v],[data-fav],[data-sh],[data-clr],[data-me],[data-cme],[data-myg],[data-allg],[data-gos],[data-sg]');if(!t)return;
+  const t=e.target.closest('[data-v],[data-fav],[data-sh],[data-clr],[data-me],[data-cme],[data-myg],[data-allg],[data-gos],[data-sg],[data-showall]');if(!t)return;
+  if('showall' in t.dataset){F={...F,q:'',g:'',s:'',t:'',y:'',e:''};$('#q').value='';fill();show();return}
   if(t.matches('.tile[data-v]')){F.g=F.g===t.dataset.v?'':t.dataset.v;if(F.s&&!subjFor(F.g).includes(F.s))F.s='';fill();show();return}
   if(t.matches('.chip2')){F.t=F.t===t.dataset.v?'':t.dataset.v;if(!F.t)F.e='';show();return}
   if(t.matches('.chip3')){F.e=F.e===t.dataset.v?'':t.dataset.v;show();return}
