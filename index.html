@@ -388,11 +388,13 @@ const API_URL='PASTE_YOUR_EXEC_URL_HERE';
 const run=async(fn,...a)=>{
   let r;
   try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn,a})})}
-  catch(e){throw new Error('اتصال به سرور برقرار نشد')}
-  let j;try{j=await r.json()}catch(e){throw new Error('پاسخ نامعتبر از سرور')}
-  if(!j.ok)throw new Error(j.error||'خطا');
+  catch(e){console.error('fetch failed',e);throw new Error('اتصال به سرور برقرار نشد (شبکه یا آدرس API را بررسی کنید)')}
+  const txt=await r.text();let j;
+  try{j=JSON.parse(txt)}catch(e){console.error('non-JSON response',r.status,txt.slice(0,300));throw new Error('پاسخ نامعتبر از سرور (کد '+r.status+'). آدرس /exec و نسخه‌ی Deploy را بررسی کنید.')}
+  if(!j.ok){console.error('server error',j.error);throw new Error(j.error||'خطا')}
   return j.data
 };
+const nd=s=>String(s??'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim();
 const K={grade:'پایه',subject:'درس',type:'نوع فایل',exam:'برگزارکننده آزمون'},fa=n=>Number(n).toLocaleString('fa'),pd=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
 const ico=(n,c='')=>`<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
 const S={m:{},get(k,d){try{const v=localStorage.getItem(k);if(v!=null)return JSON.parse(v)}catch(e){}return k in S.m?S.m[k]:d},set(k,v){S.m[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -760,7 +762,7 @@ function exit(){pass='';$('#panel').hidden=true;$('#login').hidden=false;$('#pw'
 $('#out').onclick=exit;
 $('#go').onclick=async()=>{
   $('#lm').textContent='در حال بررسی…';
-  try{await run('checkPass',$('#pw').value);pass=$('#pw').value;$('#login').hidden=true;$('#panel').hidden=false;$('#lm').textContent='';$('#pwwarn').hidden=pass!=='1234';adminLists()}
+  const pwv=nd($('#pw').value);try{await run('checkPass',pwv);pass=pwv;$('#login').hidden=true;$('#panel').hidden=false;$('#lm').textContent='';$('#pwwarn').hidden=pass!=='1234';adminLists()}
   catch(e){$('#lm').textContent=e.message||'خطا'}
 };
 $('#pw').addEventListener('keydown',e=>e.key==='Enter'&&$('#go').click());
@@ -841,7 +843,7 @@ $('#sv').onclick=async()=>{
   }catch(e){um.textContent=e.message||'خطا در ذخیره';$('#pg').hidden=true}
   $('#sv').disabled=false;
 };
-$('#cp').onclick=async()=>{const a=$('#np').value,m=$('#pm');if(a.length<6)return m.textContent='رمز باید حداقل ۶ کاراکتر باشد.';if(a!==$('#np2').value)return m.textContent='دو رمز یکسان نیستند.';try{await run('changePass',pass,a);pass=a;m.textContent='رمز تغییر کرد.';$('#pwwarn').hidden=true;$('#np').value=$('#np2').value=''}catch(e){m.textContent=e.message||'خطا'}};
+$('#cp').onclick=async()=>{const a=$('#np').value,m=$('#pm');if(a.length<6)return m.textContent='رمز باید حداقل ۶ کاراکتر باشد.';if(a!==$('#np2').value)return m.textContent='دو رمز یکسان نیستند.';try{await run('changePass',pass,nd(a));pass=nd(a);m.textContent='رمز تغییر کرد.';$('#pwwarn').hidden=true;$('#np').value=$('#np2').value=''}catch(e){m.textContent=e.message||'خطا'}};
 $('#sn').onclick=async()=>{try{const v=$('#nt').value.trim();await run('setNotice',pass,v);D.notice=v;showNotice();$('#nm').textContent='ذخیره شد.'}catch(e){$('#nm').textContent=e.message||'خطا'}};
 $('#sc').onclick=async()=>{try{const iso=getCdISO(),t=$('#cdt').value.trim();if(!t)throw new Error('عنوان را وارد کنید.');await run('setCountdown',pass,t,iso);D.countdown={title:t,date:iso};showCountdown();$('#cm').textContent='ذخیره شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
 $('#cc').onclick=async()=>{try{await run('setCountdown',pass,'','');D.countdown={};showCountdown();$('#cdt').value='';setCdFields('');$('#cm').textContent='حذف شد.'}catch(e){$('#cm').textContent=e.message||'خطا'}};
