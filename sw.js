@@ -1,4 +1,4 @@
-const CACHE = 'rah-v18';
+const CACHE = 'rah-v17';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

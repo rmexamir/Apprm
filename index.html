@@ -268,18 +268,6 @@ h1,h2,h3,h4{font-weight:400}
 .sbc{border:1px solid var(--b);border-radius:999px;padding:6px 12px;background:var(--c);color:var(--t);font:inherit;font-size:13px;margin:4px}
 .sbc.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 #catadm .sh{margin-top:14px}
-.shelf{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:8px 4px 0;border-bottom:12px solid #8b5a2b;border-radius:6px;margin-bottom:18px}
-.shelf-h{font-weight:bold;margin:4px 0 8px;font-size:16px}
-.book{position:relative;height:150px;border:0;border-radius:10px 10px 4px 4px;background:linear-gradient(170deg,var(--bc),#0b1430);color:#fff;text-align:start;padding:14px 14px 12px 18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 7px 0 0 rgba(255,255,255,.18),0 8px 16px rgba(0,0,0,.22);transition:transform .2s}
-.book:active{transform:scale(.97)}
-.book:nth-child(odd){transform:rotate(-1deg)}.book:nth-child(even){transform:rotate(1deg)}
-.book .spine{font-family:BTitr,BNazanin,Tahoma,sans-serif;font-size:18px;line-height:1.4}
-.book small{opacity:.85;font-size:12px}
-.crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin:4px 0 8px}
-.crumb button{border:0;background:none;color:var(--acc);font:inherit;padding:2px 0}
-.crumb span{opacity:.5}
-.sugg{margin:10px 0;text-align:center}
-.sugg button{margin:4px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -1360,72 +1348,6 @@ document.addEventListener('click',async e=>{
     else if(t.dataset.csd){const[p,n]=t.dataset.csd.split('|');if(!confirm('زیرمجموعه «'+n+'» حذف شود؟ فایل‌های آن بدون زیرمجموعه می‌مانند.'))return;await run('delCat',pass,'sub',n);await refreshAll()}
     else if(t.dataset.csa){const inp=document.querySelector(`.csi[data-csp="${CSS.escape(t.dataset.csa)}"]`);const n=(inp&&inp.value||'').trim();if(!n)return toast('نام زیرمجموعه را بنویس');await run('addCat',pass,'sub',n,t.dataset.csa);toast('افزوده شد');await refreshAll()}
   }catch(err){toast(err.message||'خطا')}
-});
-</script>
-<script>
-// ===================== قفسه‌ی کتاب، مسیر پیشرفت، جستجوی هوشمند =====================
-const TYC={'امتحان نهایی':'#b45309','کنکور':'#1d4ed8','آزمون آزمایشی':'#7c3aed','جزوه':'#047857','نمونه سوال':'#be185d','پاسخنامه':'#0e7490'};
-const nrm=s=>String(s==null?'':s).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\u200f\u200e\u064b-\u065f\u0640]/g,'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).toLowerCase().trim();
-const sq=s=>nrm(s).replace(/[\s\-_.،,()«»"']/g,'');
-function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
-const fwords=f=>nrm([f.title,f.subject,f.grade,f.type,f.sub,f.year,f.exam].join(' ')).split(/[\s،,\-_()«»]+/).filter(Boolean);
-filtered=function(){
-  const qs=nrm(F.q).split(/\s+/).filter(Boolean);
-  const r=D.files.filter(f=>{
-    const words=fwords(f),hay=sq(words.join(' '));
-    const textOK=qs.every(t=>hay.includes(sq(t))||words.some(w=>w.includes(t)||(t.length>=4&&lev(w.slice(0,t.length),t)<=1)));
-    return textOK&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e);
-  });
-  const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
-  return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
-};
-function suggestFor(q){
-  const vocab=new Set();D.files.forEach(f=>fwords(f).forEach(w=>vocab.add(w)));
-  const hay=sq([...vocab].join(' '));
-  return nrm(q).split(/\s+/).filter(Boolean).map(t=>{
-    if(vocab.has(t)||hay.includes(sq(t)))return null;
-    let best=null,bd=99;vocab.forEach(w=>{if(w.length<3)return;const d=lev(w,t);if(d<bd){bd=d;best=w}});
-    return bd<=2&&best?{from:t,to:best}:null;
-  }).filter(Boolean);
-}
-function crumbItems(){
-  const it=[];
-  if(F.t)it.push(['t',F.t]);if(F.sb)it.push(['sb',F.sb]);if(F.g)it.push(['g',F.g]);if(F.s)it.push(['s',F.s]);
-  if(F.y)it.push(['y','سال '+F.y]);if(F.e)it.push(['e',F.e]);if(nrm(F.q))it.push(['q','جستجو: '+F.q]);
-  return it;
-}
-function shelfHTML(){
-  return `<div class="shelf-h">قفسه‌ی کتاب‌ها</div><div class="shelf">`+TY.map(t=>{
-    const n=D.files.filter(f=>f.type===t).length,subs=(D.cats.subs||[]).filter(x=>x.p===t).length;
-    return `<button class="book" data-shelf="${esc(t)}" style="--bc:${TYC[t]||'#12203f'}"><span class="spine">${esc(t)}</span><small>${fa(n)} فایل${subs?' · '+fa(subs)+' زیرمجموعه':''}</small></button>`;
-  }).join('')+`</div>`;
-}
-const _showBase=show;
-show=function(){_showBase.apply(this,arguments);postShow()};
-function postShow(){
-  const L=$('#list');if(!L)return;
-  let cr=$('#crumb');
-  if(!cr){cr=document.createElement('div');cr.id='crumb';cr.className='crumb';L.parentNode.insertBefore(cr,L)}
-  const items=crumbItems();
-  cr.hidden=!items.length;
-  cr.innerHTML=items.length?`<button data-crumb="all">خانه</button>`+items.map(([k,l])=>`<span>›</span><button data-crumb="${k}">${esc(l)}</button>`).join(''):'';
-  const hasFilter=items.length>0;
-  if(!hasFilter&&D.files.length){L.innerHTML=shelfHTML();return}
-  if(hasFilter&&nrm(F.q)&&!L.querySelector('.fc')){
-    const sg=suggestFor(F.q);
-    if(sg.length){L.insertAdjacentHTML('beforeend',`<div class="sugg"><div class="meta">منظورتان این بود؟</div>${sg.map(x=>`<button class="g" data-sgf="${esc(x.from)}" data-sgt="${esc(x.to)}">«${esc(x.to)}»</button>`).join('')}</div>`)}
-  }
-}
-document.addEventListener('click',e=>{
-  const sh=e.target.closest&&e.target.closest('[data-shelf]');
-  if(sh){F.t=sh.dataset.shelf;F.sb='';show();window.scrollTo({top:0});return}
-  const cb=e.target.closest&&e.target.closest('[data-crumb]');
-  if(cb){const k=cb.dataset.crumb;
-    if(k==='all'){F.q='';F.g='';F.s='';F.t='';F.y='';F.e='';F.sb='';const q=$('#q');if(q)q.value=''}
-    else{F[k]='';if(k==='q'){const q=$('#q');if(q)q.value=''}if(k==='t')F.sb=''}
-    show();return}
-  const sg=e.target.closest&&e.target.closest('[data-sgf]');
-  if(sg){const words=nrm(F.q).split(/\s+/).filter(Boolean).map(w=>w===sg.dataset.sgf?sg.dataset.sgt:w);F.q=words.join(' ');const q=$('#q');if(q)q.value=F.q;show()}
 });
 </script>
 </body></html>
