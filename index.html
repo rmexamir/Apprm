@@ -289,6 +289,23 @@ h1,h2,h3,h4{font-weight:400}
 .book .spine{font-family:BTitr,BNazanin,Tahoma,sans-serif;font-size:19px;line-height:1.35}
 .book .bi{width:38px;height:38px;opacity:.9}
 .book small{opacity:.9;font-size:12px;background:rgba(0,0,0,.22);padding:3px 8px;border-radius:999px;align-self:flex-start}
+.subhead{display:flex;justify-content:space-between;align-items:baseline;margin:10px 4px 6px;font-weight:bold}
+.subhead small{font-weight:normal;opacity:.7;font-size:12px}
+.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}
+.stile{position:relative;overflow:hidden;border:0;border-radius:18px;padding:14px;color:#fff;text-align:start;min-height:124px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(140deg,var(--c1),var(--c2));box-shadow:0 10px 22px rgba(0,0,0,.18);animation:tpop .45s both;transition:transform .2s,box-shadow .2s}
+.stile::before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.12);top:-40px;left:-30px}
+.stile:active{transform:scale(.97)}
+.stile.on{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--c1),0 12px 26px rgba(0,0,0,.25)}
+.stile .sti{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.stile .sti svg{width:22px;height:22px;stroke:#fff}
+.stile .stn{font-family:BTitr,BNazanin,Tahoma,sans-serif;font-size:16px;line-height:1.35;margin-top:8px}
+.stile .stc{display:flex;align-items:baseline;gap:6px}
+.stile .stc b{font-family:BTitr,BNazanin,Tahoma,sans-serif;font-size:26px}
+.stile .stc small{opacity:.85;font-size:12px}
+.stile .stb{display:block;height:6px;border-radius:99px;background:rgba(255,255,255,.22);margin-top:8px;overflow:hidden}
+.stile .stb i{display:block;height:100%;border-radius:99px;background:#fff;transition:width .6s}
+.stile .stk{position:absolute;top:10px;left:12px;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--c1);display:grid;place-items:center;font-weight:bold;font-size:14px}
+@keyframes tpop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -1330,12 +1347,24 @@ async function exAnalysis(id){
 function renderSubs(){
   const el=$('#subq');if(!el)return;
   const subs=(D.cats.subs||[]).filter(x=>x.p===F.t);
-  if(!F.t||!subs.length){el.hidden=true;F.sb='';return}
+  if(!F.t||!subs.length){el.hidden=true;el.innerHTML='';F.sb='';return}
   if(F.sb&&!subs.some(x=>x.n===F.sb))F.sb='';
   el.hidden=false;
-  const base=D.files.filter(f=>f.type===F.t).length;
-  el.innerHTML=`<button class="sbc ${F.sb?'':'on'}" data-sb="">همه‌ی ${esc(F.t)}<small class="cnt">${fa(base)}</small></button>`+
-    subs.map(x=>`<button class="sbc ${F.sb===x.n?'on':''}" data-sb="${esc(x.n)}">${esc(x.n)}<small class="cnt">${fa(D.files.filter(f=>f.type===F.t&&f.sub===x.n).length)}</small></button>`).join('');
+  const counts=subs.map(x=>D.files.filter(f=>f.type===F.t&&f.sub===x.n).length);
+  const total=D.files.filter(f=>f.type===F.t).length, mx=Math.max(1,...counts);
+  const PAL=[['#7c3aed','#4c1d95'],['#2563eb','#1e3a8a'],['#059669','#064e3b'],['#db2777','#831843'],['#ea580c','#7c2d12'],['#0891b2','#164e63']];
+  const tile=(lbl,n,pct,active,c1,c2,ic,attr)=>`<button class="stile${active?' on':''}" ${attr} style="--c1:${c1};--c2:${c2}">
+      <span class="sti">${ico(ic)}</span>
+      <span class="stn">${esc(lbl)}</span>
+      <span class="stc"><b>${fa(n)}</b><small>فایل</small></span>
+      <span class="stb"><i style="width:${Math.max(6,pct)}%"></i></span>
+      ${active?'<span class="stk">✓</span>':''}
+    </button>`;
+  el.innerHTML=`<div class="subhead"><span>${esc(F.t)}</span><small>${fa(subs.length)} زیرمجموعه</small></div>
+    <div class="subgrid">`+
+    tile('همه‌ی '+F.t,total,100,!F.sb,'#e8b94a','#a16207',TI[F.t]||'file','data-sb=""')+
+    subs.map((x,i)=>{const [c1,c2]=PAL[i%PAL.length];return tile(x.n,counts[i],counts[i]/mx*100,F.sb===x.n,c1,c2,'file',`data-sb="${esc(x.n)}"`)}).join('')+
+    `</div>`;
 }
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-sb]');if(!b)return;F.sb=b.dataset.sb||'';show()});
 function fillSubSel(){
