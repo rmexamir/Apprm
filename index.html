@@ -306,6 +306,23 @@ h1,h2,h3,h4{font-weight:400}
 .stile .stb i{display:block;height:100%;border-radius:99px;background:#fff;transition:width .6s}
 .stile .stk{position:absolute;top:10px;left:12px;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--c1);display:grid;place-items:center;font-weight:bold;font-size:14px}
 @keyframes tpop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ---- نسخه ۲۱: کاشی‌های زیرمجموعه فشرده و هماهنگ با اپ ---- */
+#subq{display:block!important;margin:6px 0 10px}
+.subhead{margin:0 2px 6px;font-size:14px}
+.subhead small{font-size:11px}
+.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.stile{min-height:0!important;display:grid!important;grid-template-columns:34px 1fr;grid-template-rows:auto auto auto;column-gap:10px;row-gap:2px;align-items:center;padding:10px 12px 9px;border-radius:14px;animation:none}
+.stile::before{width:80px;height:80px;top:-34px;left:-24px}
+.stile .sti{grid-column:1;grid-row:1 / span 2;width:34px;height:34px;border-radius:10px}
+.stile .sti svg{width:18px;height:18px}
+.stile .stn{grid-column:2;grid-row:1;margin:0;font-size:13px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stile .stc{grid-column:2;grid-row:2;gap:4px}
+.stile .stc b{font-size:17px;line-height:1}
+.stile .stc small{font-size:11px}
+.stile .stb{grid-column:1 / -1;grid-row:3;height:4px;margin-top:6px}
+.stile.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--c1),0 6px 14px rgba(0,0,0,.2)}
+.stile .stk{top:-6px;left:-6px;width:20px;height:20px;font-size:11px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
