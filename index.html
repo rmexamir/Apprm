@@ -265,6 +265,21 @@ h1,h2,h3,h4{font-weight:400}
 .qnav button.dn{border-color:var(--acc2)}
 .opt{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--b);border-radius:12px;margin:6px 0;cursor:pointer}
 .opt.on{border-color:var(--acc);background:rgba(232,185,74,.12)}
+.sbc{border:1px solid var(--b);border-radius:999px;padding:6px 12px;background:var(--c);color:var(--t);font:inherit;font-size:13px;margin:4px}
+.sbc.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#catadm .sh{margin-top:14px}
+.shelf{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:8px 4px 0;border-bottom:12px solid #8b5a2b;border-radius:6px;margin-bottom:18px}
+.shelf-h{font-weight:bold;margin:4px 0 8px;font-size:16px}
+.book{position:relative;height:150px;border:0;border-radius:10px 10px 4px 4px;background:linear-gradient(170deg,var(--bc),#0b1430);color:#fff;text-align:start;padding:14px 14px 12px 18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 7px 0 0 rgba(255,255,255,.18),0 8px 16px rgba(0,0,0,.22);transition:transform .2s}
+.book:active{transform:scale(.97)}
+.book:nth-child(odd){transform:rotate(-1deg)}.book:nth-child(even){transform:rotate(1deg)}
+.book .spine{font-family:BTitr,BNazanin,Tahoma,sans-serif;font-size:18px;line-height:1.4}
+.book small{opacity:.85;font-size:12px}
+.crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin:4px 0 8px}
+.crumb button{border:0;background:none;color:var(--acc);font:inherit;padding:2px 0}
+.crumb span{opacity:.5}
+.sugg{margin:10px 0;text-align:center}
+.sugg button{margin:4px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -345,6 +360,7 @@ h1,h2,h3,h4{font-weight:400}
   <div class="sr"><div class="in"><svg class="i"><use href="#i-search"/></svg><input id="q" placeholder="جستجوی عنوان، درس، سال…" autocomplete="off"><div class="sug" id="sug" hidden></div></div>
   <button class="fbtn" id="fbt" aria-label="فیلترها"><svg class="i"><use href="#i-filter"/></svg><em id="fcn" hidden></em></button></div>
   <div class="tq" id="tq"></div>
+  <div class="tq" id="subq" hidden></div>
   <div class="act" id="act"></div>
   <div id="rec" hidden><h4 class="sh"><svg class="i"><use href="#i-clock"/></svg>اخیراً دانلود کردی</h4><div class="tr" id="rrow"></div></div>
   <div id="top" hidden><h4 class="sh"><svg class="i fl" style="color:#f97316"><use href="#i-flame"/></svg>پربازدیدترین‌ها</h4><div class="tr" id="trow"></div></div>
@@ -370,7 +386,7 @@ h1,h2,h3,h4{font-weight:400}
 
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
-      <select id="ug"></select><select id="us"></select><select id="ut"></select><input id="uy" placeholder="سال / نوبت (مثلاً خرداد ۱۴۰۴)"><select id="ue" hidden></select><input id="uo" placeholder="نام برگزارکننده آزمون" hidden><select id="ul" hidden style="grid-column:1/-1"></select></div>
+      <select id="ug"></select><select id="us"></select><select id="ut"></select><input id="uy" placeholder="سال / نوبت (مثلاً خرداد ۱۴۰۴)"><select id="ue" hidden></select><input id="uo" placeholder="نام برگزارکننده آزمون" hidden><select id="ul" hidden style="grid-column:1/-1"></select><select id="usb" hidden style="grid-column:1/-1"></select></div>
       <input id="uf" type="file" multiple style="margin-top:8px"><progress id="pg" max="100" value="0" hidden style="width:100%;margin-top:8px"></progress><div id="pgt" class="meta" style="text-align:center;margin-top:4px"></div>
       <div class="row"><button id="sv">ذخیره</button><button class="g" id="cl" hidden>انصراف از ویرایش</button></div>
       <div class="msg" id="um"></div></div>
@@ -523,6 +539,7 @@ function fill(){
   $('#gg').innerHTML=tiles;
   $('#ob').innerHTML=GRADES.map(g=>{const sp=g.indexOf(' '),gr=g.slice(0,sp),tr=g.slice(sp+1),m=TRK[tr]||['t-ex','all'];return `<button class="tile ${m[0]}" data-me="${esc(g)}">${ico(m[1])}<b>${esc(gr)}</b><small>${esc(tr)}</small></button>`}).join('');
   $('#tq').innerHTML=['',...TY].map(t=>`<button class="chip2" data-v="${esc(t)}">${ico(t?(TI[t]||'file'):'all')}${t?esc(t):'همه'}<small class="cnt">${fa(t?D.files.filter(f=>f.type===t).length:D.files.length)}</small></button>`).join('');
+  renderSubs();fillSubSel();
   const ex=[...new Set([...D.cats.exam.filter(x=>x!=='سایر'),...D.files.map(f=>f.exam).filter(Boolean)])];
   $('#eq').innerHTML=ex.map(x=>`<button class="chip3" data-v="${esc(x)}">${esc(x)}</button>`).join('');
   setH('#ue',opts(D.cats.exam,'برگزارکننده آزمون'));
@@ -562,7 +579,7 @@ const favs=()=>S.get('rm_fav',[]);
 const dl=f=>'https://drive.google.com/uc?export=download&id='+esc(f.fileId);
 function filtered(){
   const qs=nz(F.q).split(/\s+/).filter(Boolean);
-  const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
+  const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
   const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
   return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
 }
@@ -576,7 +593,7 @@ function card(f,i,ans){
   <div class="acts"><a class="btn" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')">${ico('down')}دانلود</a>${a?`<a class="btn" style="background:var(--t);color:var(--bg)" href="${dl(a)}" target="_blank" rel="noopener" onclick="hit('${esc(a.id)}')">پاسخنامه</a>`:''}</div></div>`}
 function ansMap(){const m={};D.files.forEach(a=>{if(a.link)m[a.link]=a});return m}
 function show(){
-  const ans=ansMap(),r=filtered();
+  const ans=ansMap();renderSubs();const r=filtered();
   $$('.chip2').forEach(b=>b.classList.toggle('on',b.dataset.v===F.t));
   $$('.tile[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===F.g));
   $$('.chip3').forEach(b=>b.classList.toggle('on',b.dataset.v===F.e));
@@ -858,7 +875,7 @@ $('#go').onclick=async()=>{
 $('#pw').addEventListener('keydown',e=>e.key==='Enter'&&$('#go').click());
 document.querySelectorAll('.tabs [data-t]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs [data-t]').forEach(x=>x.classList.toggle('on',x===b));
-  ['up','fl','st','ev','ct','pw','rq','usr','exm'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='exm')loadExamAdmin();if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
+  ['up','fl','st','ev','ct','pw','rq','usr','exm'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='exm')loadExamAdmin();if(b.dataset.t==='ct')loadCatAdmin();if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
 
 async function loadReq(){const b=$('#t-rq');b.innerHTML='<div class="card">در حال بارگذاری…</div>';try{const r=await run('getRequests',pass);b.innerHTML=r.length?r.map(x=>`<div class="card"><div>${esc(x.text)}</div><div class="meta">${esc(x.contact||'بدون اطلاعات تماس')} | ${new Date(x.date).toLocaleDateString('fa-IR-u-ca-persian')}</div><div class="row"><button class="d" onclick="delReq('${esc(x.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">درخواستی ثبت نشده.</div>'}catch(e){b.innerHTML='<div class="card">'+esc(e.message||'خطا')+'</div>'}}
 async function delReq(id){await run('delRequest',pass,id);loadReq()}
@@ -910,7 +927,7 @@ async function dc(k,n){if(!confirm('«'+n+'» حذف شود؟ فایل‌های 
 async function del(id){if(!confirm('این فایل برای همیشه حذف شود؟'))return;await run('deleteFile',pass,id);D.files=D.files.filter(f=>f.id!==id);adminLists()}
 function edit(id){
   const f=D.files.find(x=>x.id===id);editId=id;
-  $('#ti').value=f.title;$('#ug').value=f.grade;fillS('#ug','#us','درس را انتخاب کنید');$('#us').value=f.subject;$('#ut').value=f.type;$('#uy').value=f.year;$('#ue').value=D.cats.exam.includes(f.exam)?f.exam:(f.exam?'سایر':'');$('#uo').value=D.cats.exam.includes(f.exam)?'':(f.exam||'');$('#ul').value=f.link||'';toggleEx();
+  $('#ti').value=f.title;$('#ug').value=f.grade;fillS('#ug','#us','درس را انتخاب کنید');$('#us').value=f.subject;$('#ut').value=f.type;$('#uy').value=f.year;$('#ue').value=D.cats.exam.includes(f.exam)?f.exam:(f.exam?'سایر':'');$('#uo').value=D.cats.exam.includes(f.exam)?'':(f.exam||'');$('#ul').value=f.link||'';toggleEx();fillSubSel();$('#usb').value=f.sub||'';
   $('#uh').textContent='ویرایش اطلاعات فایل';$('#cl').hidden=false;$('#uf').hidden=true;
   document.querySelector('[data-t=up]').click();window.scrollTo(0,0)
 }
@@ -932,7 +949,7 @@ async function uploadOne(file,m,um,tag){
   }
 }
 $('#sv').onclick=async()=>{
-  const base={title:$('#ti').value.trim(),grade:$('#ug').value,subject:$('#us').value,type:$('#ut').value,year:$('#uy').value.trim(),exam:exv(),link:$('#ut').value==='پاسخنامه'?$('#ul').value:''},um=$('#um'),files=[...$('#uf').files];
+  const base={title:$('#ti').value.trim(),grade:$('#ug').value,subject:$('#us').value,type:$('#ut').value,year:$('#uy').value.trim(),exam:exv(),link:$('#ut').value==='پاسخنامه'?$('#ul').value:'',sub:$('#usb')?$('#usb').value:''},um=$('#um'),files=[...$('#uf').files];
   if(editId&&!base.title)return um.textContent='عنوان را وارد کنید.';
   if(!editId&&files.length<2&&!base.title)return um.textContent='عنوان را وارد کنید.';
   if(base.type==='آزمون آزمایشی'&&!base.exam)return um.textContent='برگزارکننده آزمون را مشخص کنید.';
@@ -1298,5 +1315,117 @@ async function exAnalysis(id){
   $('#rf_go').onclick=async()=>{try{const w=await run('raffle',pass,id,Number($('#rf_n').value)||1,Number($('#rf_p').value)||0);$('#rf_m').innerHTML='برندگان: <b>'+w.map(x=>esc(x.name)).join('، ')+'</b>'}catch(e){$('#rf_m').textContent=e.message}};
   $('#exAnaClose').onclick=()=>box.hidden=true;
 }
+</script>
+<script>
+// ===================== دسته‌بندی‌ها: زیرمجموعه، شمارنده، ترتیب =====================
+function renderSubs(){
+  const el=$('#subq');if(!el)return;
+  const subs=(D.cats.subs||[]).filter(x=>x.p===F.t);
+  if(!F.t||!subs.length){el.hidden=true;F.sb='';return}
+  if(F.sb&&!subs.some(x=>x.n===F.sb))F.sb='';
+  el.hidden=false;
+  const base=D.files.filter(f=>f.type===F.t).length;
+  el.innerHTML=`<button class="sbc ${F.sb?'':'on'}" data-sb="">همه‌ی ${esc(F.t)}<small class="cnt">${fa(base)}</small></button>`+
+    subs.map(x=>`<button class="sbc ${F.sb===x.n?'on':''}" data-sb="${esc(x.n)}">${esc(x.n)}<small class="cnt">${fa(D.files.filter(f=>f.type===F.t&&f.sub===x.n).length)}</small></button>`).join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-sb]');if(!b)return;F.sb=b.dataset.sb||'';show()});
+function fillSubSel(){
+  const el=$('#usb');if(!el||!$('#ut'))return;
+  const subs=(D.cats.subs||[]).filter(x=>x.p===$('#ut').value);
+  const cur=el.value;el.hidden=!subs.length;
+  el.innerHTML='<option value="">بدون زیرمجموعه</option>'+subs.map(x=>`<option>${esc(x.n)}</option>`).join('');
+  el.value=subs.some(x=>x.n===cur)?cur:'';
+}
+if($('#ut'))$('#ut').addEventListener('change',fillSubSel);
+async function refreshAll(){const x=await run('getData');D=x;D.events=D.events||[];S.set('rm_cache',D);fill();show();adminLists()}
+function loadCatAdmin(){
+  const host=$('#t-ct');if(!host)return;
+  let b=$('#catadm');if(!b){b=document.createElement('div');b.id='catadm';host.prepend(b)}
+  const KS=[['type','نوع فایل'],['grade','پایه'],['subject','درس'],['exam','برگزارکننده آزمون']];
+  b.innerHTML=`<h2>ترتیب و زیرمجموعه‌ها</h2><div class="meta" style="margin-bottom:6px">با ▲ و ▼ ترتیب نمایش را عوض کن. زیرمجموعه‌ها زیر هر «نوع فایل» تعریف می‌شوند؛ مثلاً زیر «آزمون آزمایشی»: قلم‌چی، گاج، سنجش.</div>`+
+    KS.map(([k,lbl])=>`<h4 class="sh">${lbl}</h4>`+((D.cats[k]||[]).map((n,i,arr)=>`<div class="hist"><span>${esc(n)}</span><span><button class="g" data-cm="${k}|${i}|-1" ${i===0?'disabled':''}>▲</button> <button class="g" data-cm="${k}|${i}|1" ${i===arr.length-1?'disabled':''}>▼</button></span></div>`+(k==='type'?subBlock(n):'')).join('')||'<div class="meta">موردی نیست</div>')).join('');
+}
+function subBlock(parent){
+  const subs=(D.cats.subs||[]).filter(x=>x.p===parent);
+  return `<div style="margin:0 14px 10px">${subs.map((x,i)=>`<div class="hist"><span>↳ ${esc(x.n)} <small class="meta">${fa(D.files.filter(f=>f.type===parent&&f.sub===x.n).length)} فایل</small></span><span><button class="g" data-csm="${esc(parent)}|${i}|-1" ${i===0?'disabled':''}>▲</button> <button class="g" data-csm="${esc(parent)}|${i}|1" ${i===subs.length-1?'disabled':''}>▼</button> <button class="d" data-csd="${esc(parent)}|${esc(x.n)}">×</button></span></div>`).join('')}
+    <div class="row"><input class="csi" data-csp="${esc(parent)}" placeholder="زیرمجموعه‌ی جدید"><button class="g" data-csa="${esc(parent)}">افزودن</button></div></div>`;
+}
+const _adminListsOrig=adminLists;
+adminLists=function(){_adminListsOrig.apply(this,arguments);if($('#t-ct'))loadCatAdmin()};
+document.addEventListener('click',async e=>{
+  const t=e.target.closest&&e.target.closest('[data-cm],[data-csm],[data-csd],[data-csa]');if(!t||!$('#catadm'))return;
+  try{
+    if(t.dataset.cm){const[k,i,d]=t.dataset.cm.split('|');const arr=[...D.cats[k]];const j=+i+ +d;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];await run('setCatOrder',pass,k,arr,'');await refreshAll()}
+    else if(t.dataset.csm){const[p,i,d]=t.dataset.csm.split('|');const subs=(D.cats.subs||[]).filter(x=>x.p===p).map(x=>x.n);const j=+i+ +d;if(j<0||j>=subs.length)return;[subs[i],subs[j]]=[subs[j],subs[i]];await run('setCatOrder',pass,'sub',subs,p);await refreshAll()}
+    else if(t.dataset.csd){const[p,n]=t.dataset.csd.split('|');if(!confirm('زیرمجموعه «'+n+'» حذف شود؟ فایل‌های آن بدون زیرمجموعه می‌مانند.'))return;await run('delCat',pass,'sub',n);await refreshAll()}
+    else if(t.dataset.csa){const inp=document.querySelector(`.csi[data-csp="${CSS.escape(t.dataset.csa)}"]`);const n=(inp&&inp.value||'').trim();if(!n)return toast('نام زیرمجموعه را بنویس');await run('addCat',pass,'sub',n,t.dataset.csa);toast('افزوده شد');await refreshAll()}
+  }catch(err){toast(err.message||'خطا')}
+});
+</script>
+<script>
+// ===================== قفسه‌ی کتاب، مسیر پیشرفت، جستجوی هوشمند =====================
+const TYC={'امتحان نهایی':'#b45309','کنکور':'#1d4ed8','آزمون آزمایشی':'#7c3aed','جزوه':'#047857','نمونه سوال':'#be185d','پاسخنامه':'#0e7490'};
+const nrm=s=>String(s==null?'':s).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u200c\u200f\u200e\u064b-\u065f\u0640]/g,'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).toLowerCase().trim();
+const sq=s=>nrm(s).replace(/[\s\-_.،,()«»"']/g,'');
+function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const fwords=f=>nrm([f.title,f.subject,f.grade,f.type,f.sub,f.year,f.exam].join(' ')).split(/[\s،,\-_()«»]+/).filter(Boolean);
+filtered=function(){
+  const qs=nrm(F.q).split(/\s+/).filter(Boolean);
+  const r=D.files.filter(f=>{
+    const words=fwords(f),hay=sq(words.join(' '));
+    const textOK=qs.every(t=>hay.includes(sq(t))||words.some(w=>w.includes(t)||(t.length>=4&&lev(w.slice(0,t.length),t)<=1)));
+    return textOK&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e);
+  });
+  const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
+  return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
+};
+function suggestFor(q){
+  const vocab=new Set();D.files.forEach(f=>fwords(f).forEach(w=>vocab.add(w)));
+  const hay=sq([...vocab].join(' '));
+  return nrm(q).split(/\s+/).filter(Boolean).map(t=>{
+    if(vocab.has(t)||hay.includes(sq(t)))return null;
+    let best=null,bd=99;vocab.forEach(w=>{if(w.length<3)return;const d=lev(w,t);if(d<bd){bd=d;best=w}});
+    return bd<=2&&best?{from:t,to:best}:null;
+  }).filter(Boolean);
+}
+function crumbItems(){
+  const it=[];
+  if(F.t)it.push(['t',F.t]);if(F.sb)it.push(['sb',F.sb]);if(F.g)it.push(['g',F.g]);if(F.s)it.push(['s',F.s]);
+  if(F.y)it.push(['y','سال '+F.y]);if(F.e)it.push(['e',F.e]);if(nrm(F.q))it.push(['q','جستجو: '+F.q]);
+  return it;
+}
+function shelfHTML(){
+  return `<div class="shelf-h">قفسه‌ی کتاب‌ها</div><div class="shelf">`+TY.map(t=>{
+    const n=D.files.filter(f=>f.type===t).length,subs=(D.cats.subs||[]).filter(x=>x.p===t).length;
+    return `<button class="book" data-shelf="${esc(t)}" style="--bc:${TYC[t]||'#12203f'}"><span class="spine">${esc(t)}</span><small>${fa(n)} فایل${subs?' · '+fa(subs)+' زیرمجموعه':''}</small></button>`;
+  }).join('')+`</div>`;
+}
+const _showBase=show;
+show=function(){_showBase.apply(this,arguments);postShow()};
+function postShow(){
+  const L=$('#list');if(!L)return;
+  let cr=$('#crumb');
+  if(!cr){cr=document.createElement('div');cr.id='crumb';cr.className='crumb';L.parentNode.insertBefore(cr,L)}
+  const items=crumbItems();
+  cr.hidden=!items.length;
+  cr.innerHTML=items.length?`<button data-crumb="all">خانه</button>`+items.map(([k,l])=>`<span>›</span><button data-crumb="${k}">${esc(l)}</button>`).join(''):'';
+  const hasFilter=items.length>0;
+  if(!hasFilter&&D.files.length){L.innerHTML=shelfHTML();return}
+  if(hasFilter&&nrm(F.q)&&!L.querySelector('.fc')){
+    const sg=suggestFor(F.q);
+    if(sg.length){L.insertAdjacentHTML('beforeend',`<div class="sugg"><div class="meta">منظورتان این بود؟</div>${sg.map(x=>`<button class="g" data-sgf="${esc(x.from)}" data-sgt="${esc(x.to)}">«${esc(x.to)}»</button>`).join('')}</div>`)}
+  }
+}
+document.addEventListener('click',e=>{
+  const sh=e.target.closest&&e.target.closest('[data-shelf]');
+  if(sh){F.t=sh.dataset.shelf;F.sb='';show();window.scrollTo({top:0});return}
+  const cb=e.target.closest&&e.target.closest('[data-crumb]');
+  if(cb){const k=cb.dataset.crumb;
+    if(k==='all'){F.q='';F.g='';F.s='';F.t='';F.y='';F.e='';F.sb='';const q=$('#q');if(q)q.value=''}
+    else{F[k]='';if(k==='q'){const q=$('#q');if(q)q.value=''}if(k==='t')F.sb=''}
+    show();return}
+  const sg=e.target.closest&&e.target.closest('[data-sgf]');
+  if(sg){const words=nrm(F.q).split(/\s+/).filter(Boolean).map(w=>w===sg.dataset.sgf?sg.dataset.sgt:w);F.q=words.join(' ');const q=$('#q');if(q)q.value=F.q;show()}
+});
 </script>
 </body></html>
