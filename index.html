@@ -245,7 +245,7 @@ h1,h2,h3,h4{font-weight:400}
 /* ---- نسخه ۱۵: رنگ‌بندی رشته، اسکلت، کارت قهرمان، حرکت نوار پایین ---- */
 .sk{height:150px;border-radius:20px;background:linear-gradient(90deg,var(--c2) 25%,var(--b) 50%,var(--c2) 75%);background-size:200% 100%;animation:shim 1.2s infinite linear;border:1px solid var(--b)}
 @keyframes shim{to{background-position:-200% 0}}
-.nav button{transition:background .3s,color .3s,transform .15s}
+.nav button{transition:background .3s,color .3s,transform .15s;flex:1;min-width:0;font-size:12px}
 .nav button:active{transform:scale(.94)}
 .hero{border-radius:22px;padding:16px 18px;margin:0 0 12px;color:#f6efdc;background:linear-gradient(135deg,var(--h1),var(--h2));box-shadow:var(--sh)}
 .hero h3{margin:0 0 4px;font-size:18px}
@@ -257,6 +257,14 @@ h1,h2,h3,h4{font-weight:400}
 .fc::before{background:var(--tc,var(--k))!important}
 .tile.t-is{background:linear-gradient(135deg,#9333ea,#6b21a8)!important;color:#fff}
 .spark{display:block;width:100%;height:46px;margin-top:6px}
+.exq{border:1px solid var(--b);border-radius:14px;padding:10px;margin:8px 0}
+.exq textarea{min-height:70px}
+.qnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qnav button{width:34px;height:34px;border-radius:50%;border:1px solid var(--b);background:var(--c);color:var(--t);font:inherit}
+.qnav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.qnav button.dn{border-color:var(--acc2)}
+.opt{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--b);border-radius:12px;margin:6px 0;cursor:pointer}
+.opt.on{border-color:var(--acc);background:rgba(232,185,74,.12)}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -317,7 +325,7 @@ h1,h2,h3,h4{font-weight:400}
 <nav class="nav" id="nav">
 <button data-v="home" class="on"><svg class="i"><use href="#i-home"/></svg>خانه</button>
 <button data-v="tools"><svg class="i"><use href="#i-tools"/></svg>ابزارها</button>
-<button data-v="fav"><svg class="i"><use href="#i-star"/></svg>نشان‌شده‌ها</button>
+<button data-v="exam"><svg class="i"><use href="#i-flag"/></svg>آزمون</button><button data-v="fav"><svg class="i"><use href="#i-star"/></svg>نشان‌شده‌ها</button>
 <button data-v="req"><svg class="i"><use href="#i-send"/></svg>درخواست</button>
 </nav>
 
@@ -348,6 +356,7 @@ h1,h2,h3,h4{font-weight:400}
 
 <div id="v-fav" hidden><h2 style="font-size:18px;margin:0" class="sh"><svg class="i" style="color:#f59e0b"><use href="#i-star"/></svg>فایل‌های نشان‌شده</h2><div class="meta">با زدن ستاره روی هر فایل، اینجا ذخیره می‌شود (روی همین دستگاه).</div><div id="favl"></div></div>
 
+<div id="v-exam" hidden></div>
 <div id="v-req" hidden><div class="card"><h2><svg class="i"><use href="#i-send"/></svg>فایل مورد نظرت را پیدا نکردی؟</h2><input id="rt" placeholder="مثلاً: آزمون قلمچی دوازدهم تجربی خرداد ۱۴۰۴"><input id="rc" placeholder="آیدی روبیکا یا شماره تماس (اختیاری)" style="margin-top:8px"><div class="row"><button id="rs">ارسال درخواست</button></div><div class="msg" id="rm"></div></div></div>
 </section>
 
@@ -357,7 +366,7 @@ h1,h2,h3,h4{font-weight:400}
     <div class="msg" id="lm"></div></div>
   <div id="panel" hidden>
     <div class="warn" id="pwwarn" hidden>رمز شما هنوز رمز پیش‌فرض (۱۲۳۴) است. همین حالا از تب «تنظیمات» آن را عوض کنید.</div>
-    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button><button data-t="usr">کاربران</button></div>
+    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button><button data-t="exm">آزمون‌ها</button><button data-t="usr">کاربران</button></div>
 
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
@@ -374,6 +383,7 @@ h1,h2,h3,h4{font-weight:400}
     <div id="t-ct" class="card" hidden></div>
     <div id="t-rq" hidden></div>
     <div id="t-usr" hidden></div>
+    <div id="t-exm" hidden></div>
     <div id="t-pw" hidden><div class="card"><h2>تغییر رمز عبور</h2><input id="np" type="password" placeholder="رمز جدید (حداقل ۶ کاراکتر)"><input id="np2" type="password" placeholder="تکرار رمز جدید" style="margin-top:8px"><div class="row"><button id="cp">تغییر رمز</button></div><div class="msg" id="pm"></div></div>
     <div class="card"><h2>اطلاعیه صفحه اصلی</h2><input id="nt" placeholder="مثلاً: آزمون جامع این جمعه برگزار می‌شود"><div class="row"><button id="sn">ذخیره اطلاعیه</button></div><div class="msg" id="nm"></div></div>
     <div class="card"><h2>شمارش معکوس‌ها</h2><div class="meta" style="margin-bottom:6px">هر شمارش را جدا اضافه کن؛ در صفحه‌ی اصلی همه‌ی آن‌ها نمایش داده می‌شوند.</div><input id="cdt" placeholder="عنوان (مثلاً کنکور ۱۴۰۶)"><div class="g2" style="margin-top:8px;grid-template-columns:1fr 1.4fr 1fr"><input id="jy" type="number" placeholder="سال (۱۴۰۵)"><select id="jm"></select><input id="jd" type="number" min="1" max="31" placeholder="روز"></div><div class="row"><button id="sc">افزودن شمارش</button></div><div class="msg" id="cm"></div><div id="cdadm" style="margin-top:8px"></div></div></div>
@@ -644,8 +654,8 @@ $('#ovm').addEventListener('click',e=>{if(e.target.id==='ovm'){S.set('rm_skip',t
 // ---------- ناوبری ----------
 function go(v){
   $$('#nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  ['home','tools','fav','req'].forEach(x=>$('#v-'+x).hidden=x!==v);
-  if(v==='tools')toolsRender();if(v==='fav')favView();window.scrollTo({top:0})
+  ['home','tools','fav','req','exam'].forEach(x=>$('#v-'+x).hidden=x!==v);
+  if(v==='tools')toolsRender();if(v==='fav')favView();if(v==='exam')examView();window.scrollTo({top:0})
 }
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)go(b.dataset.v)});
 $('#rs').onclick=async()=>{const m=$('#rm');if($('#rt').value.trim().length<3)return m.textContent='متن درخواست را بنویسید.';$('#rs').disabled=true;try{await run('submitRequest',$('#rt').value,$('#rc').value);m.textContent='درخواست شما ثبت شد. ممنون!';$('#rt').value=$('#rc').value=''}catch(e){m.textContent=e.message||'خطا در ارسال'}$('#rs').disabled=false};
@@ -848,7 +858,7 @@ $('#go').onclick=async()=>{
 $('#pw').addEventListener('keydown',e=>e.key==='Enter'&&$('#go').click());
 document.querySelectorAll('.tabs [data-t]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs [data-t]').forEach(x=>x.classList.toggle('on',x===b));
-  ['up','fl','st','ev','ct','pw','rq','usr'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
+  ['up','fl','st','ev','ct','pw','rq','usr','exm'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='exm')loadExamAdmin();if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
 
 async function loadReq(){const b=$('#t-rq');b.innerHTML='<div class="card">در حال بارگذاری…</div>';try{const r=await run('getRequests',pass);b.innerHTML=r.length?r.map(x=>`<div class="card"><div>${esc(x.text)}</div><div class="meta">${esc(x.contact||'بدون اطلاعات تماس')} | ${new Date(x.date).toLocaleDateString('fa-IR-u-ca-persian')}</div><div class="row"><button class="d" onclick="delReq('${esc(x.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">درخواستی ثبت نشده.</div>'}catch(e){b.innerHTML='<div class="card">'+esc(e.message||'خطا')+'</div>'}}
 async function delReq(id){await run('delRequest',pass,id);loadReq()}
@@ -1091,6 +1101,202 @@ function spark(vals){
   const mx=Math.max(1,...vals),n=vals.length,W2=300,H2=46;
   const pts=vals.map((v,i)=>`${(i/(Math.max(1,n-1))*W2).toFixed(1)},${(H2-4-(v/mx)*(H2-8)).toFixed(1)}`).join(' ');
   return `<svg class="spark" viewBox="0 0 ${W2} ${H2}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--acc2)" stroke-width="2.5" points="${pts}"/></svg>`;
+}
+</script>
+<script>
+// ===================== آزمون آنلاین (کاربر) =====================
+const toLocalInput=iso=>{if(!iso)return '';const d=new Date(iso);if(isNaN(d))return '';const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes())};
+let EX_OFF=0, EXS=null;
+function fmtLeft(ms){const s=Math.max(0,Math.floor(ms/1000));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return fa([h,m,x].map(v=>String(v).padStart(2,'0')).join(':'))}
+async function examView(){
+  const el=$('#v-exam');el.hidden=false;
+  el.innerHTML=`<div class="card"><h2>آزمون‌های آنلاین</h2><div id="exl"><div class="meta">در حال بارگذاری…</div></div></div><div class="card"><h2>نتایج من</h2><div id="exr"></div></div>`;
+  try{
+    const list=await run('listExams',TOK||'');
+    $('#exl').innerHTML=list.length?list.map(x=>`<div class="hist"><span><b>${esc(x.title)}</b><small class="meta"><br>${fa(x.count)} سؤال · ${fa(x.durationMin)} دقیقه${x.closed?' · '+esc(x.closed):''}</small></span>${x.state==='done'?`<span><b>${fa(x.score)}٪</b></span>`:x.closed?'':`<button data-exs="${esc(x.id)}">${x.state==='running'?'ادامه':'شروع'}</button>`}</div>`).join(''):'<div class="meta">آزمونی منتشر نشده است.</div>';
+  }catch(e){$('#exl').innerHTML=`<div class="meta">${esc(e.message)}</div>`}
+  if(!TOK){$('#exr').innerHTML='<div class="meta">برای شرکت در آزمون و دیدن نتایج، ابتدا وارد حساب کاربری شو.</div>';return}
+  try{const r=await run('myResults',TOK);$('#exr').innerHTML=r.length?r.map(x=>`<div class="hist"><span><b>${esc(x.title)}</b><small class="meta"><br>رتبه‌ی ${fa(x.rank)} از ${fa(x.participants)}${x.top.length?' · نفرات برتر: '+x.top.map(t=>esc(t.name)).join('، '):''}</small></span><span><b>${fa(x.percent)}٪</b></span></div>`).join(''):'<div class="meta">هنوز آزمونی نداده‌ای.</div>'}catch(e){$('#exr').innerHTML=`<div class="meta">${esc(e.message)}</div>`}
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-exs]');if(b)openExam(b.dataset.exs)});
+async function openExam(id){
+  if(!TOK){toast('برای شرکت در آزمون ابتدا وارد شو');openAuth('login');return}
+  let info;try{info=await run('startExam',TOK,id)}catch(e){toast(e.message);return}
+  const n=info.questions.length, saved=S.get('rm_exans_'+id,null);
+  EXS={id,info,ans:(saved&&saved.length===n)?saved:Array(n).fill(null),i:0,done:false};
+  EX_OFF=info.serverNow-Date.now();
+  const o=document.createElement('div');o.id='exo';
+  o.style.cssText='position:fixed;inset:0;z-index:80;background:var(--c2);overflow:auto;padding:12px';
+  document.body.appendChild(o);
+  renderQ();
+  EXS.timer=setInterval(tickExam,500);tickExam();
+}
+function qNav(){return EXS.info.questions.map((_,k)=>`<button data-exj="${k}" class="${k===EXS.i?'on':''} ${EXS.ans[k]!=null?'':'dn'}">${fa(k+1)}</button>`).join('')}
+function renderQ(){
+  const o=$('#exo');if(!o)return;
+  const q=EXS.info.questions[EXS.i],n=EXS.info.questions.length;
+  o.innerHTML=`<div class="card" style="position:sticky;top:0;z-index:2"><div style="display:flex;justify-content:space-between;align-items:center"><b>${esc(EXS.info.title)}</b><b id="exT" style="color:var(--acc)">--:--</b></div><progress max="${n}" value="${EXS.i+1}" style="width:100%"></progress><div class="meta">سؤال ${fa(EXS.i+1)} از ${fa(n)}</div></div>
+   ${EXS.info.pdf&&EXS.i===0?`<div class="card"><b>برگه‌ی سؤال</b><iframe src="https://drive.google.com/file/d/${esc(EXS.info.pdf)}/preview" style="width:100%;height:280px;border:0;margin-top:8px"></iframe></div>`:''}
+   <div class="card"><div style="white-space:pre-wrap;font-size:16px;line-height:1.9">${esc(q.text||'')}</div>
+   ${q.img?`<img src="https://drive.google.com/uc?export=view&id=${esc(q.img)}" style="max-width:100%;border-radius:12px;margin-top:10px">`:''}
+   ${q.pdf?`<iframe src="https://drive.google.com/file/d/${esc(q.pdf)}/preview" style="width:100%;height:320px;border:0;margin-top:10px"></iframe>`:''}
+   <div style="margin-top:12px">${q.options.map((op,k)=>`<label class="opt${EXS.ans[EXS.i]===k?' on':''}"><input type="radio" name="exq" value="${k}" ${EXS.ans[EXS.i]===k?'checked':''}> ${esc(op)}</label>`).join('')}</div></div>
+   <div class="row" style="justify-content:space-between"><button class="g" data-exprev ${EXS.i===0?'disabled':''}>قبلی</button>${EXS.i<n-1?'<button data-exnext>بعدی</button>':''}<button data-exsub>ثبت پاسخ‌ها</button></div>
+   <div class="qnav">${qNav()}</div>`;
+}
+function tickExam(){
+  if(!EXS||EXS.done)return;
+  const left=EXS.info.endsAt-(Date.now()+EX_OFF);
+  const el=$('#exT');if(el)el.textContent=fmtLeft(left);
+  if(left<=0){clearInterval(EXS.timer);toast('زمان تمام شد؛ پاسخ‌ها ثبت می‌شود');submitNow()}
+}
+async function submitNow(){
+  if(!EXS||EXS.done)return;
+  EXS.done=true;clearInterval(EXS.timer);
+  try{
+    const r=await run('submitExam',TOK,EXS.id,EXS.ans);
+    S.set('rm_exans_'+EXS.id,null);
+    $('#exo')?.remove();
+    const rv=await run('myResults',TOK).catch(()=>[]);
+    const mine=rv.find(x=>x.examId===EXS.id)||{rank:'—',participants:'—',top:[]};
+    const box=document.createElement('div');box.id='exres';
+    box.style.cssText='position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px';
+    box.innerHTML=`<div class="card" style="max-width:420px;width:100%;margin:0;max-height:90vh;overflow:auto"><h2>نتیجه‌ی آزمون</h2>
+      <div class="stats"><div><b>${fa(r.score)} از ${fa(r.total)}</b><small>پاسخ صحیح</small></div><div><b>${fa(r.percent)}٪</b><small>درصد</small></div><div><b>${fa(mine.rank)}</b><small>رتبه از ${fa(mine.participants)}</small></div></div>
+      ${r.late?'<div class="meta">پاسخ‌ها دیر ثبت شد و امتیازی برای آن در نظر گرفته نشد.</div>':''}
+      ${mine.top&&mine.top.length?'<h4 class="sh">نفرات برتر</h4>'+mine.top.map((t,k)=>`<div class="hist"><span>${fa(k+1)}. ${esc(t.name)}</span><span><b>${fa(t.percent)}٪</b></span></div>`).join(''):''}
+      ${r.correct?'<h4 class="sh">پاسخ‌های صحیح</h4>'+EXS.info.questions.map((q,k)=>`<div class="meta">${fa(k+1)}) ${esc(q.options[r.correct[k]]||'')} ${EXS.ans[k]===r.correct[k]?'✓':'✗'}</div>`).join(''):''}
+      <div class="row" style="margin-top:12px"><button id="exresClose">بستن</button></div></div>`;
+    document.body.appendChild(box);
+    $('#exresClose').onclick=()=>{box.remove();EXS=null;examView()};
+  }catch(e){EXS.done=false;toast(e.message||'خطا در ثبت')}
+}
+document.addEventListener('click',e=>{
+  if(!EXS||!$('#exo'))return;
+  const t=e.target.closest('button,[data-exj]');if(!t)return;
+  if(t.dataset.exj!=null){EXS.i=+t.dataset.exj;renderQ();return}
+  if(t.hasAttribute('data-exprev')){EXS.i=Math.max(0,EXS.i-1);renderQ();return}
+  if(t.hasAttribute('data-exnext')){EXS.i=Math.min(EXS.info.questions.length-1,EXS.i+1);renderQ();return}
+  if(t.hasAttribute('data-exsub')){if(confirm('ثبت نهایی پاسخ‌ها؟ بعد از ثبت امکان تغییر نیست.'))submitNow();return}
+});
+document.addEventListener('change',e=>{
+  if(!EXS||!$('#exo'))return;
+  if(e.target.name==='exq'){EXS.ans[EXS.i]=Number(e.target.value);S.set('rm_exans_'+EXS.id,EXS.ans);
+    $$('#exo .opt').forEach((l,k)=>l.classList.toggle('on',k===EXS.ans[EXS.i]));$$('#exo .qnav button').forEach((b,k)=>b.classList.toggle('dn',EXS.ans[k]==null));}
+});
+
+// ===================== آزمون آنلاین (مدیر) =====================
+let EXL=[], EXQ=[], EXID=null, EXPUB=false, EXPDF='';
+async function prepImage(file){
+  const bmp=await createImageBitmap(file);const k=Math.min(1,1280/Math.max(bmp.width,bmp.height));
+  const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);
+  c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,'image/jpeg',0.82));
+}
+const blobB64=b=>new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(b)});
+async function uploadAsset(file){
+  let blob=file,mime=file.type;
+  if(/^image\//.test(mime)){blob=await prepImage(file);mime='image/jpeg'}
+  if(!/^(image\/jpeg|image\/png|image\/webp|application\/pdf)$/.test(mime))throw new Error('فقط تصویر یا PDF مجاز است');
+  if(blob.size>8*1048576)throw new Error('فایل بزرگ‌تر از ۸ مگابایت است');
+  const r=await run('adminUploadAsset',pass,file.name,mime,await blobB64(blob));
+  return r.id;
+}
+async function loadExamAdmin(){
+  const b=$('#t-exm');
+  b.innerHTML=`<div class="card"><h2>آزمون‌ها</h2><div id="exlist"><div class="meta">در حال بارگذاری…</div></div><div class="row" style="margin-top:8px"><button id="exNew">آزمون جدید</button></div></div><div class="card" id="exedit" hidden></div>`;
+  $('#exNew').onclick=()=>exEditor(null);
+  await refreshExamList();
+}
+async function refreshExamList(){
+  try{EXL=await run('adminListExams',pass)}catch(e){$('#exlist').innerHTML=`<div class="meta">${esc(e.message)}</div>`;return}
+  $('#exlist').innerHTML=EXL.length?EXL.map(x=>`<div class="hist"><span><b>${esc(x.title)}</b><small class="meta"><br>${fa(x.count)} سؤال · ${fa(x.durationMin)} دقیقه · ${x.published?'منتشر شده':'پیش‌نویس'}</small></span><span><button class="g" data-exv="${esc(x.id)}">ویرایش</button> <button class="g" data-exa="${esc(x.id)}">تحلیل</button> <button class="g" data-exp="${esc(x.id)}" data-pub="${x.published?0:1}">${x.published?'توقف':'انتشار'}</button> <button class="d" data-exd="${esc(x.id)}">حذف</button></span></div>`).join(''):'<div class="meta">آزمونی ثبت نشده.</div>';
+}
+document.addEventListener('click',async e=>{
+  const t=e.target.closest&&e.target.closest('[data-exv],[data-exa],[data-exp],[data-exd],[data-qdel],[data-qadd],#exSave,#exCancel,#exAddQ,#rf_go,#exAnaClose');
+  if(!t||!$('#t-exm'))return;
+  try{
+    if(t.dataset.exv){exEditor(EXL.find(x=>x.id===t.dataset.exv))}
+    else if(t.dataset.exa){exAnalysis(t.dataset.exa)}
+    else if(t.dataset.exp){await run('adminSetExam',pass,t.dataset.exp,t.dataset.pub==='1',EXL.find(x=>x.id===t.dataset.exp).showAnswers);toast('ذخیره شد');await refreshExamList()}
+    else if(t.dataset.exd){if(confirm('این آزمون حذف شود؟ (نتایج ثبت‌شده حذف نمی‌شود)')){await run('adminDeleteExam',pass,t.dataset.exd);toast('حذف شد');await refreshExamList();$('#exedit').hidden=true}}
+    else if(t.dataset.qdel!=null){collectQs();EXQ.splice(+t.dataset.qdel,1);renderEditorQs()}
+    else if(t.id==='exAddQ'){collectQs();EXQ.push({text:'',options:['','','',''],answer:0});renderEditorQs()}
+    else if(t.id==='exCancel'){$('#exedit').hidden=true}
+    else if(t.id==='exSave'){await exSave()}
+  }catch(err){toast(err.message||'خطا')}
+});
+function exEditor(x){
+  EXID=x?x.id:null;EXPUB=x?x.published:false;
+  EXQ=(x?x.data.questions:[{text:'',options:['','','',''],answer:0}]).map(q=>({...q}));
+  EXPDF=x?(x.data.pdf||''):'';
+  const box=$('#exedit');box.hidden=false;
+  box.innerHTML=`<h2>${x?'ویرایش آزمون':'آزمون جدید'}</h2>
+   <input id="ex_t" placeholder="عنوان آزمون" value="${esc(x?x.title:'')}">
+   <div class="g2" style="margin-top:6px"><input id="ex_d" type="number" min="1" max="600" placeholder="مدت (دقیقه)" value="${x?x.durationMin:30}"><select id="ex_k"><option value="">همه‌ی رشته‌ها</option>${GRADES.map(g=>`<option ${x&&x.track===g?'selected':''}>${esc(g)}</option>`).join('')}</select></div>
+   <div class="g2" style="margin-top:6px"><label class="meta">شروع (اختیاری)<input id="ex_s" type="datetime-local" value="${x?toLocalInput(x.startAt):''}"></label><label class="meta">پایان (اختیاری)<input id="ex_e" type="datetime-local" value="${x?toLocalInput(x.endAt):''}"></label></div>
+   <label class="meta">برگه‌ی سؤال PDF (اختیاری، برای کل آزمون): <input id="ex_pdf" type="file" accept="application/pdf"></label>
+   <label class="meta"><input type="checkbox" id="ex_show" ${x&&x.showAnswers?'checked':''}> نمایش پاسخ صحیح به شرکت‌کنندگان پس از آزمون</label>
+   <div id="exqs"></div>
+   <div class="row"><button class="g" id="exAddQ">+ افزودن سؤال</button><button id="exSave">ذخیره آزمون</button><button class="g" id="exCancel">انصراف</button></div><div class="msg" id="ex_m"></div>`;
+  renderEditorQs();
+}
+function renderEditorQs(){
+  $('#exqs').innerHTML=EXQ.map((q,i)=>`<div class="qb exq" data-i="${i}">
+    <div style="display:flex;justify-content:space-between"><b>سؤال ${fa(i+1)}</b><button class="g" data-qdel="${i}">حذف</button></div>
+    <textarea class="qt" placeholder="متن سؤال (اختیاری اگر تصویر یا PDF داری)">${esc(q.text||'')}</textarea>
+    <div class="g2"><label class="meta">تصویر سؤال<input class="qimg" type="file" accept="image/*"></label><label class="meta">PDF سؤال<input class="qpdf" type="file" accept="application/pdf"></label></div>
+    <div class="meta">${q.img?'تصویر ثبت‌شده ✓ ':''}${q.pdf?'PDF ثبت‌شده ✓':''}</div>
+    ${[0,1,2,3].map(k=>`<div style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="radio" name="ans${i}" class="qr" value="${k}" ${q.answer===k?'checked':''}><input class="qo" placeholder="گزینه ${fa(k+1)}" value="${esc((q.options||[])[k]||'')}"></div>`).join('')}
+    <div class="meta">گزینه‌ی صحیح را با دایره‌ی کنار آن مشخص کن.</div></div>`).join('');
+}
+function collectQs(){
+  const blocks=[...document.querySelectorAll('#exqs .qb')];
+  EXQ=blocks.map((bl,i)=>{const o=[...bl.querySelectorAll('.qo')].map(x=>x.value.trim());const ans=[...bl.querySelectorAll('.qr')].findIndex(x=>x.checked);
+    return {text:bl.querySelector('.qt').value.trim(),img:EXQ[i]?.img||'',pdf:EXQ[i]?.pdf||'',options:o,answer:ans}});
+}
+async function exSave(){
+  const m=$('#ex_m');m.textContent='';
+  const title=$('#ex_t').value.trim();if(!title)throw new Error('عنوان آزمون را وارد کن');
+  const blocks=[...document.querySelectorAll('#exqs .qb')];if(!blocks.length)throw new Error('حداقل یک سؤال لازم است');
+  const questions=[];
+  for(let i=0;i<blocks.length;i++){
+    const bl=blocks[i];
+    const text=bl.querySelector('.qt').value.trim();
+    const img=bl.querySelector('.qimg').files[0],pdf=bl.querySelector('.qpdf').files[0];
+    if(!text&&!img&&!(pdf||EXQ[i]?.pdf)&&!EXQ[i]?.img)throw new Error(`سؤال ${fa(i+1)} متن یا فایل ندارد`);
+    const pairs=[...bl.querySelectorAll('.qo')].map((x,k)=>({o:x.value.trim(),k})).filter(p=>p.o);
+    if(pairs.length<2)throw new Error(`سؤال ${fa(i+1)} حداقل ۲ گزینه لازم دارد`);
+    const sel=[...bl.querySelectorAll('.qr')].findIndex(x=>x.checked);
+    const ai=pairs.findIndex(p=>p.k===sel);if(ai<0)throw new Error(`پاسخ صحیح سؤال ${fa(i+1)} را انتخاب کن`);
+    m.textContent=`در حال آپلود فایل‌های سؤال ${fa(i+1)}…`;
+    const imgId=img?await uploadAsset(img):(EXQ[i]?.img||'');
+    const pdfId=pdf?await uploadAsset(pdf):(EXQ[i]?.pdf||'');
+    questions.push({text,img:imgId,pdf:pdfId,options:pairs.map(p=>p.o),answer:ai});
+  }
+  const pdfFile=$('#ex_pdf').files[0];
+  const pdfId=pdfFile?await uploadAsset(pdfFile):EXPDF;
+  const toISO=v=>v?new Date(v).toISOString():'';
+  m.textContent='در حال ذخیره…';
+  await run('adminSaveExam',pass,JSON.stringify({id:EXID,title,track:$('#ex_k').value,durationMin:Number($('#ex_d').value)||30,
+    startAt:toISO($('#ex_s').value),endAt:toISO($('#ex_e').value),published:EXPUB,showAnswers:$('#ex_show').checked,pdf:pdfId,questions}));
+  toast('آزمون ذخیره شد');
+  $('#exedit').hidden=true;await refreshExamList();
+}
+async function exAnalysis(id){
+  const box=$('#exedit');box.hidden=false;box.innerHTML='<div class="meta">در حال تحلیل…</div>';
+  const a=await run('examAnalysis',pass,id);
+  box.innerHTML=`<h2>تحلیل: ${esc(a.title)}</h2>
+   <div class="stats"><div><b>${fa(a.count)}</b><small>شرکت‌کننده</small></div><div><b>${fa(a.avg)}٪</b><small>میانگین</small></div><div><b>${fa(a.median)}٪</b><small>میانه</small></div><div><b>${fa(a.max)}٪</b><small>بالاترین</small></div><div><b>${fa(a.min)}٪</b><small>پایین‌ترین</small></div><div><b>${fa(Math.round(a.avgDuration/60))}</b><small>میانگین دقیقه</small></div></div>
+   <h4 class="sh">سؤال‌ها (درصد پاسخ صحیح)</h4>${a.perQ.map(q=>`<div class="hbar"><span>${fa(q.i)}</span><i style="width:${Math.max(3,q.rate)}%"></i><span>${fa(q.rate)}٪</span></div>`).join('')}
+   <h4 class="sh">نفرات برتر</h4>${a.board.slice(0,10).map(r=>`<div class="hist"><span>${fa(r.rank)}. ${esc(r.name)}</span><span><b>${fa(r.percent)}٪</b></span></div>`).join('')||'<div class="meta">هنوز کسی شرکت نکرده.</div>'}
+   <h4 class="sh">قرعه‌کشی</h4>
+   <div class="g2"><input id="rf_n" type="number" min="1" value="3" placeholder="تعداد برنده"><input id="rf_p" type="number" min="0" max="100" value="0" placeholder="حداقل درصد (۰ = همه)"></div>
+   <div class="row" style="margin-top:6px"><button id="rf_go">انجام قرعه‌کشی</button></div><div class="msg" id="rf_m"></div>
+   ${a.raffles.map(r=>`<div class="meta">${esc(new Date(r.at).toLocaleString('fa-IR'))}: ${r.winners.map(w=>esc(w.name)).join('، ')}</div>`).join('')}
+   <div class="row" style="margin-top:8px"><button class="g" id="exAnaClose">بستن</button></div>`;
+  $('#rf_go').onclick=async()=>{try{const w=await run('raffle',pass,id,Number($('#rf_n').value)||1,Number($('#rf_p').value)||0);$('#rf_m').innerHTML='برندگان: <b>'+w.map(x=>esc(x.name)).join('، ')+'</b>'}catch(e){$('#rf_m').textContent=e.message}};
+  $('#exAnaClose').onclick=()=>box.hidden=true;
 }
 </script>
 </body></html>
