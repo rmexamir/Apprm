@@ -323,6 +323,7 @@ h1,h2,h3,h4{font-weight:400}
 .stile .stb{grid-column:1 / -1;grid-row:3;height:4px;margin-top:6px}
 .stile.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--c1),0 6px 14px rgba(0,0,0,.2)}
 .stile .stk{top:-6px;left:-6px;width:20px;height:20px;font-size:11px}
+.sbc.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/></symbol>
@@ -429,7 +430,7 @@ h1,h2,h3,h4{font-weight:400}
 
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
-      <select id="ug"></select><select id="us"></select><select id="ut"></select><input id="uy" placeholder="سال / نوبت (مثلاً خرداد ۱۴۰۴)"><select id="ue" hidden></select><input id="uo" placeholder="نام برگزارکننده آزمون" hidden><select id="ul" hidden style="grid-column:1/-1"></select><select id="usb" hidden style="grid-column:1/-1"></select></div>
+      <div id="ugchips" class="tq" style="grid-column:1/-1"></div><select id="ug" hidden></select><select id="us"></select><select id="ut"></select><input id="uy" placeholder="سال / نوبت (مثلاً خرداد ۱۴۰۴)"><select id="ue" hidden></select><input id="uo" placeholder="نام برگزارکننده آزمون" hidden><select id="ul" hidden style="grid-column:1/-1"></select><select id="usb" hidden style="grid-column:1/-1"></select></div>
       <input id="uf" type="file" multiple style="margin-top:8px"><progress id="pg" max="100" value="0" hidden style="width:100%;margin-top:8px"></progress><div id="pgt" class="meta" style="text-align:center;margin-top:4px"></div>
       <div class="row"><button id="sv">ذخیره</button><button class="g" id="cl" hidden>انصراف از ویرایش</button></div>
       <div class="msg" id="um"></div></div>
@@ -970,11 +971,11 @@ async function dc(k,n){if(!confirm('«'+n+'» حذف شود؟ فایل‌های 
 async function del(id){if(!confirm('این فایل برای همیشه حذف شود؟'))return;await run('deleteFile',pass,id);D.files=D.files.filter(f=>f.id!==id);adminLists()}
 function edit(id){
   const f=D.files.find(x=>x.id===id);editId=id;
-  $('#ti').value=f.title;$('#ug').value=f.grade;fillS('#ug','#us','درس را انتخاب کنید');$('#us').value=f.subject;$('#ut').value=f.type;$('#uy').value=f.year;$('#ue').value=D.cats.exam.includes(f.exam)?f.exam:(f.exam?'سایر':'');$('#uo').value=D.cats.exam.includes(f.exam)?'':(f.exam||'');$('#ul').value=f.link||'';toggleEx();fillSubSel();$('#usb').value=f.sub||'';
+  $('#ti').value=f.title;$('#ug').value=f.grade;UG_SEL=[f.grade];renderGradeChips(UG_SEL);fillS('#ug','#us','درس را انتخاب کنید');$('#us').value=f.subject;$('#ut').value=f.type;$('#uy').value=f.year;$('#ue').value=D.cats.exam.includes(f.exam)?f.exam:(f.exam?'سایر':'');$('#uo').value=D.cats.exam.includes(f.exam)?'':(f.exam||'');$('#ul').value=f.link||'';toggleEx();fillSubSel();$('#usb').value=f.sub||'';
   $('#uh').textContent='ویرایش اطلاعات فایل';$('#cl').hidden=false;$('#uf').hidden=true;
   document.querySelector('[data-t=up]').click();window.scrollTo(0,0)
 }
-function reset(){editId=null;['ti','uy','uf'].forEach(i=>$('#'+i).value='');['ug','us','ut','ue'].forEach(i=>$('#'+i).value='');$('#uo').value='';$('#ul').value='';toggleEx();$('#uh').textContent='بارگذاری فایل جدید';$('#cl').hidden=true;$('#uf').hidden=false}
+function reset(){editId=null;UG_SEL=[];renderGradeChips([]);['ti','uy','uf'].forEach(i=>$('#'+i).value='');['ug','us','ut','ue'].forEach(i=>$('#'+i).value='');$('#uo').value='';$('#ul').value='';toggleEx();$('#uh').textContent='بارگذاری فایل جدید';$('#cl').hidden=true;$('#uf').hidden=false}
 $('#cl').onclick=reset;
 async function uploadOne(file,m,um,tag){
   if(file.size>150*1048576)throw new Error('«'+file.name+'» بیشتر از ۱۵۰ مگابایت است.');
@@ -992,7 +993,8 @@ async function uploadOne(file,m,um,tag){
   }
 }
 $('#sv').onclick=async()=>{
-  const base={title:$('#ti').value.trim(),grade:$('#ug').value,subject:$('#us').value,type:$('#ut').value,year:$('#uy').value.trim(),exam:exv(),link:$('#ut').value==='پاسخنامه'?$('#ul').value:'',sub:$('#usb')?$('#usb').value:''},um=$('#um'),files=[...$('#uf').files];
+  const base={title:$('#ti').value.trim(),grade:$('#ug').value,grades:UG_SEL.slice(),subject:$('#us').value,type:$('#ut').value,year:$('#uy').value.trim(),exam:exv(),link:$('#ut').value==='پاسخنامه'?$('#ul').value:'',sub:$('#usb')?$('#usb').value:''},um=$('#um'),files=[...$('#uf').files];
+  if(!editId&&!base.grades.length)return um.textContent='حداقل یک پایه یا رشته را انتخاب کنید.';
   if(editId&&!base.title)return um.textContent='عنوان را وارد کنید.';
   if(!editId&&files.length<2&&!base.title)return um.textContent='عنوان را وارد کنید.';
   if(base.type==='آزمون آزمایشی'&&!base.exam)return um.textContent='برگزارکننده آزمون را مشخص کنید.';
@@ -1488,5 +1490,28 @@ document.addEventListener('click',e=>{
   const sg=e.target.closest&&e.target.closest('[data-sgf]');
   if(sg){const words=nrm(F.q).split(/\s+/).filter(Boolean).map(w=>w===sg.dataset.sgf?sg.dataset.sgt:w);F.q=words.join(' ');const q=$('#q');if(q)q.value=F.q;show()}
 });
+</script>
+<script>
+// ===================== انتخاب چند پایه/رشته در بارگذاری =====================
+let UG_SEL=[];
+function renderGradeChips(sel){
+  const el=$('#ugchips');if(!el)return;
+  el.innerHTML=`<button type="button" class="sbc ${sel.length===GRADES.length?'on':''}" data-gall="1">همه</button>`+
+    GRADES.map(g=>`<button type="button" class="sbc ${sel.includes(g)?'on':''}" data-gg="${esc(g)}">${esc(g)}</button>`).join('');
+}
+function syncGrades(){
+  UG_SEL=GRADES.filter(g=>UG_SEL.includes(g));
+  const first=UG_SEL[0]||'';
+  $('#ug').value=first;renderGradeChips(UG_SEL);
+  $('#ug').dispatchEvent(new Event('change'));
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-gg],[data-gall]');
+  if(!b||!$('#ugchips')||!$('#ugchips').contains(b))return;
+  if(b.dataset.gall!=null){UG_SEL=UG_SEL.length===GRADES.length?[]:[...GRADES]}
+  else{const g=b.dataset.gg;UG_SEL=UG_SEL.includes(g)?UG_SEL.filter(x=>x!==g):[...UG_SEL,g]}
+  syncGrades();
+});
+renderGradeChips([]);
 </script>
 </body></html>
