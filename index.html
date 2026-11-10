@@ -125,6 +125,12 @@ html[data-mode=dark] .poll-opt.voted{background:rgba(99,102,241,.12)}
 html[data-mode=dark] .poll-opt-bar{background:rgba(99,102,241,.18)}
 .plbar-wrap{margin-top:6px;background:var(--bg);border-radius:8px;overflow:hidden;height:10px}
 .plbar-fill{height:10px;background:var(--pri);border-radius:8px;transition:width .5s ease}
+.poll-opt.multi-sel{border-color:var(--pri);background:rgba(79,70,229,.06)}
+html[data-mode=dark] .poll-opt.multi-sel{background:rgba(99,102,241,.12)}
+.poll-opt.multi-sel .poll-opt-bar{background:rgba(79,70,229,.14)}
+.pl-opt-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.pl-opt-row input{flex:1}
+.pl-opt-row button{flex-shrink:0;padding:0 10px;height:36px;line-height:36px;font-size:18px;min-width:36px}
 .mebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px}
 .mebar .pill{background:var(--acc);color:var(--on);border-radius:20px;padding:1px 12px;font-weight:700}
 .link{background:none;color:var(--acc);padding:0;text-decoration:underline;font-weight:400}
@@ -466,14 +472,14 @@ h1,h2,h3,h4{font-weight:400}
     <div id="t-pl" hidden>
       <div class="card"><h2>ایجاد نظرسنجی جدید</h2>
         <div class="meta" style="margin-bottom:8px">نظرسنجی در صفحه‌ی اصلی برای همه‌ی کاربران نمایش داده می‌شود.</div>
-        <input id="plq" placeholder="سؤال نظرسنجی (مثلاً: کدام درس سخت‌تر است؟)">
-        <div style="margin-top:8px">
-          <input id="plo1" placeholder="گزینه ۱" style="margin-bottom:6px">
-          <input id="plo2" placeholder="گزینه ۲" style="margin-bottom:6px">
-          <input id="plo3" placeholder="گزینه ۳ (اختیاری)" style="margin-bottom:6px">
-          <input id="plo4" placeholder="گزینه ۴ (اختیاری)">
-        </div>
-        <div class="row" style="margin-top:10px">
+        <input id="plq" placeholder="سؤال نظرسنجی (مثلاً: کدام درس سخت‌تر است؟)" style="margin-bottom:8px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px;cursor:pointer">
+          <input type="checkbox" id="plmulti" style="width:auto;margin:0">
+          <span>انتخاب چندگزینه‌ای (کاربران می‌توانند چند گزینه را با هم انتخاب کنند)</span>
+        </label>
+        <div id="plopts"></div>
+        <button id="pladdopt" class="g" style="margin-top:4px;font-size:13px">+ افزودن گزینه</button>
+        <div class="row" style="margin-top:12px">
           <button id="plsave">ذخیره و فعال‌سازی</button>
           <button class="g" id="plclear">پاک کردن نظرسنجی</button>
         </div>
@@ -632,40 +638,90 @@ function showNotice(){const n=$('#notice');n.hidden=!D.notice;n.innerHTML=ico('b
 /* ========== POLL / نظرسنجی ========== */
 function getPoll(){try{return JSON.parse(localStorage.getItem('rm_poll')||'null')}catch{return null}}
 function savePoll(p){localStorage.setItem('rm_poll',JSON.stringify(p))}
-function getVote(){return localStorage.getItem('rm_vote')||null}
-function setVote(key){localStorage.setItem('rm_vote',key)}
+// votes stored as JSON array of voted option keys per poll id: rm_vote_{pollId}
+function getMyVotes(pollId){try{return JSON.parse(localStorage.getItem('rm_vote_'+pollId)||'null')}catch{return null}}
+function setMyVotes(pollId,keys){localStorage.setItem('rm_vote_'+pollId,JSON.stringify(keys))}
 
 function showPoll(){
   const pc=$('#pollcard');
   const poll=getPoll();
   if(!poll||!poll.active||!poll.question||!poll.options||poll.options.length<2){pc.hidden=true;return;}
   pc.hidden=false;
-  const voted=getVote();
-  const votedKey=voted&&voted.startsWith(poll.id+'|')?voted.split('|')[1]:null;
-  const total=poll.options.reduce((s,o)=>s+(o.votes||0),0);
-  const show=votedKey!=null;
+  const multi=!!poll.multi;
+  const myVotes=getMyVotes(poll.id)||[];
+  const hasVoted=myVotes.length>0;
+  // For multi-select: pending selections before submit
+  const pendingKey='_pollPending_'+poll.id;
+  if(!window[pendingKey])window[pendingKey]=[];
+  const pending=window[pendingKey];
+
+  // total votes = unique voters = sum of votes on each option (for single) or separate participant count
+  const totalVotes=poll.options.reduce((s,o)=>s+(o.votes||0),0);
+  // For multi: totalParticipants stored separately
+  const totalP=poll.participants||totalVotes;
+
+  const opts=poll.options.map(o=>{
+    const pct=totalP>0?Math.round((o.votes||0)/totalP*100):0;
+    const isMe=myVotes.includes(o.key);
+    const isSel=pending.includes(o.key);
+    if(hasVoted){
+      return`<div class="poll-opt${isMe?' voted':''}">
+        <div class="poll-opt-bar" style="width:${pct}%"></div>
+        <div class="poll-opt-label"><span>${esc(o.text)}${isMe?' ✓':''}</span><span class="poll-opt-pct">${fa(pct)}٪</span></div>
+      </div>`;
+    } else if(multi){
+      return`<div class="poll-opt${isSel?' multi-sel':''}" onclick="pollTogglePending('${esc(o.key)}','${esc(poll.id)}')">
+        <div class="poll-opt-label"><span>${isSel?'☑ ':'☐ '}${esc(o.text)}</span></div>
+      </div>`;
+    } else {
+      return`<div class="poll-opt" onclick="castVote('${esc(o.key)}','${esc(poll.id)}')">
+        <div class="poll-opt-label"><span>${esc(o.text)}</span></div>
+      </div>`;
+    }
+  }).join('');
+
+  const submitBtn=(!hasVoted&&multi)?`<button onclick="submitMultiVote('${esc(poll.id)}')" style="margin-top:10px;width:100%">ثبت رأی</button>`:'';
+  const hint=hasVoted
+    ?`<div class="poll-total">${fa(totalP)} نفر شرکت کرده‌اند</div>`
+    :(multi?`<div class="poll-total" style="font-size:12px">می‌توانید چند گزینه انتخاب کنید</div>`:`<div class="poll-total">برای مشاهده‌ی نتایج رأی دهید</div>`);
+
   pc.innerHTML=`<div class="poll-q">${ico('target')}&nbsp;${esc(poll.question)}</div>
-<div class="poll-opts">${poll.options.map((o,i)=>{
-    const pct=total>0?Math.round((o.votes||0)/total*100):0;
-    const isMe=o.key===votedKey;
-    return`<div class="poll-opt${isMe?' voted':''}" data-pkey="${esc(o.key)}" onclick="castVote('${esc(o.key)}')">
-      ${show?`<div class="poll-opt-bar" style="width:${pct}%"></div>`:''}
-      <div class="poll-opt-label"><span>${esc(o.text)}${isMe?' ✓':''}</span>${show?`<span class="poll-opt-pct">${fa(pct)}٪</span>`:''}</div>
-    </div>`;
-  }).join('')}</div>
-  ${show?`<div class="poll-total">${fa(total)} نفر شرکت کرده‌اند</div>`:'<div class="poll-total">برای مشاهده‌ی نتایج رأی دهید</div>'}`;
+<div class="poll-opts">${opts}</div>${submitBtn}${hint}`;
 }
 
-function castVote(optKey){
+function pollTogglePending(optKey,pollId){
+  const k='_pollPending_'+pollId;
+  if(!window[k])window[k]=[];
+  const idx=window[k].indexOf(optKey);
+  if(idx>=0)window[k].splice(idx,1);else window[k].push(optKey);
+  showPoll();
+}
+
+function castVote(optKey,pollId){
   const poll=getPoll();
-  if(!poll||!poll.active)return;
-  const voted=getVote();
-  if(voted&&voted.startsWith(poll.id+'|')){showPoll();return;}
+  if(!poll||!poll.active||poll.id!==pollId)return;
+  if((getMyVotes(pollId)||[]).length>0)return;
   const opt=poll.options.find(o=>o.key===optKey);
   if(!opt)return;
   opt.votes=(opt.votes||0)+1;
+  poll.participants=(poll.participants||0)+1;
   savePoll(poll);
-  setVote(poll.id+'|'+optKey);
+  setMyVotes(pollId,[optKey]);
+  showPoll();
+  pollAdminResults();
+}
+
+function submitMultiVote(pollId){
+  const poll=getPoll();
+  if(!poll||!poll.active||poll.id!==pollId)return;
+  if((getMyVotes(pollId)||[]).length>0)return;
+  const pending=window['_pollPending_'+pollId]||[];
+  if(!pending.length)return;
+  pending.forEach(k=>{const o=poll.options.find(x=>x.key===k);if(o)o.votes=(o.votes||0)+1;});
+  poll.participants=(poll.participants||0)+1;
+  savePoll(poll);
+  setMyVotes(pollId,pending.slice());
+  window['_pollPending_'+pollId]=[];
   showPoll();
   pollAdminResults();
 }
@@ -675,37 +731,67 @@ function pollAdminResults(){
   const poll=getPoll();
   if(!poll||!poll.question){pr.hidden=true;return;}
   pr.hidden=false;
-  const total=poll.options.reduce((s,o)=>s+(o.votes||0),0);
-  $('#plresinner').innerHTML=`<div style="font-weight:700;margin-bottom:10px">${esc(poll.question)}</div>`+
+  const totalP=poll.participants||poll.options.reduce((s,o)=>s+(o.votes||0),0);
+  const totalV=poll.options.reduce((s,o)=>s+(o.votes||0),0);
+  $('#plresinner').innerHTML=`<div style="font-weight:700;margin-bottom:10px">${esc(poll.question)}${poll.multi?' <span style="font-size:12px;font-weight:400;color:var(--mt)">(چندگزینه‌ای)</span>':''}</div>`+
     poll.options.map(o=>{
-      const pct=total>0?Math.round((o.votes||0)/total*100):0;
+      const pct=totalP>0?Math.round((o.votes||0)/totalP*100):0;
       return`<div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${esc(o.text)}</span><span style="color:var(--mt)">${fa(o.votes||0)} رأی · ${fa(pct)}٪</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${esc(o.text)}</span><span style="color:var(--mt)">${fa(o.votes||0)} بار · ${fa(pct)}٪</span></div>
         <div class="plbar-wrap"><div class="plbar-fill" style="width:${pct}%"></div></div>
       </div>`;
     }).join('')+
-    `<div style="font-size:12px;color:var(--mt);margin-top:8px">مجموع: ${fa(total)} رأی &nbsp;|&nbsp; وضعیت: ${poll.active?'<span style="color:#22c55e">فعال</span>':'<span style="color:var(--mt)">غیرفعال</span>'}</div>`;
+    `<div style="font-size:12px;color:var(--mt);margin-top:8px">${fa(totalP)} شرکت‌کننده · ${fa(totalV)} رأی کل &nbsp;|&nbsp; وضعیت: ${poll.active?'<span style="color:#22c55e">فعال</span>':'<span style="color:var(--mt)">غیرفعال</span>'}</div>`;
 }
+
+/* --- Admin poll editor --- */
+let _plOptCount=0;
+function plAddOpt(val=''){
+  _plOptCount++;
+  const id='plo_'+_plOptCount;
+  const wrap=document.createElement('div');
+  wrap.className='pl-opt-row';wrap.dataset.oid=id;
+  wrap.innerHTML=`<input id="${id}" placeholder="گزینه" value="${esc(val)}"><button class="d" onclick="plRemOpt('${id}')" title="حذف">×</button>`;
+  $('#plopts').appendChild(wrap);
+}
+function plRemOpt(id){
+  const row=$('.pl-opt-row[data-oid="'+id+'"]');
+  if(row&&$('#plopts').children.length>2)row.remove();
+}
+function plGetOpts(){return[...$('#plopts').querySelectorAll('input')].map(i=>i.value.trim()).filter(Boolean)}
 
 function pollAdminInit(){
   const poll=getPoll();
   const pm=$('#plmsg');
-  if(poll){
+  $('#plopts').innerHTML='';_plOptCount=0;
+  if(poll&&poll.options&&poll.options.length){
+    poll.options.forEach(o=>plAddOpt(o.text));
+    if(poll.options.length<2){plAddOpt();plAddOpt();}
     $('#plq').value=poll.question||'';
-    poll.options.forEach((o,i)=>{const el=$('#plo'+(i+1));if(el)el.value=o.text||''});
+    $('#plmulti').checked=!!poll.multi;
+  }else{
+    plAddOpt();plAddOpt();
+    $('#plq').value='';$('#plmulti').checked=false;
   }
   pollAdminResults();
+  $('#pladdopt').onclick=()=>plAddOpt();
   $('#plsave').onclick=()=>{
     const q=$('#plq').value.trim();
     if(!q)return pm.textContent='سؤال نظرسنجی را وارد کنید.';
-    const opts=[1,2,3,4].map(i=>$('#plo'+i).value.trim()).filter(Boolean);
+    const opts=plGetOpts();
     if(opts.length<2)return pm.textContent='حداقل دو گزینه وارد کنید.';
     const existing=getPoll();
+    const sameQ=existing&&existing.question===q;
     const newPoll={
-      id:existing&&existing.question===q?existing.id:Date.now().toString(36),
+      id:sameQ?existing.id:Date.now().toString(36),
       question:q,
+      multi:$('#plmulti').checked,
       active:true,
-      options:opts.map((t,i)=>({key:'o'+i,text:t,votes:(existing&&existing.options&&existing.options[i]&&existing.options[i].text===t)?(existing.options[i].votes||0):0}))
+      participants:sameQ?(existing.participants||0):0,
+      options:opts.map((t,i)=>{
+        const exOpt=sameQ&&existing.options&&existing.options.find(o=>o.text===t);
+        return{key:'o'+Date.now().toString(36)+i,text:t,votes:exOpt?(exOpt.votes||0):0};
+      })
     };
     savePoll(newPoll);
     pm.textContent='نظرسنجی ذخیره و فعال شد.';
@@ -715,7 +801,8 @@ function pollAdminInit(){
   $('#plclear').onclick=()=>{
     if(!confirm('نظرسنجی فعلی (شامل همه رأی‌ها) پاک شود؟'))return;
     localStorage.removeItem('rm_poll');
-    ['plq','plo1','plo2','plo3','plo4'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});
+    $('#plopts').innerHTML='';_plOptCount=0;plAddOpt();plAddOpt();
+    $('#plq').value='';$('#plmulti').checked=false;
     pm.textContent='نظرسنجی پاک شد.';
     pollAdminResults();
     showPoll();
