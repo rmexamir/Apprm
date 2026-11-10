@@ -386,6 +386,7 @@ h1,h2,h3,h4{font-weight:400}
 <button data-v="tools"><svg class="i"><use href="#i-tools"/></svg>ابزارها</button>
 <button data-v="exam"><svg class="i"><use href="#i-flag"/></svg>آزمون</button><button data-v="fav"><svg class="i"><use href="#i-star"/></svg>نشان‌شده‌ها</button>
 <button data-v="req"><svg class="i"><use href="#i-send"/></svg>درخواست</button>
+<button data-v="progress"><svg class="i"><use href="#i-chart"/></svg>پیشرفت</button>
 </nav>
 
 <div id="v-home" class="lay">
@@ -417,6 +418,7 @@ h1,h2,h3,h4{font-weight:400}
 <div id="v-fav" hidden><h2 style="font-size:18px;margin:0" class="sh"><svg class="i" style="color:#f59e0b"><use href="#i-star"/></svg>فایل‌های نشان‌شده</h2><div class="meta">با زدن ستاره روی هر فایل، اینجا ذخیره می‌شود (روی همین دستگاه).</div><div id="favl"></div></div>
 
 <div id="v-exam" hidden></div>
+<div id="v-progress" hidden></div>
 <div id="v-req" hidden><div class="card"><h2><svg class="i"><use href="#i-send"/></svg>فایل مورد نظرت را پیدا نکردی؟</h2><input id="rt" placeholder="مثلاً: آزمون قلمچی دوازدهم تجربی خرداد ۱۴۰۴"><input id="rc" placeholder="آیدی روبیکا یا شماره تماس (اختیاری)" style="margin-top:8px"><div class="row"><button id="rs">ارسال درخواست</button></div><div class="msg" id="rm"></div></div></div>
 </section>
 
@@ -715,8 +717,76 @@ $('#ovm').addEventListener('click',e=>{if(e.target.id==='ovm'){S.set('rm_skip',t
 // ---------- ناوبری ----------
 function go(v){
   $$('#nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  ['home','tools','fav','req','exam'].forEach(x=>$('#v-'+x).hidden=x!==v);
-  if(v==='tools')toolsRender();if(v==='fav')favView();if(v==='exam')examView();window.scrollTo({top:0})
+  ['home','tools','fav','req','exam','progress'].forEach(x=>$('#v-'+x).hidden=x!==v);
+  if(v==='tools')toolsRender();if(v==='fav')favView();if(v==='exam')examView();if(v==='progress')progressRender();window.scrollTo({top:0})
+}
+// ---------- داشبورد پیشرفت ----------
+async function progressRender(){
+  const el=$('#v-progress');
+  const L=LOG();
+  const now=new Date();
+  const dk2=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+dd};
+  // ۳۰ روز اخیر
+  const days30=[...Array(30)].map((_,i)=>{const d=new Date(now);d.setDate(d.getDate()-29+i);return{k:dk2(d),m:+L[dk2(d)]||0,label:fa(d.getDate())}});
+  const mx=Math.max(10,...days30.map(d=>d.m));
+  const total30=days30.reduce((a,d)=>a+d.m,0);
+  const totalAll=totalMin();
+  const curStreak=streak();
+  const bestStreak=longest();
+  const todayMin=+L[dk2(now)]||0;
+  const fmt=m=>m>=60?fa(Math.floor(m/60))+'س '+fa(m%60)+'د':fa(m)+'د';
+  // آزمون‌ها
+  let examHtml='<div class="meta" style="text-align:center;padding:1rem">در حال بارگذاری...</div>';
+  el.innerHTML=buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,todayMin,examHtml);
+  // بارگذاری نتایج آزمون از سرور
+  if(TOK){
+    try{
+      const r=await run('myResults',TOK);
+      if(r&&r.length){
+        const sorted=r.slice().sort((a,b)=>b.percent-a.percent);
+        examHtml=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">`+
+          sorted.slice(0,6).map(x=>`<div style="background:var(--bg2,#f8f8f8);border-radius:8px;padding:8px 10px;font-size:13px"><div style="font-weight:500;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.title)}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span style="font-size:18px;font-weight:600;color:${x.percent>=70?'#22c55e':x.percent>=40?'#f59e0b':'#ef4444'}">${fa(Math.round(x.percent))}٪</span><span style="color:#888;font-size:11px">رتبه ${fa(x.rank)}</span></div></div>`).join('')+`</div>`;
+      } else {
+        examHtml='<div class="meta" style="padding:.5rem 0">هنوز آزمونی نداده‌ای</div>';
+      }
+    }catch(e){examHtml='<div class="meta">برای مشاهده ابتدا وارد شو</div>'}
+  } else {examHtml='<div class="meta">برای مشاهده ابتدا وارد شو</div>'}
+  // نشان‌ها
+  const got=S.get('rm_bd',[]);
+  const badgeHtml=`<div class="bdg">${BADGES.map(b=>`<div class="bd ${b[3]()?'on':''}">${ico(b[2])}<br>${b[1]}</div>`).join('')}</div>`;
+  // آمار درس‌ها از localStorage rm_pcth
+  const pcts=S.get('rm_pcth',[]);
+  let pctHtml='';
+  if(pcts.length){
+    const last5=pcts.slice(-10).reverse();
+    pctHtml=`<div class="card" style="margin-bottom:12px"><h2>${ico('target')}روند درصد آزمون‌ها (ذخیره‌شده)</h2><div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:8px">${last5.map(p=>`<div style="flex:1;text-align:center"><div style="height:${Math.round(p.p*0.6)}px;background:#3b82f6;border-radius:3px 3px 0 0;min-height:2px"></div><div style="font-size:9px;color:#888;margin-top:2px">${fa(Math.round(p.p))}٪</div></div>`).join('')}</div></div>`;
+  }
+  el.innerHTML=buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,todayMin,examHtml,badgeHtml,pctHtml);
+}
+function buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,todayMin,examHtml,badgeHtml,pctHtml){
+  return `<div class="card" style="margin-bottom:12px">
+  <h2>${ico('chart')}داشبورد پیشرفت من</h2>
+  <div class="stats">
+    <div><b>${fmt(todayMin)}</b><small>امروز</small></div>
+    <div><b>${fmt(total30)}</b><small>۳۰ روز</small></div>
+    <div><b>${fmt(totalAll)}</b><small>کل</small></div>
+  </div>
+  <div class="stats" style="margin-top:8px">
+    <div><b>${fa(curStreak)}</b><small>استریک جاری</small></div>
+    <div><b>${fa(bestStreak)}</b><small>بهترین استریک</small></div>
+    <div><b>${fa(Math.round(total30/30))}</b><small>میانگین/روز (د)</small></div>
+  </div>
+</div>
+<div class="card" style="margin-bottom:12px">
+  <h2>${ico('chart')}نمودار مطالعه ۳۰ روز اخیر</h2>
+  <div style="display:flex;align-items:flex-end;gap:2px;height:80px;margin-top:8px;overflow:hidden">
+    ${days30.map(d=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end" title="${d.k}: ${d.m}د"><div style="width:100%;background:${d.m>0?'var(--acc,#3b82f6)':'var(--brd,#e5e7eb)'};border-radius:2px 2px 0 0;height:${mx>0?Math.max(d.m>0?3:0,Math.round(d.m/mx*72)):0}px"></div></div>`).join('')}
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:10px;color:#888">۳۰ روز پیش</span><span style="font-size:10px;color:#888">امروز</span></div>
+</div>
+${pctHtml||''}
+<div class="card" style="margin-bottom:12px"><h2>${ico('flag')}نتایج آزمون‌ها</h2>${examHtml}</div>
+<div class="card">${badgeHtml||`<div class="bdg">${BADGES.map(b=>`<div class="bd ${b[3]()?'on':''}">${ico(b[2])}<br>${b[1]}</div>`).join('')}</div>`}</div>`
 }
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)go(b.dataset.v)});
 $('#rs').onclick=async()=>{const m=$('#rm');if($('#rt').value.trim().length<3)return m.textContent='متن درخواست را بنویسید.';$('#rs').disabled=true;try{await run('submitRequest',$('#rt').value,$('#rc').value);m.textContent='درخواست شما ثبت شد. ممنون!';$('#rt').value=$('#rc').value=''}catch(e){m.textContent=e.message||'خطا در ارسال'}$('#rs').disabled=false};
@@ -730,9 +800,9 @@ const BADGES=[['first','اولین گام','flag',()=>totalMin()>0],['s3','۳ ر
 function logMin(m){const L=LOG(),k=dk(new Date());L[k]=(+L[k]||0)+m;S.set('rm_log',L);const had=S.get('rm_bd',[]),now=BADGES.filter(b=>b[3]()).map(b=>b[0]),nw=now.filter(x=>!had.includes(x));if(nw.length){S.set('rm_bd',now);toast('نشان جدید: '+BADGES.find(b=>b[0]===nw[0])[1])}updStreak()}
 
 // ---------- ابزارها ----------
-const TL=[['plan','برنامه‌ریز','note'],['timer','تایمر تمرکز','timer'],['study','مطالعه‌ی من','chart'],['gpa','معدل','calc'],['pct','درصد آزمون','target'],['need','نمره‌ی لازم','flag'],['app','نصب روی گوشی','phone']];
+const TL=[['plan','برنامه‌ریز','note'],['timer','تایمر تمرکز','timer'],['study','مطالعه‌ی من','chart'],['gpa','معدل','calc'],['pct','درصد آزمون','target'],['need','نمره‌ی لازم','flag'],['zarayeb','ضرایب کنکور','flag'],['app','نصب روی گوشی','phone']];
 let tcur='plan';
-function toolsRender(){$('#tbody').oninput=null;$('#tbody').onclick=null;$('#ts').innerHTML=TL.map(t=>`<button data-tl="${t[0]}" class="${t[0]===tcur?'on':''}">${ico(t[2])}${t[1]}</button>`).join('');({plan:tPlan,timer:tTimer,study:tStudy,gpa:tGpa,pct:tPct,need:tNeed,app:tApp})[tcur]()}
+function toolsRender(){$('#tbody').oninput=null;$('#tbody').onclick=null;$('#ts').innerHTML=TL.map(t=>`<button data-tl="${t[0]}" class="${t[0]===tcur?'on':''}">${ico(t[2])}${t[1]}</button>`).join('');({plan:tPlan,timer:tTimer,study:tStudy,gpa:tGpa,pct:tPct,need:tNeed,zarayeb:tZarayeb,app:tApp})[tcur]()}
 $('#ts').addEventListener('click',e=>{const b=e.target.closest('[data-tl]');if(b){tcur=b.dataset.tl;toolsRender()}});
 const num=v=>v===''||v==null||isNaN(+v)?NaN:+v;
 const subOpts=()=>[...new Set([...ALLS,...D.cats.subject])].map(s=>`<option value="${esc(s)}">`).join('');
@@ -888,6 +958,161 @@ function tNeed(){
   const tb=$('#tbody');tb.oninput=e=>{const t=e.target;if(t.dataset.ni!=null)N.rows[+t.dataset.ni][t.dataset.nk]=t.value;else if(t.id==='nrw')N.rw=t.value;else if(t.id==='ntg')N.t=t.value;else return;save();calc()};
   tb.onclick=e=>{const d=e.target.closest('[data-nd]');if(d){N.rows.splice(+d.dataset.nd,1);if(!N.rows.length)N.rows=[{g:'',w:''}];save();tNeed()}};
   $('#nad').onclick=()=>{N.rows.push({g:'',w:''});save();tNeed()}
+}
+
+// ضرایب کنکور ۱۴۰۶
+const ZARAYEB={
+  'تجربی':{
+    label:'علوم تجربی',
+    12:[
+      {n:'فارسی ۳',t:'عمومی',w:11.09},
+      {n:'زیست‌شناسی ۳',t:'تخصصی',w:10.66},
+      {n:'ریاضی ۳',t:'تخصصی',w:10.04},
+      {n:'شیمی ۳',t:'تخصصی',w:9.19},
+      {n:'تعلیمات دینی ۳',t:'عمومی',w:8.47},
+      {n:'فیزیک ۳',t:'تخصصی',w:8.45},
+      {n:'زبان خارجی ۳',t:'عمومی',w:6.05},
+      {n:'عربی، زبان قرآن ۳',t:'عمومی',w:4.64},
+      {n:'سلامت و بهداشت',t:'عمومی',w:1.76},
+      {n:'علوم اجتماعی',t:'عمومی',w:1.31}
+    ],
+    11:[
+      {n:'زیست‌شناسی ۲',t:'تخصصی',w:6.39},
+      {n:'فارسی ۲',t:'عمومی',w:5.95},
+      {n:'شیمی ۲',t:'تخصصی',w:5.27},
+      {n:'تعلیمات دینی ۲',t:'عمومی',w:4.78},
+      {n:'زبان خارجی ۲',t:'عمومی',w:3.32},
+      {n:'عربی، زبان قرآن ۲',t:'عمومی',w:2.62}
+    ]
+  },
+  'ریاضی':{
+    label:'ریاضی فیزیک',
+    12:[
+      {n:'فارسی ۳',t:'عمومی',w:11.09},
+      {n:'شیمی ۳',t:'تخصصی',w:10.70},
+      {n:'فیزیک ۳',t:'تخصصی',w:9.26},
+      {n:'تعلیمات دینی ۳',t:'عمومی',w:8.47},
+      {n:'حسابان ۲',t:'تخصصی',w:8.17},
+      {n:'زبان خارجی ۳',t:'عمومی',w:6.05},
+      {n:'هندسه ۳',t:'تخصصی',w:5.49},
+      {n:'ریاضیات گسسته',t:'تخصصی',w:4.71},
+      {n:'عربی، زبان قرآن ۳',t:'عمومی',w:4.64},
+      {n:'سلامت و بهداشت',t:'عمومی',w:1.76},
+      {n:'علوم اجتماعی',t:'عمومی',w:1.31}
+    ],
+    11:[
+      {n:'فیزیک ۲',t:'تخصصی',w:6.57},
+      {n:'فارسی ۲',t:'عمومی',w:5.95},
+      {n:'هندسه ۲',t:'تخصصی',w:5.10},
+      {n:'تعلیمات دینی ۲',t:'عمومی',w:4.78},
+      {n:'زبان خارجی ۲',t:'عمومی',w:3.32},
+      {n:'عربی، زبان قرآن ۲',t:'عمومی',w:2.62}
+    ]
+  },
+  'انسانی':{
+    label:'ادبیات و علوم انسانی',
+    12:[
+      {n:'فارسی ۳',t:'عمومی',w:11.09},
+      {n:'علوم و فنون ادبی ۳',t:'تخصصی',w:8.68},
+      {n:'تعلیمات دینی ۳',t:'عمومی',w:8.47},
+      {n:'ریاضی و آمار ۳',t:'تخصصی',w:7.71},
+      {n:'جغرافیا ۳',t:'تخصصی',w:7.71},
+      {n:'زبان خارجی ۳',t:'عمومی',w:6.05},
+      {n:'فلسفه ۲',t:'تخصصی',w:5.55},
+      {n:'تاریخ ۳',t:'تخصصی',w:5.38},
+      {n:'جامعه‌شناسی ۳',t:'تخصصی',w:4.96},
+      {n:'عربی ۳ (تخصصی)',t:'تخصصی',w:4.30},
+      {n:'سلامت و بهداشت',t:'عمومی',w:1.76}
+    ],
+    11:[
+      {n:'فارسی ۲',t:'عمومی',w:5.95},
+      {n:'تاریخ ۲',t:'تخصصی',w:5.24},
+      {n:'جامعه‌شناسی ۲',t:'تخصصی',w:4.82},
+      {n:'تعلیمات دینی ۲',t:'عمومی',w:4.78},
+      {n:'عربی ۲ (تخصصی)',t:'تخصصی',w:4.23},
+      {n:'زبان خارجی ۲',t:'عمومی',w:3.32}
+    ]
+  }
+};
+function tZarayeb(){
+  const me=S.get('rm_me',null);
+  const trMap={'تجربی':'تجربی','تجربی (یازدهم)':'تجربی','تجربی (دوازدهم)':'تجربی',
+    'ریاضی':'ریاضی','ریاضی (یازدهم)':'ریاضی','ریاضی (دوازدهم)':'ریاضی',
+    'انسانی':'انسانی','انسانی (یازدهم)':'انسانی','انسانی (دوازدهم)':'انسانی'};
+  let defTrack='تجربی';
+  if(me&&me.g){const g=me.g;for(const k of Object.keys(trMap))if(g.includes(k.replace(' (یازدهم)','').replace(' (دوازدهم)',' ')))defTrack=trMap[k]||defTrack}
+  // detect from data-track
+  const dt=document.documentElement.dataset.track;
+  if(dt==='ma')defTrack='ریاضی';else if(dt==='hu')defTrack='انسانی';else if(dt==='ex')defTrack='تجربی';
+  let curTrack=defTrack;
+  const wColor=w=>w>=10?'var(--ok,#22c55e)':w>=7?'var(--acc,#f59e0b)':'var(--er,#ef4444)';
+  const renderTable=track=>{
+    const d=ZARAYEB[track];
+    const rows=(grade,list)=>list.map((r,i)=>`<tr>
+      <td style="padding:6px 8px;text-align:center;color:#888;font-size:12px">${fa(i+1)}</td>
+      <td style="padding:6px 8px"><span style="font-size:13px">${esc(r.n)}</span><span style="font-size:10px;margin-right:4px;color:#888">${r.t==='تخصصی'?'📌':''}</span></td>
+      <td style="padding:6px 8px;text-align:center"><span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${r.t==='تخصصی'?'rgba(59,130,246,.15)':'rgba(107,114,128,.12)'};color:${r.t==='تخصصی'?'#3b82f6':'#6b7280'}">${r.t}</span></td>
+      <td style="padding:6px 8px;text-align:center"><b style="color:${wColor(r.w)};font-size:14px">${fa(r.w.toFixed(2))}</b></td>
+    </tr>`).join('');
+    const sum12=d[12].reduce((a,r)=>a+r.w,0),sum11=d[11].reduce((a,r)=>a+r.w,0);
+    return`<div class="card" style="margin-bottom:12px">
+      <h2>${ico('flag')}ضرایب کنکور ۱۴۰۶ — ${esc(d.label)}</h2>
+      <div class="meta" style="margin-bottom:12px">دیپلم نظام ۳-۳-۶ | داده‌ها: سازمان سنجش ۱۴۰۶</div>
+      <div class="seg" id="zgrade">
+        <button data-zg="12" class="on">پایه دوازدهم</button>
+        <button data-zg="11">پایه یازدهم</button>
+        <button data-zg="all">همه</button>
+      </div>
+      <div id="ztbl12" style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:12px;font-weight:600;color:#888">پایه دوازدهم</span>
+          <span style="font-size:11px;color:#888">جمع ضرایب: <b style="color:var(--t)">${fa(sum12.toFixed(2))}</b></span>
+        </div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="border-bottom:1px solid var(--brd,#e5e7eb)">
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">#</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:right">درس</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">نوع</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">ضریب</th>
+          </tr></thead>
+          <tbody>${rows(12,d[12])}</tbody>
+        </table>
+      </div>
+      <div id="ztbl11" style="margin-top:16px;display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:12px;font-weight:600;color:#888">پایه یازدهم</span>
+          <span style="font-size:11px;color:#888">جمع ضرایب: <b style="color:var(--t)">${fa(sum11.toFixed(2))}</b></span>
+        </div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="border-bottom:1px solid var(--brd,#e5e7eb)">
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">#</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:right">درس</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">نوع</th>
+            <th style="padding:4px 8px;font-size:11px;color:#888;font-weight:500;text-align:center">ضریب</th>
+          </tr></thead>
+          <tbody>${rows(11,d[11])}</tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;font-size:11px;flex-wrap:wrap">
+        <span style="color:var(--ok,#22c55e)">● ۱۰ و بیشتر</span>
+        <span style="color:var(--acc,#f59e0b)">● ۷ تا ۱۰</span>
+        <span style="color:var(--er,#ef4444)">● کمتر از ۷</span>
+        <span style="color:#3b82f6;margin-right:8px">📌 تخصصی</span>
+      </div>
+    </div>`;
+  };
+  $('#tbody').innerHTML=`<div class="card" style="margin-bottom:12px">
+    <h2 style="margin-bottom:10px">${ico('flag')}انتخاب رشته</h2>
+    <div class="seg" id="ztrack">
+      ${Object.entries(ZARAYEB).map(([k,v])=>`<button data-zt="${k}" class="${k===curTrack?'on':''}">${esc(v.label)}</button>`).join('')}
+    </div>
+  </div><div id="ztable">${renderTable(curTrack)}</div>`;
+  $('#ztrack').onclick=e=>{const b=e.target.closest('[data-zt]');if(!b)return;curTrack=b.dataset.zt;$$('#ztrack [data-zt]').forEach(x=>x.classList.toggle('on',x.dataset.zt===curTrack));$('#ztable').innerHTML=renderTable(curTrack);bindGrade()};
+  bindGrade();
+  function bindGrade(){
+    const zg=$('#zgrade');if(!zg)return;
+    zg.onclick=e=>{const b=e.target.closest('[data-zg]');if(!b)return;const g=b.dataset.zg;$$('#zgrade [data-zg]').forEach(x=>x.classList.toggle('on',x.dataset.zg===g));$('#ztbl12').style.display=g==='11'?'none':'';$('#ztbl11').style.display=g==='12'?'none':'';};
+  }
 }
 
 // نصب
