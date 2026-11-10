@@ -111,6 +111,20 @@ label.l{display:block;font-size:13px;color:var(--m);margin:8px 0 2px}
 /* ---- Search & filters ---- */
 .notice{margin-bottom:12px;padding:10px 14px;border-radius:14px;background:#fff4d6;color:#5c3d00;font-weight:700;border:1px solid #f0d58a;display:flex;gap:8px;align-items:center}
 html[data-mode=dark] .notice{background:#3a2e0a;color:#ffe9a8;border-color:#6b5415}
+#pollcard{margin-bottom:14px;border-radius:16px;background:var(--card);border:1px solid var(--brd);padding:14px 16px;box-shadow:var(--shd)}
+.poll-q{font-weight:700;font-size:15px;margin-bottom:12px;color:var(--tx)}
+.poll-opts{display:flex;flex-direction:column;gap:8px}
+.poll-opt{position:relative;border:2px solid var(--brd);border-radius:12px;padding:10px 14px;cursor:pointer;overflow:hidden;transition:border-color .2s;user-select:none}
+.poll-opt:hover{border-color:var(--pri)}
+.poll-opt.voted{border-color:var(--pri);background:rgba(79,70,229,.06)}
+.poll-opt-bar{position:absolute;inset:0;border-radius:10px;background:rgba(79,70,229,.12);transition:width .5s ease;pointer-events:none}
+.poll-opt-label{position:relative;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.poll-opt-pct{font-size:12px;color:var(--mt);font-weight:700;min-width:36px;text-align:left}
+.poll-total{font-size:12px;color:var(--mt);margin-top:8px;text-align:left}
+html[data-mode=dark] .poll-opt.voted{background:rgba(99,102,241,.12)}
+html[data-mode=dark] .poll-opt-bar{background:rgba(99,102,241,.18)}
+.plbar-wrap{margin-top:6px;background:var(--bg);border-radius:8px;overflow:hidden;height:10px}
+.plbar-fill{height:10px;background:var(--pri);border-radius:8px;transition:width .5s ease}
 .mebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px}
 .mebar .pill{background:var(--acc);color:var(--on);border-radius:20px;padding:1px 12px;font-weight:700}
 .link{background:none;color:var(--acc);padding:0;text-decoration:underline;font-weight:400}
@@ -387,6 +401,7 @@ h1,h2,h3,h4{font-weight:400}
 <button data-v="exam"><svg class="i"><use href="#i-flag"/></svg>آزمون</button><button data-v="fav"><svg class="i"><use href="#i-star"/></svg>نشان‌شده‌ها</button>
 <button data-v="req"><svg class="i"><use href="#i-send"/></svg>درخواست</button>
 <button data-v="progress"><svg class="i"><use href="#i-chart"/></svg>پیشرفت</button>
+<button data-v="roadmap"><svg class="i"><use href="#i-target"/></svg>نقشه راه</button>
 </nav>
 
 <div id="v-home" class="lay">
@@ -401,6 +416,7 @@ h1,h2,h3,h4{font-weight:400}
 <div class="mainc">
   <div class="hero" id="hero" hidden></div>
   <div class="notice" id="notice" hidden></div>
+  <div id="pollcard" hidden></div>
   <div class="mebar" id="mebar"></div>
   <div class="sr"><div class="in"><svg class="i"><use href="#i-search"/></svg><input id="q" placeholder="جستجوی عنوان، درس، سال…" autocomplete="off"><div class="sug" id="sug" hidden></div></div>
   <button class="fbtn" id="fbt" aria-label="فیلترها"><svg class="i"><use href="#i-filter"/></svg><em id="fcn" hidden></em></button></div>
@@ -419,6 +435,7 @@ h1,h2,h3,h4{font-weight:400}
 
 <div id="v-exam" hidden></div>
 <div id="v-progress" hidden></div>
+<div id="v-roadmap" hidden></div>
 <div id="v-req" hidden><div class="card"><h2><svg class="i"><use href="#i-send"/></svg>فایل مورد نظرت را پیدا نکردی؟</h2><input id="rt" placeholder="مثلاً: آزمون قلمچی دوازدهم تجربی خرداد ۱۴۰۴"><input id="rc" placeholder="آیدی روبیکا یا شماره تماس (اختیاری)" style="margin-top:8px"><div class="row"><button id="rs">ارسال درخواست</button></div><div class="msg" id="rm"></div></div></div>
 </section>
 
@@ -428,7 +445,7 @@ h1,h2,h3,h4{font-weight:400}
     <div class="msg" id="lm"></div></div>
   <div id="panel" hidden>
     <div class="warn" id="pwwarn" hidden>رمز شما هنوز رمز پیش‌فرض (۱۲۳۴) است. همین حالا از تب «تنظیمات» آن را عوض کنید.</div>
-    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button><button data-t="exm">آزمون‌ها</button><button data-t="usr">کاربران</button></div>
+    <div class="tabs"><button data-t="up" class="on">بارگذاری</button><button data-t="fl">فایل‌ها</button><button data-t="st">آمار</button><button data-t="ev">مهلت‌ها</button><button data-t="ct">دسته‌بندی‌ها</button><button data-t="pw">تنظیمات</button><button data-t="rq">درخواست‌ها</button><button id="out" class="g">خروج</button><button data-t="exm">آزمون‌ها</button><button data-t="usr">کاربران</button><button data-t="pl">نظرسنجی</button></div>
 
     <div id="t-up" class="card"><h2 id="uh">بارگذاری فایل جدید</h2>
       <input id="ti" placeholder="عنوان فایل (در بارگذاری چندتایی خالی بگذارید تا نام فایل‌ها عنوان شود)"><div class="g2" style="margin-top:8px">
@@ -446,6 +463,24 @@ h1,h2,h3,h4{font-weight:400}
     <div id="t-rq" hidden></div>
     <div id="t-usr" hidden></div>
     <div id="t-exm" hidden></div>
+    <div id="t-pl" hidden>
+      <div class="card"><h2>ایجاد نظرسنجی جدید</h2>
+        <div class="meta" style="margin-bottom:8px">نظرسنجی در صفحه‌ی اصلی برای همه‌ی کاربران نمایش داده می‌شود.</div>
+        <input id="plq" placeholder="سؤال نظرسنجی (مثلاً: کدام درس سخت‌تر است؟)">
+        <div style="margin-top:8px">
+          <input id="plo1" placeholder="گزینه ۱" style="margin-bottom:6px">
+          <input id="plo2" placeholder="گزینه ۲" style="margin-bottom:6px">
+          <input id="plo3" placeholder="گزینه ۳ (اختیاری)" style="margin-bottom:6px">
+          <input id="plo4" placeholder="گزینه ۴ (اختیاری)">
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="plsave">ذخیره و فعال‌سازی</button>
+          <button class="g" id="plclear">پاک کردن نظرسنجی</button>
+        </div>
+        <div class="msg" id="plmsg"></div>
+      </div>
+      <div class="card" id="plresults" hidden><h2>نتایج نظرسنجی فعلی</h2><div id="plresinner"></div></div>
+    </div>
     <div id="t-pw" hidden><div class="card"><h2>تغییر رمز عبور</h2><input id="np" type="password" placeholder="رمز جدید (حداقل ۶ کاراکتر)"><input id="np2" type="password" placeholder="تکرار رمز جدید" style="margin-top:8px"><div class="row"><button id="cp">تغییر رمز</button></div><div class="msg" id="pm"></div></div>
     <div class="card"><h2>اطلاعیه صفحه اصلی</h2><input id="nt" placeholder="مثلاً: آزمون جامع این جمعه برگزار می‌شود"><div class="row"><button id="sn">ذخیره اطلاعیه</button></div><div class="msg" id="nm"></div></div>
     <div class="card"><h2>شمارش معکوس‌ها</h2><div class="meta" style="margin-bottom:6px">هر شمارش را جدا اضافه کن؛ در صفحه‌ی اصلی همه‌ی آن‌ها نمایش داده می‌شوند.</div><input id="cdt" placeholder="عنوان (مثلاً کنکور ۱۴۰۶)"><div class="g2" style="margin-top:8px;grid-template-columns:1fr 1.4fr 1fr"><input id="jy" type="number" placeholder="سال (۱۴۰۵)"><select id="jm"></select><input id="jd" type="number" min="1" max="31" placeholder="روز"></div><div class="row"><button id="sc">افزودن شمارش</button></div><div class="msg" id="cm"></div><div id="cdadm" style="margin-top:8px"></div></div></div>
@@ -572,7 +607,7 @@ async function load(){
     if(!c){$('#list').innerHTML='<div class="empty"><svg class="i" style="width:44px;height:44px;opacity:.45;display:block;margin:0 auto 8px"><use href="#i-reset"/></svg>اتصال به سرور برقرار نشد.<br><button id="retry" style="margin-top:10px">تلاش دوباره</button></div>';$('#retry').onclick=()=>{$('#list').innerHTML='<div class="sk"></div><div class="sk"></div>';load()};return}
     D=c;D.events=D.events||[];toast('اتصال برقرار نشد؛ نسخه‌ی ذخیره‌شده نمایش داده می‌شود');
   }
-  fill();showNotice();showCountdown();renderSide();show();
+  fill();showNotice();showPoll();showCountdown();renderSide();show();
   if(!me&&!S.get('rm_skip',false)&&!$('#ovm').dataset.shown){$('#ovm').dataset.shown=1;$('#ovm').hidden=false}
 }
 function fill(){
@@ -593,6 +628,99 @@ function fill(){
   $('#st').innerHTML=ico('doc')+fa(D.files.length)+' فایل  |  '+fa(D.files.reduce((a,f)=>a+(+f.downloads||0),0))+' دانلود';
 }
 function showNotice(){const n=$('#notice');n.hidden=!D.notice;n.innerHTML=ico('bell')+'<span>'+esc(D.notice||'')+'</span>'}
+
+/* ========== POLL / نظرسنجی ========== */
+function getPoll(){try{return JSON.parse(localStorage.getItem('rm_poll')||'null')}catch{return null}}
+function savePoll(p){localStorage.setItem('rm_poll',JSON.stringify(p))}
+function getVote(){return localStorage.getItem('rm_vote')||null}
+function setVote(key){localStorage.setItem('rm_vote',key)}
+
+function showPoll(){
+  const pc=$('#pollcard');
+  const poll=getPoll();
+  if(!poll||!poll.active||!poll.question||!poll.options||poll.options.length<2){pc.hidden=true;return;}
+  pc.hidden=false;
+  const voted=getVote();
+  const votedKey=voted&&voted.startsWith(poll.id+'|')?voted.split('|')[1]:null;
+  const total=poll.options.reduce((s,o)=>s+(o.votes||0),0);
+  const show=votedKey!=null;
+  pc.innerHTML=`<div class="poll-q">${ico('target')}&nbsp;${esc(poll.question)}</div>
+<div class="poll-opts">${poll.options.map((o,i)=>{
+    const pct=total>0?Math.round((o.votes||0)/total*100):0;
+    const isMe=o.key===votedKey;
+    return`<div class="poll-opt${isMe?' voted':''}" data-pkey="${esc(o.key)}" onclick="castVote('${esc(o.key)}')">
+      ${show?`<div class="poll-opt-bar" style="width:${pct}%"></div>`:''}
+      <div class="poll-opt-label"><span>${esc(o.text)}${isMe?' ✓':''}</span>${show?`<span class="poll-opt-pct">${fa(pct)}٪</span>`:''}</div>
+    </div>`;
+  }).join('')}</div>
+  ${show?`<div class="poll-total">${fa(total)} نفر شرکت کرده‌اند</div>`:'<div class="poll-total">برای مشاهده‌ی نتایج رأی دهید</div>'}`;
+}
+
+function castVote(optKey){
+  const poll=getPoll();
+  if(!poll||!poll.active)return;
+  const voted=getVote();
+  if(voted&&voted.startsWith(poll.id+'|')){showPoll();return;}
+  const opt=poll.options.find(o=>o.key===optKey);
+  if(!opt)return;
+  opt.votes=(opt.votes||0)+1;
+  savePoll(poll);
+  setVote(poll.id+'|'+optKey);
+  showPoll();
+  pollAdminResults();
+}
+
+function pollAdminResults(){
+  const pr=$('#plresults');if(!pr)return;
+  const poll=getPoll();
+  if(!poll||!poll.question){pr.hidden=true;return;}
+  pr.hidden=false;
+  const total=poll.options.reduce((s,o)=>s+(o.votes||0),0);
+  $('#plresinner').innerHTML=`<div style="font-weight:700;margin-bottom:10px">${esc(poll.question)}</div>`+
+    poll.options.map(o=>{
+      const pct=total>0?Math.round((o.votes||0)/total*100):0;
+      return`<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>${esc(o.text)}</span><span style="color:var(--mt)">${fa(o.votes||0)} رأی · ${fa(pct)}٪</span></div>
+        <div class="plbar-wrap"><div class="plbar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('')+
+    `<div style="font-size:12px;color:var(--mt);margin-top:8px">مجموع: ${fa(total)} رأی &nbsp;|&nbsp; وضعیت: ${poll.active?'<span style="color:#22c55e">فعال</span>':'<span style="color:var(--mt)">غیرفعال</span>'}</div>`;
+}
+
+function pollAdminInit(){
+  const poll=getPoll();
+  const pm=$('#plmsg');
+  if(poll){
+    $('#plq').value=poll.question||'';
+    poll.options.forEach((o,i)=>{const el=$('#plo'+(i+1));if(el)el.value=o.text||''});
+  }
+  pollAdminResults();
+  $('#plsave').onclick=()=>{
+    const q=$('#plq').value.trim();
+    if(!q)return pm.textContent='سؤال نظرسنجی را وارد کنید.';
+    const opts=[1,2,3,4].map(i=>$('#plo'+i).value.trim()).filter(Boolean);
+    if(opts.length<2)return pm.textContent='حداقل دو گزینه وارد کنید.';
+    const existing=getPoll();
+    const newPoll={
+      id:existing&&existing.question===q?existing.id:Date.now().toString(36),
+      question:q,
+      active:true,
+      options:opts.map((t,i)=>({key:'o'+i,text:t,votes:(existing&&existing.options&&existing.options[i]&&existing.options[i].text===t)?(existing.options[i].votes||0):0}))
+    };
+    savePoll(newPoll);
+    pm.textContent='نظرسنجی ذخیره و فعال شد.';
+    pollAdminResults();
+    showPoll();
+  };
+  $('#plclear').onclick=()=>{
+    if(!confirm('نظرسنجی فعلی (شامل همه رأی‌ها) پاک شود؟'))return;
+    localStorage.removeItem('rm_poll');
+    ['plq','plo1','plo2','plo3','plo4'].forEach(id=>{const el=$('#'+id);if(el)el.value='';});
+    pm.textContent='نظرسنجی پاک شد.';
+    pollAdminResults();
+    showPoll();
+  };
+}
 function showCountdown(){
   const list=(D.countdowns&&D.countdowns.length)?D.countdowns:((D.countdown&&D.countdown.date)?[{t:D.countdown.title,d:D.countdown.date}]:[]);
   const items=list.map(c=>({c,n:daysTo(c.d)})).filter(x=>x.c.t&&x.c.d&&x.n>=0);
@@ -717,8 +845,8 @@ $('#ovm').addEventListener('click',e=>{if(e.target.id==='ovm'){S.set('rm_skip',t
 // ---------- ناوبری ----------
 function go(v){
   $$('#nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
-  ['home','tools','fav','req','exam','progress'].forEach(x=>$('#v-'+x).hidden=x!==v);
-  if(v==='tools')toolsRender();if(v==='fav')favView();if(v==='exam')examView();if(v==='progress')progressRender();window.scrollTo({top:0})
+  ['home','tools','fav','req','exam','progress','roadmap'].forEach(x=>$('#v-'+x).hidden=x!==v);
+  if(v==='tools')toolsRender();if(v==='fav')favView();if(v==='exam')examView();if(v==='progress')progressRender();if(v==='roadmap')roadmapRender();window.scrollTo({top:0})
 }
 // ---------- داشبورد پیشرفت ----------
 async function progressRender(){
@@ -762,10 +890,41 @@ async function progressRender(){
     pctHtml=`<div class="card" style="margin-bottom:12px"><h2>${ico('target')}روند درصد آزمون‌ها (ذخیره‌شده)</h2><div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:8px">${last5.map(p=>`<div style="flex:1;text-align:center"><div style="height:${Math.round(p.p*0.6)}px;background:#3b82f6;border-radius:3px 3px 0 0;min-height:2px"></div><div style="font-size:9px;color:#888;margin-top:2px">${fa(Math.round(p.p))}٪</div></div>`).join('')}</div></div>`;
   }
   el.innerHTML=buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,todayMin,examHtml,badgeHtml,pctHtml);
+  // event listeners
+  // ۱. هدف روزانه
+  const geb=$('#goalEditBtn'),gbox=$('#goalEditBox');
+  if(geb)geb.onclick=()=>{gbox.style.display=gbox.style.display==='none'?'block':'none'};
+  const gsb=$('#goalSaveBtn');
+  if(gsb)gsb.onclick=()=>{const v=+$('#goalInput').value;if(v>=10&&v<=600){setDailyGoal(v);progressRender()}};
+  // ۲. اشتراک‌گذاری
+  const shb=$('#shareBtn');
+  if(shb)shb.onclick=()=>shareProgress();
+  // ۳. اعلان
+  const nsb=$('#notifSaveBtn');
+  if(nsb)nsb.onclick=async()=>{
+    const h=+$('#notifHour').value,m=+$('#notifMin').value;
+    const perm=await requestNotifPermission();
+    if(perm==='granted'){scheduleStudyReminder(h,m);toast('یادآوری ساعت '+fa(h)+':'+String(m).padStart(2,'0')+' فعال شد');progressRender()}
+    else if(perm==='denied')toast('اجازه دسترسی رد شد')
+    else toast('دسترسی داده نشد')
+  };
+  const ntb=$('#notifTestBtn');
+  if(ntb)ntb.onclick=()=>{sendTestNotif();toast('اعلان تست ارسال شد')};
+  // ۴. مقایسه درس‌ها
+  const ci=$('#compareInner');
+  if(ci)subjectCompareRender(ci);
 }
 function buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,todayMin,examHtml,badgeHtml,pctHtml){
-  return `<div class="card" style="margin-bottom:12px">
-  <h2>${ico('chart')}داشبورد پیشرفت من</h2>
+  const notifCfg=S.get('rm_notif',null);
+  const notifSupported='Notification' in window;
+  const notifPerm=notifSupported?Notification.permission:'unsupported';
+  const notifHour=notifCfg?notifCfg.hour:20,notifMin=notifCfg?notifCfg.minute:0;
+  return `${goalBar(todayMin)}
+<div class="card" style="margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+    <h2 style="margin:0">${ico('chart')}داشبورد پیشرفت من</h2>
+    <button id="shareBtn" style="background:none;border:none;color:var(--acc);font-size:12px;cursor:pointer;padding:4px 8px;display:flex;align-items:center;gap:4px">${ico('share')}اشتراک</button>
+  </div>
   <div class="stats">
     <div><b>${fmt(todayMin)}</b><small>امروز</small></div>
     <div><b>${fmt(total30)}</b><small>۳۰ روز</small></div>
@@ -785,10 +944,294 @@ function buildProgress(days30,mx,fmt,total30,totalAll,curStreak,bestStreak,today
   <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:10px;color:#888">۳۰ روز پیش</span><span style="font-size:10px;color:#888">امروز</span></div>
 </div>
 ${pctHtml||''}
+<div class="card" style="margin-bottom:12px" id="compareCard"><h2>${ico('target')}مقایسه درس‌ها</h2><div id="compareInner"><div class="meta" style="text-align:center;padding:.5rem">در حال بارگذاری...</div></div></div>
 <div class="card" style="margin-bottom:12px"><h2>${ico('flag')}نتایج آزمون‌ها</h2>${examHtml}</div>
+<div class="card" style="margin-bottom:12px">
+  <h2>${ico('bell')}یادآوری مطالعه</h2>
+  ${!notifSupported?`<div class="meta">مرورگر شما از اعلان پشتیبانی نمی‌کند</div>`:`
+  <div style="font-size:13px;margin-bottom:10px;color:${notifPerm==='granted'?'var(--ok,#22c55e)':notifPerm==='denied'?'var(--er,#ef4444)':'var(--m,#888)'}">${notifPerm==='granted'?'✅ اعلان فعال است':notifPerm==='denied'?'❌ دسترسی رد شده — از تنظیمات مرورگر فعال کنید':'⏳ اجازه داده نشده'}</div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <label style="font-size:13px">ساعت یادآوری:</label>
+    <input id="notifHour" type="number" min="0" max="23" value="${notifHour}" style="width:56px;text-align:center;padding:5px;border-radius:8px;border:1px solid var(--brd);font-size:14px">
+    <span>:</span>
+    <input id="notifMin" type="number" min="0" max="59" value="${notifMin}" style="width:56px;text-align:center;padding:5px;border-radius:8px;border:1px solid var(--brd);font-size:14px">
+    <button id="notifSaveBtn" style="padding:6px 14px;border-radius:8px;background:var(--acc);color:var(--on,#fff);border:none;cursor:pointer;font-size:13px">فعال‌سازی</button>
+    ${notifPerm==='granted'&&notifCfg?`<button id="notifTestBtn" style="padding:6px 12px;border-radius:8px;background:var(--b,#e5e7eb);border:none;cursor:pointer;font-size:12px">تست</button>`:''}
+  </div>`}
+</div>
 <div class="card">${badgeHtml||`<div class="bdg">${BADGES.map(b=>`<div class="bd ${b[3]()?'on':''}">${ico(b[2])}<br>${b[1]}</div>`).join('')}</div>`}</div>`
 }
 $('#nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)go(b.dataset.v)});
+
+// ══════════════════════════════════════════════════════
+// قابلیت ۱: هدف روزانه مطالعه
+// ══════════════════════════════════════════════════════
+function getDailyGoal(){return S.get('rm_goal',60)}
+function setDailyGoal(m){S.set('rm_goal',+m||60)}
+function goalBar(todayMin){
+  const g=getDailyGoal(),pct=Math.min(100,Math.round(todayMin/g*100));
+  const col=pct>=100?'var(--ok,#22c55e)':pct>=50?'var(--acc,#f59e0b)':'var(--er,#ef4444)';
+  return `<div class="card" style="margin-bottom:12px" id="goalCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2 style="margin:0">${ico('target')}هدف امروز</h2>
+      <button id="goalEditBtn" style="background:none;border:none;color:var(--acc);font-size:13px;cursor:pointer;padding:4px 8px">ویرایش</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+      <span style="color:${col};font-weight:600">${fa(todayMin)} دقیقه از ${fa(g)} دقیقه</span>
+      <span style="font-weight:700;color:${col}">${fa(pct)}٪</span>
+    </div>
+    <div style="background:var(--brd,#e5e7eb);border-radius:6px;height:10px;overflow:hidden">
+      <div style="height:10px;border-radius:6px;background:${col};width:${pct}%;transition:width .4s"></div>
+    </div>
+    ${pct>=100?`<div style="margin-top:8px;font-size:13px;color:var(--ok,#22c55e);text-align:center">🎉 هدف امروز رو زدی! عالیه</div>`:''}
+    <div id="goalEditBox" style="display:none;margin-top:10px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="goalInput" type="number" min="10" max="600" value="${g}" style="width:80px;text-align:center;font-size:16px;padding:6px;border-radius:8px;border:1px solid var(--brd)">
+        <span style="font-size:13px">دقیقه در روز</span>
+        <button id="goalSaveBtn" style="padding:6px 14px;border-radius:8px;background:var(--acc);color:var(--on,#fff);border:none;cursor:pointer;font-size:13px">ذخیره</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// قابلیت ۲: اشتراک‌گذاری پیشرفت
+// ══════════════════════════════════════════════════════
+async function shareProgress(){
+  const todayMin=+LOG()[dk(new Date())]||0,cur=streak(),best=longest(),tot=totalMin();
+  const g=getDailyGoal(),pct=Math.min(100,Math.round(todayMin/g*100));
+  const W=800,H=420;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const x=cv.getContext('2d');
+  const dark=document.documentElement.dataset.mode==='dark';
+  const bg=dark?'#0b1120':'#12203f',acc=dark?'#e8b94a':'#f3d58a',fg='#ffffff';
+  x.fillStyle=bg;x.fillRect(0,0,W,H);
+  // gradient overlay
+  const gr=x.createLinearGradient(0,0,W,H);
+  gr.addColorStop(0,dark?'rgba(232,185,74,.08)':'rgba(255,255,255,.05)');
+  gr.addColorStop(1,'rgba(0,0,0,.1)');
+  x.fillStyle=gr;x.fillRect(0,0,W,H);
+  // dots
+  x.fillStyle='rgba(255,255,255,.07)';
+  [[90,60],[200,160],[500,80],[650,200],[750,100],[120,320],[380,340],[700,380]].forEach(p=>{x.beginPath();x.arc(p[0],p[1],3,0,7);x.fill()});
+  // logo text
+  x.fillStyle=acc;x.font='bold 20px BTitr,Tahoma,sans-serif';x.textAlign='right';
+  x.fillText('راه موفقیت',W-40,42);
+  // title
+  x.fillStyle=fg;x.font='bold 32px BTitr,Tahoma,sans-serif';x.textAlign='center';
+  x.fillText('گزارش پیشرفت مطالعه',W/2,100);
+  // stats boxes
+  const stats=[
+    {label:'امروز',val:(todayMin>=60?Math.floor(todayMin/60)+'س '+todayMin%60+'د':todayMin+'د')},
+    {label:'استریک',val:cur+' روز'},
+    {label:'بهترین',val:best+' روز'},
+    {label:'کل',val:Math.round(tot/60)+'س'}
+  ];
+  stats.forEach((s,i)=>{
+    const bx=W/2-350+i*180,by=140;
+    x.fillStyle='rgba(255,255,255,.1)';
+    x.beginPath();x.roundRect(bx,by,160,110,12);x.fill();
+    x.fillStyle=acc;x.font='bold 28px Tahoma,sans-serif';x.textAlign='center';
+    x.fillText(s.val,bx+80,by+58);
+    x.fillStyle='rgba(255,255,255,.7)';x.font='16px BTitr,Tahoma,sans-serif';
+    x.fillText(s.label,bx+80,by+88);
+  });
+  // goal bar
+  const bx=50,by=285,bw=W-100,bh=22;
+  x.fillStyle='rgba(255,255,255,.12)';x.beginPath();x.roundRect(bx,by,bw,bh,11);x.fill();
+  const col=pct>=100?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
+  x.fillStyle=col;x.beginPath();x.roundRect(bx,by,bw*pct/100,bh,11);x.fill();
+  x.fillStyle=fg;x.font='bold 15px Tahoma,sans-serif';x.textAlign='center';
+  x.fillText('هدف امروز: '+pct+'٪',W/2,by+16);
+  // footer
+  x.fillStyle='rgba(255,255,255,.4)';x.font='14px Tahoma,sans-serif';x.textAlign='center';
+  const now=new Date();
+  x.fillText(now.toLocaleDateString('fa-IR'),W/2,H-20);
+  // download
+  const a=document.createElement('a');a.href=cv.toDataURL('image/png');
+  a.download='rah-movafaghiat-progress.png';a.click();
+  toast('تصویر ذخیره شد');
+}
+
+// ══════════════════════════════════════════════════════
+// قابلیت ۳: اعلان‌های هوشمند
+// ══════════════════════════════════════════════════════
+async function requestNotifPermission(){
+  if(!('Notification' in window))return 'unsupported';
+  if(Notification.permission==='granted')return 'granted';
+  if(Notification.permission==='denied')return 'denied';
+  return await Notification.requestPermission();
+}
+function sendTestNotif(){
+  if(Notification.permission!=='granted')return;
+  new Notification('راه موفقیت 📚',{body:'یادت نره امروز مطالعه کنی! هدفت '+fa(getDailyGoal())+' دقیقه‌ست.',icon:'/icon-192.png',dir:'rtl',lang:'fa'});
+}
+function scheduleStudyReminder(hour,minute){
+  S.set('rm_notif',{on:true,hour,minute});
+  const now=new Date(),target=new Date();
+  target.setHours(hour,minute,0,0);
+  if(target<=now)target.setDate(target.getDate()+1);
+  const ms=target-now;
+  if(window._notifTimer)clearTimeout(window._notifTimer);
+  window._notifTimer=setTimeout(()=>{
+    sendTestNotif();
+    scheduleStudyReminder(hour,minute); // repeat daily
+  },ms);
+}
+function initNotifSchedule(){
+  const cfg=S.get('rm_notif',null);
+  if(cfg&&cfg.on&&Notification.permission==='granted')scheduleStudyReminder(cfg.hour,cfg.minute);
+}
+initNotifSchedule();
+
+// ══════════════════════════════════════════════════════
+// قابلیت ۴: جدول مقایسه درس‌ها در آزمون‌ها
+// ══════════════════════════════════════════════════════
+async function subjectCompareRender(el){
+  if(!TOK){el.innerHTML='<div class="meta" style="padding:1rem;text-align:center">برای مشاهده ابتدا وارد شو</div>';return}
+  el.innerHTML='<div class="meta" style="padding:1rem;text-align:center">در حال بارگذاری...</div>';
+  try{
+    const r=await run('myResults',TOK);
+    if(!r||!r.length){el.innerHTML='<div class="meta" style="padding:.5rem 0;text-align:center">هنوز آزمونی نداده‌ای</div>';return}
+    // extract subject-level detail if available, else use total percent per exam
+    const exams=r.slice().sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,8);
+    const examTitles=exams.map(e=>e.title.length>12?e.title.slice(0,12)+'…':e.title);
+    // group by subject from detail if exists
+    const hasDetail=exams.some(e=>e.detail&&e.detail.length);
+    if(hasDetail){
+      // collect all subjects
+      const allSubj=[...new Set(exams.flatMap(e=>(e.detail||[]).map(d=>d.subject||d.name||d.n||'')).filter(Boolean))];
+      if(!allSubj.length){renderSimpleCompare(el,exams,examTitles);return}
+      const rows=allSubj.slice(0,12).map(subj=>{
+        const cells=exams.map(e=>{
+          const d=(e.detail||[]).find(d=>(d.subject||d.name||d.n||'')=== subj);
+          return d?(d.percent!=null?Math.round(d.percent):(d.correct!=null&&d.total?Math.round(d.correct/d.total*100):null)):null;
+        });
+        const valid=cells.filter(c=>c!=null);
+        const avg=valid.length?Math.round(valid.reduce((a,b)=>a+b,0)/valid.length):null;
+        return {subj,cells,avg};
+      });
+      const colW=Math.max(50,Math.floor((window.innerWidth-170)/Math.min(exams.length,5)));
+      el.innerHTML=`<div class="card" style="margin-bottom:12px">
+        <h2>${ico('target')}مقایسه درصد درس‌ها</h2>
+        <div style="overflow-x:auto;margin-top:8px">
+          <table style="width:100%;border-collapse:collapse;min-width:320px">
+            <thead><tr style="border-bottom:2px solid var(--brd)">
+              <th style="text-align:right;padding:6px 8px;font-size:12px;min-width:100px">درس</th>
+              ${examTitles.map(t=>`<th style="text-align:center;padding:6px 4px;font-size:10px;width:${colW}px;max-width:${colW}px;overflow:hidden;white-space:nowrap">${esc(t)}</th>`).join('')}
+              <th style="text-align:center;padding:6px 8px;font-size:11px;color:var(--acc)">میانگین</th>
+            </tr></thead>
+            <tbody>${rows.map(row=>`<tr style="border-bottom:1px solid var(--brd,.1)">
+              <td style="padding:6px 8px;font-size:12px">${esc(row.subj)}</td>
+              ${row.cells.map(c=>c==null?`<td style="text-align:center;padding:6px 4px;color:#aaa;font-size:12px">—</td>`:`<td style="text-align:center;padding:6px 4px"><span style="font-size:13px;font-weight:600;color:${c>=70?'var(--ok,#22c55e)':c>=40?'var(--acc,#f59e0b)':'var(--er,#ef4444)'}">${fa(c)}٪</span></td>`).join('')}
+              <td style="text-align:center;padding:6px 8px"><b style="color:var(--acc)">${row.avg!=null?fa(row.avg)+'٪':'—'}</b></td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+    } else {
+      renderSimpleCompare(el,exams,examTitles);
+    }
+  }catch(e){el.innerHTML='<div class="meta" style="padding:.5rem">خطا در بارگذاری نتایج</div>'}
+}
+function renderSimpleCompare(el,exams,examTitles){
+  el.innerHTML=`<div class="card" style="margin-bottom:12px">
+    <h2>${ico('target')}مقایسه آزمون‌ها</h2>
+    <div style="display:flex;align-items:flex-end;gap:6px;height:100px;margin-top:12px;overflow-x:auto;padding-bottom:4px">
+      ${exams.map((e,i)=>{const p=Math.round(e.percent||0);const col=p>=70?'var(--ok,#22c55e)':p>=40?'var(--acc,#f59e0b)':'var(--er,#ef4444)';return`<div style="flex:0 0 auto;width:48px;text-align:center">
+        <div style="font-size:11px;font-weight:600;color:${col};margin-bottom:3px">${fa(p)}٪</div>
+        <div style="height:${Math.max(4,Math.round(p*.8))}px;background:${col};border-radius:4px 4px 0 0"></div>
+        <div style="font-size:9px;color:#888;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:48px">${esc(examTitles[i])}</div>
+      </div>`}).join('')}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// قابلیت ۵: نقشه راه شخصی
+// ══════════════════════════════════════════════════════
+async function roadmapRender(){
+  const el=$('#v-roadmap');
+  el.innerHTML='<div class="card"><div class="meta" style="padding:1rem;text-align:center">در حال ساخت نقشه راه...</div></div>';
+  const dt=document.documentElement.dataset.track;
+  const trackKey=dt==='ma'?'ریاضی':dt==='hu'?'انسانی':'تجربی';
+  const zd=ZARAYEB[trackKey];
+  // days until konkur (assume end of Khordad = ~June 20)
+  const now=new Date();
+  const konkurDate=new Date(now.getFullYear(),5,20); // June 20
+  if(konkurDate<now)konkurDate.setFullYear(now.getFullYear()+1);
+  const daysLeft=Math.round((konkurDate-now)/(1000*60*60*24));
+  // get exam weakness if logged in
+  let weakHtml='';
+  let topSubjects=[...zd[12]].sort((a,b)=>b.w-a.w).slice(0,5);
+  if(TOK){
+    try{
+      const r=await run('myResults',TOK);
+      if(r&&r.length&&r.some(e=>e.detail&&e.detail.length)){
+        // find weakest subjects that also have high weight
+        const scoreMap={};
+        r.forEach(exam=>(exam.detail||[]).forEach(d=>{const k=d.subject||d.name||d.n||'';if(k&&d.percent!=null){if(!scoreMap[k])scoreMap[k]=[];scoreMap[k].push(d.percent)}}));
+        const avgMap={};Object.keys(scoreMap).forEach(k=>{avgMap[k]=scoreMap[k].reduce((a,b)=>a+b,0)/scoreMap[k].length});
+        // combine with weight
+        const combined=[...zd[12],...zd[11]].map(d=>({...d,avg:avgMap[d.n]??null}))
+          .filter(d=>d.avg!==null)
+          .sort((a,b)=>(b.w*(100-b.avg))-(a.w*(100-a.avg)));
+        if(combined.length>=3){
+          topSubjects=combined.slice(0,5);
+          weakHtml=`<div class="card" style="margin-bottom:12px">
+            <h2>${ico('flag')}ضعیف‌ترین درس‌ها (وزن × ضعف)</h2>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+              ${combined.slice(0,5).map((d,i)=>{const col=d.avg>=70?'var(--ok,#22c55e)':d.avg>=40?'var(--acc,#f59e0b)':'var(--er,#ef4444)';return`<div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:12px;min-width:14px;color:#888">${fa(i+1)}</span>
+                <span style="flex:1;font-size:13px">${esc(d.n)}</span>
+                <span style="font-size:12px;color:${col}">${fa(Math.round(d.avg))}٪</span>
+                <span style="font-size:11px;color:#888">ضریب ${fa(d.w.toFixed(1))}</span>
+              </div>`}).join('')}
+            </div>
+          </div>`;
+        }
+      }
+    }catch(e){}
+  }
+  // weekly plan based on weights
+  const totalW=topSubjects.reduce((a,s)=>a+s.w,0);
+  const weeklyHours=7*getDailyGoal()/60;
+  const plan=topSubjects.map(s=>({...s,hrs:+(s.w/totalW*weeklyHours).toFixed(1)}));
+  el.innerHTML=`<div class="card" style="margin-bottom:12px">
+    <h2>${ico('target')}نقشه راه شخصی کنکور</h2>
+    <div class="stats">
+      <div><b style="color:var(--acc)">${fa(daysLeft)}</b><small>روز تا کنکور</small></div>
+      <div><b>${fa(Math.round(daysLeft/7))}</b><small>هفته باقیمانده</small></div>
+      <div><b>${fa(getDailyGoal())}</b><small>هدف روزانه (د)</small></div>
+    </div>
+  </div>
+  ${weakHtml}
+  <div class="card" style="margin-bottom:12px">
+    <h2>${ico('note')}پیشنهاد مطالعه هفتگی</h2>
+    <div class="meta" style="margin-bottom:10px">بر اساس ضرایب ${esc(zd.label)} — هدف ${fa(Math.round(weeklyHours))} ساعت در هفته</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${plan.map((s,i)=>{const pct=Math.round(s.w/totalW*100);const col=s.w>=10?'var(--ok,#22c55e)':s.w>=7?'var(--acc,#f59e0b)':'var(--er,#ef4444)';return`<div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-size:13px">${fa(i+1)}. ${esc(s.n)}</span>
+          <span style="font-size:12px;font-weight:600;color:${col}">${fa(s.hrs)} ساعت/هفته</span>
+        </div>
+        <div style="background:var(--brd,#e5e7eb);border-radius:4px;height:6px">
+          <div style="height:6px;border-radius:4px;background:${col};width:${pct}%"></div>
+        </div>
+      </div>`}).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <h2>${ico('note')}راهنمای هفتگی</h2>
+    <div style="font-size:13px;line-height:2;color:var(--t)">
+      <div>📅 شنبه–دوشنبه: درس‌های تخصصی پرضریب</div>
+      <div>📅 سه‌شنبه–چهارشنبه: درس‌های عمومی + مرور</div>
+      <div>📅 پنجشنبه: آزمون آزمایشی + بررسی اشتباهات</div>
+      <div>📅 جمعه: استراحت نسبی + مرور سریع</div>
+      <div style="margin-top:8px;padding:8px;background:rgba(59,130,246,.08);border-radius:8px;font-size:12px;color:#3b82f6">💡 برای هر ساعت مطالعه ۵–۱۰ دقیقه استراحت بگیر</div>
+    </div>
+  </div>`;
+}
 $('#rs').onclick=async()=>{const m=$('#rm');if($('#rt').value.trim().length<3)return m.textContent='متن درخواست را بنویسید.';$('#rs').disabled=true;try{await run('submitRequest',$('#rt').value,$('#rc').value);m.textContent='درخواست شما ثبت شد. ممنون!';$('#rt').value=$('#rc').value=''}catch(e){m.textContent=e.message||'خطا در ارسال'}$('#rs').disabled=false};
 
 // ---------- ثبت مطالعه، استریک و نشان‌ها ----------
@@ -1144,7 +1587,7 @@ $('#go').onclick=async()=>{
 $('#pw').addEventListener('keydown',e=>e.key==='Enter'&&$('#go').click());
 document.querySelectorAll('.tabs [data-t]').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs [data-t]').forEach(x=>x.classList.toggle('on',x===b));
-  ['up','fl','st','ev','ct','pw','rq','usr','exm'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='exm')loadExamAdmin();if(b.dataset.t==='ct')loadCatAdmin();if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats()});
+  ['up','fl','st','ev','ct','pw','rq','usr','exm','pl'].forEach(t=>$('#t-'+t).hidden=t!==b.dataset.t);if(b.dataset.t==='exm')loadExamAdmin();if(b.dataset.t==='ct')loadCatAdmin();if(b.dataset.t==='rq')loadReq();if(b.dataset.t==='usr')loadUsers();if(b.dataset.t==='st')loadStats();if(b.dataset.t==='pl')pollAdminInit()});
 
 async function loadReq(){const b=$('#t-rq');b.innerHTML='<div class="card">در حال بارگذاری…</div>';try{const r=await run('getRequests',pass);b.innerHTML=r.length?r.map(x=>`<div class="card"><div>${esc(x.text)}</div><div class="meta">${esc(x.contact||'بدون اطلاعات تماس')} | ${new Date(x.date).toLocaleDateString('fa-IR-u-ca-persian')}</div><div class="row"><button class="d" onclick="delReq('${esc(x.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">درخواستی ثبت نشده.</div>'}catch(e){b.innerHTML='<div class="card">'+esc(e.message||'خطا')+'</div>'}}
 async function delReq(id){await run('delRequest',pass,id);loadReq()}
@@ -1327,13 +1770,31 @@ async function resetUser(id){const np=prompt('رمز جدید (حداقل ۶ ک�
 function dlBar(title){
   let b=$('#dlbar');
   if(!b){b=document.createElement('div');b.id='dlbar';b.style.cssText='position:fixed;left:12px;right:12px;bottom:90px;z-index:70;background:var(--c);border:1px solid var(--b);border-radius:14px;padding:10px 14px;box-shadow:var(--sh)';document.body.appendChild(b)}
-  b.hidden=false;b.innerHTML=`<div class="meta" style="margin-bottom:6px">${esc(title)}</div><progress id="dlp" max="100" value="0" style="width:100%"></progress><div class="meta" id="dlv" style="text-align:center;margin-top:4px">۰٪</div>`;
+  b.hidden=false;
+  b.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span class="meta" style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%">${esc(title)}</span>
+    <span class="meta" id="dlv" style="font-size:12px;white-space:nowrap;margin-right:8px">در حال دریافت...</span>
+  </div>
+  <div style="background:var(--brd,#e5e7eb);border-radius:6px;height:8px;overflow:hidden;position:relative">
+    <div id="dlp" style="height:8px;border-radius:6px;background:var(--acc,#3b82f6);width:0%;transition:width .3s;position:relative"></div>
+    <div id="dlstripe" style="position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,255,255,.15) 20px,rgba(255,255,255,.15) 40px);animation:dlmove 1s linear infinite;display:none"></div>
+  </div>`;
+  // add keyframe if not exists
+  if(!document.getElementById('dlkf')){const s=document.createElement('style');s.id='dlkf';s.textContent='@keyframes dlmove{from{background-position:0 0}to{background-position:40px 0}}';document.head.appendChild(s)}
   return b;
 }
 function dlUpd(pct,got){
-  const p=$('#dlp'),v=$('#dlv');if(!p)return;
-  if(pct==null){p.removeAttribute('value');v.textContent=fa((got/1048576).toFixed(1))+' مگابایت دریافت شد'}
-  else{p.value=pct;v.textContent=fa(pct)+'٪'}
+  const bar=$('#dlp'),v=$('#dlv'),stripe=$('#dlstripe');if(!bar)return;
+  if(pct==null){
+    // حجم نامشخص — نوار متحرک نمایش بده
+    bar.style.width='100%';
+    if(stripe)stripe.style.display='block';
+    v.textContent=got>0?fa((got/1048576).toFixed(1))+' MB':'در حال دریافت...';
+  } else {
+    if(stripe)stripe.style.display='none';
+    bar.style.width=pct+'%';
+    v.textContent=fa(pct)+'٪';
+  }
 }
 // دانلود با نوار درصد. اگر مرورگر اجازه‌ی خواندن فایل از Drive را ندهد، همان لینک قبلی باز می‌شود.
 document.addEventListener('click',async e=>{
