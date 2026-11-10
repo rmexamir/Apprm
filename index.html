@@ -1447,7 +1447,7 @@ function suggestFor(q){
 }
 function crumbItems(){
   const it=[];
-  if(F.t)it.push(['t',F.t]);if(F.sb)it.push(['sb',F.sb]);if(F.g)it.push(['g',F.g]);if(F.s)it.push(['s',F.s]);
+  if(F.t)it.push(['t',F.t]);if(F.sb)it.push(['sb',F.sb.split('|').join(' › ')]);if(F.g)it.push(['g',F.g]);if(F.s)it.push(['s',F.s]);
   if(F.y)it.push(['y','سال '+F.y]);if(F.e)it.push(['e',F.e]);if(nrm(F.q))it.push(['q','جستجو: '+F.q]);
   return it;
 }
@@ -1513,5 +1513,91 @@ document.addEventListener('click',e=>{
   syncGrades();
 });
 renderGradeChips([]);
+</script>
+<script>
+// ===================== زیرمجموعه‌های چندسطحی (درخت) =====================
+// هر زیرمجموعه با «مسیر» مشخص می‌شود: مثلاً «قلم‌چی|دهم|ریاضی». فایل هم همین مسیر را دارد.
+const subKidsOf=key=>(D.cats.subs||[]).filter(x=>x.p===key);
+const subCount=(type,rel)=>D.files.filter(f=>f.type===type&&(f.sub===rel||String(f.sub||'').startsWith(rel+'|'))).length;
+function filtered(){
+  const qs=nrm(F.q).split(/\s+/).filter(Boolean);
+  const r=D.files.filter(f=>{
+    const words=fwords(f),hay=sq(words.join(' '));
+    const textOK=qs.every(t=>hay.includes(sq(t))||words.some(w=>w.includes(t)||(t.length>=4&&lev(w.slice(0,t.length),t)<=1)));
+    const subOK=!F.sb||f.sub===F.sb||String(f.sub||'').startsWith(F.sb+'|');
+    return textOK&&subOK&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e);
+  });
+  const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
+  return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
+}
+function renderSubs(){
+  const el=$('#subq');if(!el)return;
+  if(!F.t||!subKidsOf(F.t).length){el.hidden=true;el.innerHTML='';F.sb='';return}
+  const nodeKey=F.t+(F.sb?'|'+F.sb:'');
+  const kids=subKidsOf(nodeKey);
+  el.hidden=false;
+  const segs=F.sb?F.sb.split('|'):[];
+  const parentRel=segs.slice(0,-1).join('|');
+  const PAL=[['#7c3aed','#4c1d95'],['#2563eb','#1e3a8a'],['#059669','#064e3b'],['#db2777','#831843'],['#ea580c','#7c2d12'],['#0891b2','#164e63']];
+  const counts=kids.map(x=>subCount(F.t,x.rel));
+  const here=F.sb?subCount(F.t,F.sb):D.files.filter(f=>f.type===F.t).length;
+  const mx=Math.max(1,...counts,here);
+  const tile=(lbl,n,pct,active,c1,c2,attr)=>`<button class="stile${active?' on':''}" ${attr} style="--c1:${c1};--c2:${c2}">
+      <span class="sti">${ico('file')}</span><span class="stn">${esc(lbl)}</span>
+      <span class="stc"><b>${fa(n)}</b><small>فایل</small></span><span class="stb"><i style="width:${Math.max(6,pct)}%"></i></span>
+      ${active?'<span class="stk">✓</span>':''}</button>`;
+  const head=`<div class="subhead"><span>${esc([F.t,...segs].join(' › '))}</span>${F.sb?`<button class="g" data-sb="${esc(parentRel)}">بازگشت</button>`:`<small>${fa(kids.length)} زیرمجموعه</small>`}</div>`;
+  el.innerHTML=head+`<div class="subgrid">`+
+    tile('همه‌ی '+(segs.length?segs[segs.length-1]:F.t),here,100,false,'#e8b94a','#a16207',`data-sb="${esc(F.sb)}"`)+
+    kids.map((x,i)=>{const [c1,c2]=PAL[i%PAL.length];return tile(x.n,counts[i],counts[i]/mx*100,false,c1,c2,`data-sb="${esc(x.rel)}"`)}).join('')+
+    `</div>`;
+}
+function fillSubSel(){
+  const el=$('#usb');if(!el||!$('#ut'))return;
+  const nodes=(D.cats.subs||[]).filter(x=>x.t===$('#ut').value);
+  const cur=el.value;el.hidden=!nodes.length;
+  el.innerHTML='<option value="">بدون زیرمجموعه</option>'+nodes.map(x=>`<option value="${esc(x.rel)}">${esc(x.rel.split('|').join(' › '))}</option>`).join('');
+  el.value=nodes.some(x=>x.rel===cur)?cur:'';
+}
+// ---- مدیریت درخت زیرمجموعه‌ها در تب دسته‌بندی‌ها
+function treeHTML(key,depth){
+  const kids=subKidsOf(key);
+  return kids.map((x,i)=>{
+    const me=key+'|'+x.n;
+    return `<div class="hist" style="margin-inline-start:${depth*14}px"><span>${depth?'↳ ':''}${esc(x.n)} <small class="meta">${fa(subCount(x.t,x.rel))} فایل</small></span>
+      <span><button class="g" data-nm="${esc(key)}" data-ni="${i}" data-nd="-1" ${i===0?'disabled':''}>▲</button> <button class="g" data-nm="${esc(key)}" data-ni="${i}" data-nd="1" ${i===kids.length-1?'disabled':''}>▼</button> <button class="d" data-nx="${esc(key)}" data-nn="${esc(x.n)}">×</button></span></div>
+      ${treeHTML(me,depth+1)}`;
+  }).join('');
+}
+function nodeAddRow(key,label){
+  return `<div class="row" style="margin-inline-start:${0}px"><input class="csi" data-cp="${esc(key)}" placeholder="زیرمجموعه‌ی جدید ${esc(label)}"><button class="g" data-na="${esc(key)}">افزودن</button></div>`;
+}
+function loadCatAdmin(){
+  const host=$('#t-ct');if(!host)return;
+  let b=$('#catadm');if(!b){b=document.createElement('div');b.id='catadm';host.prepend(b)}
+  const KS=[['type','نوع فایل'],['grade','پایه'],['subject','درس'],['exam','برگزارکننده آزمون']];
+  b.innerHTML=`<h2>ترتیب و زیرمجموعه‌ها</h2><div class="meta" style="margin-bottom:6px">هر زیرمجموعه می‌تواند زیرشاخه داشته باشد. مثال: آزمون آزمایشی ← قلم‌چی ← دهم ← ریاضی ← ۱۴۰۵.</div>`+
+    KS.map(([k,lbl])=>`<h4 class="sh">${lbl}</h4>`+((D.cats[k]||[]).map((n,i,arr)=>`<div class="hist"><span>${esc(n)}</span><span><button class="g" data-cm="${k}|${i}|-1" ${i===0?'disabled':''}>▲</button> <button class="g" data-cm="${k}|${i}|1" ${i===arr.length-1?'disabled':''}>▼</button></span></div>`+
+      (k==='type'?`<div style="margin-inline-start:14px">${treeHTML(n,1)}${nodeAddRow(n,n)}</div>`:'')).join('')||'<div class="meta">موردی نیست</div>')).join('');
+}
+// ---- کلیک‌های مدیریت درخت
+document.addEventListener('click',async e=>{
+  const t=e.target.closest&&e.target.closest('[data-nm],[data-nx],[data-na]');if(!t||!$('#catadm'))return;
+  try{
+    if(t.dataset.nm!=null){
+      const key=t.dataset.nm,i=+t.dataset.ni,d=+t.dataset.nd;
+      const names=subKidsOf(key).map(x=>x.n);const j=i+d;if(j<0||j>=names.length)return;
+      [names[i],names[j]]=[names[j],names[i]];
+      await run('setCatOrder',pass,'sub',names,key);await refreshAll();
+    }else if(t.dataset.nx!=null){
+      if(!confirm('«'+t.dataset.nn+'» و همه‌ی زیرشاخه‌هایش حذف شوند؟ فایل‌های آن بدون زیرمجموعه می‌مانند.'))return;
+      await run('delSub',pass,t.dataset.nx,t.dataset.nn);await refreshAll();
+    }else if(t.dataset.na!=null){
+      const key=t.dataset.na;const inp=[...document.querySelectorAll('.csi')].find(x=>x.dataset.cp===key);
+      const n=(inp&&inp.value||'').trim();if(!n)return toast('نام زیرمجموعه را بنویس');
+      await run('addCat',pass,'sub',n,key);toast('افزوده شد');await refreshAll();
+    }
+  }catch(err){toast(err.message||'خطا')}
+});
 </script>
 </body></html>
