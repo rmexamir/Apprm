@@ -625,9 +625,9 @@ function fill(){
   setH('#fy',opts(years,'همه‌ی سال‌ها'));
   $('#fs').innerHTML=opts(subjFor(F.g),'همه‌ی درس‌ها');$('#fs').value=F.s;$('#fy').value=F.y;$('#fo').value=F.sort;
   setH('#ug',opts(GR,'پایه را انتخاب کنید'));setH('#ut',opts(TY,'نوع فایل را انتخاب کنید'));fillS('#ug','#us','درس را انتخاب کنید');
-  const tiles=GR.map(g=>{const p=g.split(' '),tr=p.slice(1).join(' '),m=TRK[tr]||['t-ex','all'];return `<button class="tile ${m[0]}" data-v="${esc(g)}">${ico(m[1])}<b>${esc(p[0])}</b><small>${esc(tr)}</small></button>`}).join('');
-  $('#gg').innerHTML=tiles;
-  $('#ob').innerHTML=GRADES.map(g=>{const sp=g.indexOf(' '),gr=g.slice(0,sp),tr=g.slice(sp+1),m=TRK[tr]||['t-ex','all'];return `<button class="tile ${m[0]}" data-me="${esc(g)}">${ico(m[1])}<b>${esc(gr)}</b><small>${esc(tr)}</small></button>`}).join('');
+  const grTile=(g,attr)=>{const sp=g.indexOf(' '),gr=sp>0?g.slice(0,sp):g,tr=sp>0?g.slice(sp+1):'',m=TRK[tr]||['t-ex','all'];return `<button class="tile ${m[0]}" ${attr}="${esc(g)}">${ico(m[1])}<b>${esc(gr)}</b>${tr?`<small>${esc(tr)}</small>`:''}</button>`};
+  $('#gg').innerHTML=GR.map(g=>grTile(g,'data-v')).join('');
+  $('#ob').innerHTML=GR.map(g=>grTile(g,'data-me')).join('');
   $('#tq').innerHTML=['',...TY].map(t=>`<button class="chip2" data-v="${esc(t)}">${ico(t?(TI[t]||'file'):'all')}${t?esc(t):'همه'}<small class="cnt">${fa(t?D.files.filter(f=>f.type===t).length:D.files.length)}</small></button>`).join('');
   renderSubs();fillSubSel();
   const ex=[...new Set([...D.cats.exam.filter(x=>x!=='سایر'),...D.files.map(f=>f.exam).filter(Boolean)])];
@@ -1773,11 +1773,11 @@ async function renameConfirm(btn,k,oldName){
     await run('delCat',pass,k,oldName);
     const idx=D.cats[k].indexOf(oldName);
     if(idx>=0)D.cats[k][idx]=newName;else D.cats[k].push(newName);
-    fill();adminLists();
+    S.set('rm_cache',D);fill();adminLists();
   }catch(e){alert(e.message||'خطا در تغییر نام');adminLists();}
 }
-async function ac(k){const v=$('#n-'+k).value.trim();if(!v)return;await run('addCat',pass,k,v);D.cats[k].push(v);fill();adminLists()}
-async function dc(k,n){if(!confirm('«'+n+'» حذف شود؟ فایل‌های این دسته حذف نمی‌شوند.'))return;await run('delCat',pass,k,n);D.cats[k]=D.cats[k].filter(x=>x!==n);fill();adminLists()}
+async function ac(k){const v=$('#n-'+k).value.trim();if(!v)return;await run('addCat',pass,k,v);D.cats[k].push(v);S.set('rm_cache',D);fill();adminLists()}
+async function dc(k,n){if(!confirm('«'+n+'» حذف شود؟ فایل‌های این دسته حذف نمی‌شوند.'))return;await run('delCat',pass,k,n);D.cats[k]=D.cats[k].filter(x=>x!==n);S.set('rm_cache',D);fill();adminLists()}
 async function del(id){if(!confirm('این فایل برای همیشه حذف شود؟'))return;await run('deleteFile',pass,id);D.files=D.files.filter(f=>f.id!==id);adminLists()}
 async function dedupeFiles(){
   const groups={};
