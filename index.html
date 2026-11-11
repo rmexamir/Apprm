@@ -841,8 +841,16 @@ const dl=f=>'https://drive.google.com/uc?export=download&id='+esc(f.fileId);
 function filtered(){
   const qs=nz(F.q).split(/\s+/).filter(Boolean);
   const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
+  // گروه‌بندی فایل‌های هم‌نام با fileId یکسان (یک فایل برای چند پایه = چند رکورد)
+  const seen=new Map();
+  r.forEach(f=>{
+    const key=f.fileId||f.id;
+    if(!seen.has(key)){seen.set(key,{...f,_grades:[f.grade].filter(Boolean)});}
+    else{const g=seen.get(key);if(f.grade&&!g._grades.includes(f.grade))g._grades.push(f.grade);g.downloads=Math.max(+g.downloads||0,+f.downloads||0);}
+  });
+  const deduped=[...seen.values()].map(f=>({...f,grade:f._grades.length>1?f._grades.join('، '):f._grades[0]||f.grade}));
   const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
-  return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
+  return deduped.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
 }
 const TRKC={ex:'#16a34a',ma:'#2563eb',hu:'#f97316',is:'#9333ea'};
 function trackKey(g){g=String(g||'');return g.includes('معارف')?'is':g.includes('تجربی')?'ex':g.includes('ریاضی')?'ma':g.includes('انسانی')?'hu':''}
@@ -1716,14 +1724,64 @@ function adminLists(){
   if(document.activeElement!==$('#nt'))$('#nt').value=D.notice||'';
   cdAdmin();
   evAdmin();
-  $('#t-fl').innerHTML=D.files.length?D.files.map(f=>`<div class="item"><div><h3>${esc(f.title)}</h3><div class="meta">${[f.grade,f.subject,f.type,f.year].filter(Boolean).map(esc).join(' / ')} · ${fa(f.downloads)} دانلود</div></div>
-   <div class="row"><button class="g" onclick="pin('${esc(f.id)}')">${f.pin?'برداشتن سنجاق':'سنجاق'}</button><button onclick="edit('${esc(f.id)}')">ویرایش</button><button class="d" onclick="del('${esc(f.id)}')">حذف</button></div></div>`).join(''):'<div class="empty">هنوز فایلی بارگذاری نشده.</div>';
-  $('#t-ct').innerHTML='<button onclick="seed()" style="margin-bottom:12px">افزودن پایه‌ها، درس‌ها و انواع پیش‌فرض</button>'+Object.keys(K).map(k=>`<h2>${K[k]}</h2><div class="row" style="margin:0 0 8px">${D.cats[k].map(n=>`<span class="chip">${esc(n)}<b onclick="dc('${k}','${esc(n).replace(/'/g,'')}')">×</b></span>`).join('')||'<span class="meta">موردی تعریف نشده</span>'}</div>
+  // شناسایی فایل‌های تکراری (fileId یکسان، بیش از یک رکورد)
+  const dupMap=new Map();
+  D.files.forEach(f=>{const k=f.fileId||'';if(!k)return;dupMap.set(k,(dupMap.get(k)||0)+1)});
+  const hasDups=[...dupMap.values()].some(v=>v>1);
+  $('#t-fl').innerHTML=(hasDups?`<div class="card" style="background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.4);margin-bottom:12px"><div style="font-weight:700;margin-bottom:6px">⚠️ فایل‌های تکراری شناسایی شد</div><div class="meta" style="margin-bottom:8px">برخی فایل‌ها برای چند پایه ثبت شده و چند بار در لیست دیده می‌شوند. با دکمه‌ی زیر رکوردهای اضافه را حذف کن (فایل اصلی در Drive دست نمی‌خورد).</div><button onclick="dedupeFiles()" id="dedupeBtn">پاک‌سازی موارد تکراری</button><div class="msg" id="dedupeMsg"></div></div>`:'')
+    +(D.files.length?D.files.map(f=>{const isDup=(dupMap.get(f.fileId||'')||0)>1;return`<div class="item"${isDup?' style="border-right:3px solid #f59e0b"':''}><div><h3>${esc(f.title)}${isDup?` <span style="font-size:11px;color:#b45309;background:rgba(245,158,11,.15);padding:1px 6px;border-radius:6px">تکراری</span>`:''}</h3><div class="meta">${[f.grade,f.subject,f.type,f.year].filter(Boolean).map(esc).join(' / ')} · ${fa(f.downloads)} دانلود</div></div>
+   <div class="row"><button class="g" onclick="pin('${esc(f.id)}')">${f.pin?'برداشتن سنجاق':'سنجاق'}</button><button onclick="edit('${esc(f.id)}')">ویرایش</button><button class="d" onclick="del('${esc(f.id)}')">حذف</button></div></div>`}).join(''):'<div class="empty">هنوز فایلی بارگذاری نشده.</div>');
+  $('#t-ct').innerHTML='<button onclick="seed()" style="margin-bottom:12px">افزودن پایه‌ها، درس‌ها و انواع پیش‌فرض</button>'+Object.keys(K).map(k=>`<h2>${K[k]}</h2><div class="row" style="margin:0 0 8px;flex-wrap:wrap">${D.cats[k].map(n=>`<span class="chip" style="cursor:pointer" title="برای ویرایش کلیک کنید">${esc(n)}<b onclick="renameStart(this,'${k}','${esc(n).replace(/'/g,"\\'")}')">✎</b><b onclick="dc('${k}','${esc(n).replace(/'/g,"\\'")}')">×</b></span>`).join('')||'<span class="meta">موردی تعریف نشده</span>'}</div>
    <div class="row" style="margin-bottom:16px"><input id="n-${k}" placeholder="افزودن ${K[k]}" style="flex:1"><button onclick="ac('${k}')">افزودن</button></div>`).join('');
+}
+function renameStart(btn,k,oldName){
+  const chip=btn.closest('.chip');
+  const orig=chip.innerHTML;
+  chip.innerHTML=`<input class="rename-inp" value="${esc(oldName)}" style="border:none;background:transparent;color:inherit;font:inherit;width:${Math.max(60,oldName.length*14)}px;outline:none" /><b onclick="renameConfirm(this,'${k}','${esc(oldName).replace(/'/g,"\\'")}')">✓</b><b onclick="this.closest('.chip').innerHTML='${orig.replace(/'/g,"\\'")}'"  >✕</b>`;
+  chip.querySelector('.rename-inp').focus();
+  chip.querySelector('.rename-inp').addEventListener('keydown',e=>{if(e.key==='Enter')chip.querySelector('[onclick*=renameConfirm]').click();if(e.key==='Escape')chip.querySelector('[onclick*=innerHTML]').click();});
+}
+async function renameConfirm(btn,k,oldName){
+  const chip=btn.closest('.chip');
+  const newName=chip.querySelector('.rename-inp').value.trim();
+  if(!newName||newName===oldName){adminLists();return;}
+  btn.disabled=true;
+  try{
+    await run('addCat',pass,k,newName);
+    await run('delCat',pass,k,oldName);
+    const idx=D.cats[k].indexOf(oldName);
+    if(idx>=0)D.cats[k][idx]=newName;else D.cats[k].push(newName);
+    fill();adminLists();
+  }catch(e){alert(e.message||'خطا در تغییر نام');adminLists();}
 }
 async function ac(k){const v=$('#n-'+k).value.trim();if(!v)return;await run('addCat',pass,k,v);D.cats[k].push(v);fill();adminLists()}
 async function dc(k,n){if(!confirm('«'+n+'» حذف شود؟ فایل‌های این دسته حذف نمی‌شوند.'))return;await run('delCat',pass,k,n);D.cats[k]=D.cats[k].filter(x=>x!==n);fill();adminLists()}
 async function del(id){if(!confirm('این فایل برای همیشه حذف شود؟'))return;await run('deleteFile',pass,id);D.files=D.files.filter(f=>f.id!==id);adminLists()}
+async function dedupeFiles(){
+  const groups={};
+  D.files.forEach(f=>{const k=f.fileId||'';if(!k)return;if(!groups[k])groups[k]=[];groups[k].push(f);});
+  const toDelete=[];
+  Object.values(groups).forEach(arr=>{
+    if(arr.length<2)return;
+    // نگه داشتن رکوردی که بیشترین دانلود را دارد، حذف بقیه
+    arr.sort((a,b)=>(+b.downloads||0)-(+a.downloads||0));
+    arr.slice(1).forEach(f=>toDelete.push(f.id));
+  });
+  if(!toDelete.length){alert('موردی تکراری پیدا نشد.');return;}
+  if(!confirm(fa(toDelete.length)+' رکورد تکراری حذف شود؟ (فایل اصلی در Drive دست نمی‌خورد)'))return;
+  const btn=$('#dedupeBtn'),msg=$('#dedupeMsg');
+  if(btn)btn.disabled=true;
+  if(msg)msg.textContent='در حال پاک‌سازی…';
+  let done=0;
+  for(const id of toDelete){
+    await run('deleteFile',pass,id);
+    done++;
+    if(msg)msg.textContent=`${fa(done)} از ${fa(toDelete.length)} حذف شد…`;
+  }
+  await load();
+  adminLists();
+  alert(`پاک‌سازی انجام شد. ${fa(toDelete.length)} رکورد تکراری حذف شد.`);
+}
 function edit(id){
   const f=D.files.find(x=>x.id===id);editId=id;
   $('#ti').value=f.title;$('#ug').value=f.grade;UG_SEL=[f.grade];renderGradeChips(UG_SEL);fillS('#ug','#us','درس را انتخاب کنید');$('#us').value=f.subject;$('#ut').value=f.type;$('#uy').value=f.year;$('#ue').value=D.cats.exam.includes(f.exam)?f.exam:(f.exam?'سایر':'');$('#uo').value=D.cats.exam.includes(f.exam)?'':(f.exam||'');$('#ul').value=f.link||'';toggleEx();fillSubSel();$('#usb').value=f.sub||'';
