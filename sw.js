@@ -1,4 +1,4 @@
-const CACHE = 'rah-v23';
+const CACHE = 'rah-v24';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -17,8 +17,19 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  // درخواست‌های API و Drive (دامنه‌ی دیگر) مستقیم انجام می‌شوند و کش نمی‌شوند
   if (url.origin !== self.location.origin) return;
+  // برای index.html همیشه اول شبکه، کش فقط fallback
+  if (url.pathname === '/' || url.pathname.endsWith('/index.html')) {
+    e.respondWith(
+      fetch(req)
+        .then(res => {
+          if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
   e.respondWith(
     fetch(req)
       .then(res => {
