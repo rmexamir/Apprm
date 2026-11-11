@@ -842,9 +842,14 @@ function updStreak(){const n=streak(),el=$('#sk');el.hidden=!n;if(n)el.innerHTML
 const favs=()=>S.get('rm_fav',[]);
 const dl=f=>'https://drive.google.com/uc?export=download&id='+esc(f.fileId);
 function filtered(){
-  const qs=nz(F.q).split(/\s+/).filter(Boolean);
+  const qs=nrm(F.q).split(/\s+/).filter(Boolean);
   // ابتدا همه رکوردهایی که با فیلترهای غیر-پایه مطابقت دارند
-  const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
+  const r=D.files.filter(f=>{
+    const words=fwords(f),hay=sq(words.join(' '));
+    const textOK=qs.every(t=>hay.includes(sq(t))||words.some(w=>w.includes(t)||(t.length>=4&&lev(w.slice(0,t.length),t)<=1)));
+    const subOK=!F.sb||f.sub===F.sb||String(f.sub||'').startsWith(F.sb+'|');
+    return textOK&&subOK&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e);
+  });
   // گروه‌بندی بر اساس fileId — همه پایه‌ها جمع می‌شوند
   const seen=new Map();
   r.forEach(f=>{
@@ -2376,17 +2381,6 @@ renderGradeChips([]);
 // هر زیرمجموعه با «مسیر» مشخص می‌شود: مثلاً «قلم‌چی|دهم|ریاضی». فایل هم همین مسیر را دارد.
 const subKidsOf=key=>(D.cats.subs||[]).filter(x=>x.p===key);
 const subCount=(type,rel)=>D.files.filter(f=>f.type===type&&(f.sub===rel||String(f.sub||'').startsWith(rel+'|'))).length;
-function filtered(){
-  const qs=nrm(F.q).split(/\s+/).filter(Boolean);
-  const r=D.files.filter(f=>{
-    const words=fwords(f),hay=sq(words.join(' '));
-    const textOK=qs.every(t=>hay.includes(sq(t))||words.some(w=>w.includes(t)||(t.length>=4&&lev(w.slice(0,t.length),t)<=1)));
-    const subOK=!F.sb||f.sub===F.sb||String(f.sub||'').startsWith(F.sb+'|');
-    return textOK&&subOK&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e);
-  });
-  const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
-  return r.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
-}
 function renderSubs(){
   const el=$('#subq');if(!el)return;
   if(!F.t||!subKidsOf(F.t).length){el.hidden=true;el.innerHTML='';F.sb='';return}
