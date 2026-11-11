@@ -843,15 +843,18 @@ const favs=()=>S.get('rm_fav',[]);
 const dl=f=>'https://drive.google.com/uc?export=download&id='+esc(f.fileId);
 function filtered(){
   const qs=nz(F.q).split(/\s+/).filter(Boolean);
-  const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.g||f.grade===F.g)&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
-  // گروه‌بندی فایل‌های هم‌نام با fileId یکسان (یک فایل برای چند پایه = چند رکورد)
+  // ابتدا همه رکوردهایی که با فیلترهای غیر-پایه مطابقت دارند
+  const r=D.files.filter(f=>{const h=nz([f.title,f.subject,f.grade,f.type,f.year,f.exam].join(' '));return qs.every(w=>h.includes(w))&&(!F.s||f.subject===F.s)&&(!F.t||f.type===F.t)&&(!F.sb||f.sub===F.sb)&&(!F.y||String(f.year)===F.y)&&(!F.e||f.exam===F.e)});
+  // گروه‌بندی بر اساس fileId — همه پایه‌ها جمع می‌شوند
   const seen=new Map();
   r.forEach(f=>{
     const key=f.fileId||f.id;
-    if(!seen.has(key)){seen.set(key,{...f,_grades:[f.grade].filter(Boolean)});}
-    else{const g=seen.get(key);if(f.grade&&!g._grades.includes(f.grade))g._grades.push(f.grade);g.downloads=Math.max(+g.downloads||0,+f.downloads||0);}
+    if(!seen.has(key)){seen.set(key,{...f,_grades:[f.grade].filter(Boolean),_ids:[f.id]});}
+    else{const g=seen.get(key);if(f.grade&&!g._grades.includes(f.grade))g._grades.push(f.grade);g._ids.push(f.id);g.downloads=Math.max(+g.downloads||0,+f.downloads||0);}
   });
-  const deduped=[...seen.values()].map(f=>({...f,grade:f._grades.length>1?f._grades.join('، '):f._grades[0]||f.grade}));
+  // اگر فیلتر پایه فعال است، فقط فایل‌هایی بمانند که آن پایه را دارند
+  let deduped=[...seen.values()];
+  if(F.g) deduped=deduped.filter(f=>f._grades.includes(F.g));
   const cmp={new:()=>0,pop:(a,b)=>(+b.downloads||0)-(+a.downloads||0),size:(a,b)=>(+a.size||0)-(+b.size||0),az:(a,b)=>String(a.title).localeCompare(String(b.title),'fa')}[F.sort];
   return deduped.sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||cmp(a,b));
 }
@@ -860,9 +863,9 @@ function trackKey(g){g=String(g||'');return g.includes('معارف')?'is':g.incl
 function card(f,i,ans){
   const tk=trackKey(f.grade),k=tk?TRKC[tk]:COL[hash(f.subject||f.type)%8],fresh=(Date.now()-new Date(f.created))<6048e5,fv=favs().includes(f.id),a=ans[f.id];
   return `<div class="fc" style="--k:${k};--i:${Math.min(i,12)}"><div class="fh"><div class="ic">${ico(sIcon(f.subject))}</div><div class="kd"><b>${esc(f.type)}</b>${esc(f.subject||'')}</div>${fresh?'<span class="nw">جدید</span>':''}<button class="fv" data-sh="${esc(f.id)}" aria-label="اشتراک‌گذاری">${ico('share')}</button><button class="fv ${fv?'on':''}" data-fav="${esc(f.id)}" aria-label="نشان‌کردن">${ico('star')}</button></div>
-  <div class="fb"><h3>${esc(f.title)}</h3><div>${f.pin?'<span class="tag">سنجاق‌شده</span>':''}${[f.grade,f.exam,f.year].filter(Boolean).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>
+  <div class="fb"><h3>${esc(f.title)}</h3><div>${f.pin?'<span class="tag">سنجاق‌شده</span>':''}${(f._grades&&f._grades.length?f._grades:[f.grade].filter(Boolean)).map(g=>`<span class="tag" style="cursor:pointer" onclick="F.g='${esc(g)}';fill();show()">${esc(g)}</span>`).join('')}${[f.exam,f.year].filter(Boolean).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>
   <div class="meta">${size(f.size)} | ${fa(f.downloads||0)} دانلود</div></div>
-  <div class="acts"><a class="btn" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hit('${esc(f.id)}')">${ico('down')}دانلود</a>${a?`<a class="btn" style="background:var(--t);color:var(--bg)" href="${dl(a)}" target="_blank" rel="noopener" onclick="hit('${esc(a.id)}')">پاسخنامه</a>`:''}</div></div>`}
+  <div class="acts"><a class="btn" href="${dl(f)}" data-dlp="${esc(f.fileId)}" data-title="${esc(f.title)}" target="_blank" rel="noopener" onclick="hitAll(${JSON.stringify(f._ids||[f.id])})">${ico('down')}دانلود</a>${a?`<a class="btn" style="background:var(--t);color:var(--bg)" href="${dl(a)}" target="_blank" rel="noopener" onclick="hit('${esc(a.id)}')">پاسخنامه</a>`:''}</div></div>`}
 function ansMap(){const m={};D.files.forEach(a=>{if(a.link)m[a.link]=a});return m}
 function show(){
   const ans=ansMap();renderSubs();const r=filtered();
@@ -899,6 +902,7 @@ function track(key){
 }
 document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[data-track]');if(a)track(a.dataset.track)});
 function hit(id){run('hit',id).catch(()=>{});const f=D.files.find(x=>x.id===id);if(f)f.downloads=(+f.downloads||0)+1;S.set('rm_rec',[id,...S.get('rm_rec',[]).filter(x=>x!==id)].slice(0,8))}
+function hitAll(ids){ids.forEach(id=>hit(id))}
 async function shareFile(id){
   const f=D.files.find(x=>x.id===id);if(!f)return;const text=f.title+'\n'+dl(f)+'\n\nکانال راه موفقیت دانش‌آموزان: https://rubika.ir/rmstudents';
   try{if(navigator.share){await navigator.share({title:f.title,text});return}}catch(e){if(e.name==='AbortError')return}
